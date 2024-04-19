@@ -16,7 +16,9 @@ package](https://github.com/matloff/dsld), and is best read with access
 to that software. However, its conceptual content is quite accessible
 independently of that package.
 
-License:
+The PDF of the book is [here](_book/Data-Science-Looks-at-Discrimination.pdf).
+
+*License:*
 
 This work is licensed under a Creative Commons Attribution-No Derivative Works 3.0 United States License. Copyright is retained in all non-U.S. jurisdictions, but permission to use these materials in teaching is still granted, provided the authorship and licensing information here is displayed. 
 
