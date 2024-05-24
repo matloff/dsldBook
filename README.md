@@ -16,7 +16,7 @@ package](https://github.com/matloff/dsld), and is best read with access
 to that software. However, its conceptual content is quite accessible
 independently of that package.
 
-The PDF of the book is [here](book.pdf).
+The PDF of the book is [here](_book/index.html).
 
 *License:*
 

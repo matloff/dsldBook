@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science Looks at Discrimination - 2&nbsp; Part I: Adjustment for Confounders</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./PartII.html" rel="next">
+<link href="./intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./PartI.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Part I:  Adjustment for Confounders</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science Looks at Discrimination</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction and Motivating Examples</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PartI.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Part I: Adjustment for Confounders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PartII.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Part II: Discovering/Mitigating Bias in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Author Bios</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#linear-model-example-a-simple-gender-wage-gap-analysis" id="toc-linear-model-example-a-simple-gender-wage-gap-analysis" class="nav-link active" data-scroll-target="#linear-model-example-a-simple-gender-wage-gap-analysis"><span class="header-section-number">2.1</span> Linear model example: a simple gender wage gap analysis</a>
+  <ul class="collapse">
+  <li><a href="#initial-analysis" id="toc-initial-analysis" class="nav-link" data-scroll-target="#initial-analysis"><span class="header-section-number">2.1.1</span> Initial analysis</a></li>
+  <li><a href="#interpretation-of-beta2" id="toc-interpretation-of-beta2" class="nav-link" data-scroll-target="#interpretation-of-beta2"><span class="header-section-number">2.1.2</span> Interpretation of <span class="math inline">\(\beta\)</span><sub>2</sub></a></li>
+  <li><a href="#statistical-inference" id="toc-statistical-inference" class="nav-link" data-scroll-target="#statistical-inference"><span class="header-section-number">2.1.3</span> Statistical inference</a></li>
+  <li><a href="#with-interactions-model" id="toc-with-interactions-model" class="nav-link" data-scroll-target="#with-interactions-model"><span class="header-section-number">2.1.4</span> With-interactions model</a></li>
+  <li><a href="#linearity-and-other-assumptions" id="toc-linearity-and-other-assumptions" class="nav-link" data-scroll-target="#linearity-and-other-assumptions"><span class="header-section-number">2.1.5</span> Linearity and other assumptions</a></li>
+  <li><a href="#updated-model" id="toc-updated-model" class="nav-link" data-scroll-target="#updated-model"><span class="header-section-number">2.1.6</span> Updated model</a></li>
+  <li><a href="#other-assumptions" id="toc-other-assumptions" class="nav-link" data-scroll-target="#other-assumptions"><span class="header-section-number">2.1.7</span> Other assumptions</a></li>
+  </ul></li>
+  <li><a href="#s-may-consist-of-more-than-one-factor" id="toc-s-may-consist-of-more-than-one-factor" class="nav-link" data-scroll-target="#s-may-consist-of-more-than-one-factor"><span class="header-section-number">2.2</span> S may consist of more than one factor</a></li>
+  <li><a href="#the-logistic-model" id="toc-the-logistic-model" class="nav-link" data-scroll-target="#the-logistic-model"><span class="header-section-number">2.3</span> The Logistic model</a>
+  <ul class="collapse">
+  <li><a href="#general-form-of-the-model" id="toc-general-form-of-the-model" class="nav-link" data-scroll-target="#general-form-of-the-model"><span class="header-section-number">2.3.1</span> General form of the model</a></li>
+  <li><a href="#we-no-longer-have-a-no-interactions-case" id="toc-we-no-longer-have-a-no-interactions-case" class="nav-link" data-scroll-target="#we-no-longer-have-a-no-interactions-case"><span class="header-section-number">2.3.2</span> We no longer have a no-interactions case</a></li>
+  <li><a href="#example-mortgage-data" id="toc-example-mortgage-data" class="nav-link" data-scroll-target="#example-mortgage-data"><span class="header-section-number">2.3.3</span> Example: mortgage data</a></li>
+  </ul></li>
+  <li><a href="#machine-learning-approaches" id="toc-machine-learning-approaches" class="nav-link" data-scroll-target="#machine-learning-approaches"><span class="header-section-number">2.4</span> Machine learning approaches</a>
+  <ul class="collapse">
+  <li><a href="#the-k-nearest-neighbor-algorithm" id="toc-the-k-nearest-neighbor-algorithm" class="nav-link" data-scroll-target="#the-k-nearest-neighbor-algorithm"><span class="header-section-number">2.4.1</span> The k-Nearest Neighbor algorithm</a></li>
+  <li><a href="#the-random-forests-algorithm" id="toc-the-random-forests-algorithm" class="nav-link" data-scroll-target="#the-random-forests-algorithm"><span class="header-section-number">2.4.2</span> The random forests algorithm</a></li>
+  <li><a href="#other-ml-methods" id="toc-other-ml-methods" class="nav-link" data-scroll-target="#other-ml-methods"><span class="header-section-number">2.4.3</span> Other ML methods</a></li>
+  </ul></li>
+  <li><a href="#sec-law-school" id="toc-sec-law-school" class="nav-link" data-scroll-target="#sec-law-school"><span class="header-section-number">2.5</span> Example: The Law School Admissions dataset</a>
+  <ul class="collapse">
+  <li><a href="#is-the-lsat-fair" id="toc-is-the-lsat-fair" class="nav-link" data-scroll-target="#is-the-lsat-fair"><span class="header-section-number">2.5.1</span> Is the LSAT fair?</a></li>
+  <li><a href="#is-the-bar-exam-fair" id="toc-is-the-bar-exam-fair" class="nav-link" data-scroll-target="#is-the-bar-exam-fair"><span class="header-section-number">2.5.2</span> Is the bar exam fair?</a></li>
+  </ul></li>
+  <li><a href="#sec-sig" id="toc-sec-sig" class="nav-link" data-scroll-target="#sec-sig"><span class="header-section-number">2.6</span> Case study: problems with significance testing</a></li>
+  <li><a href="#sec-compas" id="toc-sec-compas" class="nav-link" data-scroll-target="#sec-compas"><span class="header-section-number">2.7</span> Example: COMPAS dataset</a></li>
+  <li><a href="#deciding-on-a-set-of-confounders-c" id="toc-deciding-on-a-set-of-confounders-c" class="nav-link" data-scroll-target="#deciding-on-a-set-of-confounders-c"><span class="header-section-number">2.8</span> Deciding on a set of confounders C</a>
+  <ul class="collapse">
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem"><span class="header-section-number">2.8.1</span> The problem</a></li>
+  <li><a href="#exploratory-example-engineering-wages" id="toc-exploratory-example-engineering-wages" class="nav-link" data-scroll-target="#exploratory-example-engineering-wages"><span class="header-section-number">2.8.2</span> Exploratory example: engineering wages</a></li>
+  <li><a href="#exploratory-example-law-school-admissions-data" id="toc-exploratory-example-law-school-admissions-data" class="nav-link" data-scroll-target="#exploratory-example-law-school-admissions-data"><span class="header-section-number">2.8.3</span> Exploratory example: Law school admissions data</a></li>
+  <li><a href="#variable-selection-methodology" id="toc-variable-selection-methodology" class="nav-link" data-scroll-target="#variable-selection-methodology"><span class="header-section-number">2.8.4</span> Variable selection methodology</a></li>
+  <li><a href="#the-dsldchunting-function" id="toc-the-dsldchunting-function" class="nav-link" data-scroll-target="#the-dsldchunting-function"><span class="header-section-number">2.8.5</span> The dsldCHunting() function</a></li>
+  <li><a href="#example-boston-mortgage-data" id="toc-example-boston-mortgage-data" class="nav-link" data-scroll-target="#example-boston-mortgage-data"><span class="header-section-number">2.8.6</span> Example: Boston mortgage data</a></li>
+  <li><a href="#example-employer-bias-test" id="toc-example-employer-bias-test" class="nav-link" data-scroll-target="#example-employer-bias-test"><span class="header-section-number">2.8.7</span> Example: Employer bias test</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Part I: Adjustment for Confounders</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: fairml</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: regtools</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: FNN</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+
+
+
+
+*********************
+
+
+
+Latest version of regtools at GitHub.com/matloff
+
+
+Type ?regtools to see function list by category</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: qeML</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: rmarkdown</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tufte</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+
+
+
+
+*********************
+
+
+
+  Navigating qeML:
+
+      Type vignette("Quick_Start") for a quick overview!
+
+      Type vignette("Function_List") for a categorized function list
+
+      Type vignette("ML_Overview") for an introduction to machine learning</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'qeML'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked _by_ '.GlobalEnv':
+
+    evalr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How do we adjust for confounders? The most common approach involves <em>linear models</em>, with which we express the mean Y for given values of the X, C and S variables in a linear form.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important term: the <em>regression function</em>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The relation of mean Y to the X, C (or O) and S variables is formally called the <em>regression function</em> of Y on ithose variables. Our first model below, which expreses mean income as a function of age and gender, will assume this relation as linear, but the term <em>regression function</em> is general.</p>
+<p>Indeed, one commonality between statistics and machine learning (ML) methods is that both types of analysis typically involve estimation of the regression function, even though they differ in the uses to which they put such estimates: In statistics, the goal can be either effect estimation (e.g.&nbsp;the impact of gender on wages) or prediction, while the latter is almost always the goal of ML.</p>
+</div>
+</div>
+<section id="linear-model-example-a-simple-gender-wage-gap-analysis" class="level2 page-columns page-full" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="linear-model-example-a-simple-gender-wage-gap-analysis"><span class="header-section-number">2.1</span> Linear model example: a simple gender wage gap analysis</h2>
+<p>Consider the <strong>svcensus</strong> data example in <a href="intro.html#sec-census"><span>Section&nbsp;1.2</span></a> above, investigating a possible gender pay gap. So Y is wage and S is gender. We might treat age as a confounder C, reasoning as follows. Older workers tend to have more experience and thus higher wages, and if there is an age differential in our data, say with female workers tending to be older, this may mask a gender pay gap: If men make more money than women of the same age, but women tend to be old, the gender and age effects may largely cancel out.</p>
+<p>So, let’s take the set of confounders C to consist of age, and for simplicity in this introductory example, not include any other confounders, such as occupation, and not include any other variables X.</p>
+<section id="initial-analysis" class="level3 page-columns page-full" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="initial-analysis"><span class="header-section-number">2.1.1</span> Initial analysis</h3>
+<p>Our linear model would thus be</p>
+<blockquote class="blockquote">
+<p>mean W = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> M</p>
+</blockquote>
+<div class="page-columns page-full"><p>where W is wage, A is age and M is an indicator variable, with M = 1 for men and M = 0 for women. The parameters <span class="math inline">\(\beta\)</span><sub>i</sub> are estimated by fitting the model to the data: </p><div class="no-row-height column-margin column-container"><span class="">The column svcensus$gender is an R factor. Our function <strong>dsldLinear</strong> calls R’s <strong>lm</strong>, which replaces that column by a dummy variable <strong>gendermale</strong>, our M above. If a factor has f levels, i.e.&nbsp;represents f categories, R will create f-1 dummies.</span></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>svcensus1 <span class="ot">&lt;-</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   svcensus[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">6</span>)]  <span class="co"># age, wage, gender</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus1,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(z)  <span class="co"># print the estimated coefficients b_i </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$gender
+(Intercept)         age  gendermale 
+ 31079.9174    489.5728  13098.2091 </code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Let’s use b<sub>i</sub> to denote our estimated <span class="math inline">\(\beta\)</span><sub>i</sub>. So for instance b<sub>1</sub> = 489.5728 is our estimate of the unknown population parameter <span class="math inline">\(\beta_1\)</span>.<br>
+</p><div class="no-row-height column-margin column-container"><span class="">The b<sub>i</sub> are computed using <em>least squares</em>, which find the b<sub>i</sub> that minimize the sum of the square of the differences between the observed Y and fitted Y.</span></div></div>
+</section>
+<section id="interpretation-of-beta2" class="level3 page-columns page-full" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="interpretation-of-beta2"><span class="header-section-number">2.1.2</span> Interpretation of <span class="math inline">\(\beta\)</span><sub>2</sub></h3>
+<div class="page-columns page-full"><p>Lots in the output to discuss, which we will gradually cover below. For now, note that the estimate b<sub>2</sub> turns out to be about $13,000, which is the (estimated) wage gap, if any. Here’s why: </p><div class="no-row-height column-margin column-container"><span class="">Always keep in mind that statistical quantities are only estimated, since we work only with sample data from some population, real or conceptual. Hence the need for standard errors, confidence intervals and so on.</span></div></div>
+<p>Under the model, the mean wage for, say, 36-year-old men is</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(\beta\)</span><sub>0</sub> + 36 <span class="math inline">\(\beta\)</span><sub>1</sub> + 1 <span class="math inline">\(\beta\)</span><sub>2</sub></p>
+</blockquote>
+<p>while for women of that age it is</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(\beta\)</span><sub>0</sub> + 36 <span class="math inline">\(\beta\)</span><sub>1</sub></p>
+</blockquote>
+<p>The difference is <span class="math inline">\(\beta\)</span><sub>2</sub>. But if we look at, for instance, people of age 43, the mean wages for men and women are</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(\beta\)</span><sub>0</sub> + 43 <span class="math inline">\(\beta\)</span><sub>1</sub> + 1 <span class="math inline">\(\beta\)</span><sub>2</sub></p>
+</blockquote>
+<p>and</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(\beta\)</span><sub>0</sub> + 43 <span class="math inline">\(\beta\)</span><sub>1</sub></p>
+</blockquote>
+<p>and the difference <em>is still</em> <span class="math inline">\(\beta\)</span><sub>2</sub>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+“The” effect of gender
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Thus we can speak of <span class="math inline">\(\beta\)</span><sub>2</sub> as <em>the</em> gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than younger women, with the <em>same-sized</em> gap between older men and older women.</p>
+</div>
+</div>
+<p>The above approach to dealing with confounders is a very common one. But it raises questions, such as:</p>
+<ul>
+<li><p>What are the assumptions underlying that model? And how might we  check whether they are (approximately) valid?</p></li>
+<li><p>We chose only one C variable here, age. We might also include occupation, as noted earlier. In some datasets, might have dozens of possible confounders. How do we choose which ones to use in our model? And for that matter, why not use them all?</p></li>
+<li><p>The above model, in which the gender wage gap was uniform across all wages, may not be adequate. How can we determine this, and what alternative models might we use?</p></li>
+</ul>
+<div class="no-row-height column-margin column-container"><span class="">In addition, the data here are, as is commonly the case, <em>observational</em>, as opposed to being the result of a <em>randomized clinical trial</em>; there may be serious issues, due to unobserved confounders. Such problems might be solvable via an advanced (and rather controversial) methodology known as <em>causal inference</em>. Unfortunately, details are beyond our scope in this tutorial, but we will explain some basic concepts in <a href="Appendices.html#sec-causal"><span>Section&nbsp;5.2</span></a>.</span></div></section>
+<section id="statistical-inference" class="level3 page-columns page-full" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="statistical-inference"><span class="header-section-number">2.1.3</span> Statistical inference</h3>
+<p>The full output of <strong>dsldLinear()</strong> goes to the heart of discrimination analysis, enabling statistical inferences on differences in levels of the sensitive variable S. Let’s take a look, continuing from the above code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+    Covariate   Estimate StandardError PValue
+1 (Intercept) 31079.9174    1378.08158      0
+2         age   489.5728      30.26461      0
+3  gendermale 13098.2091     790.44515      0
+
+$`Sensitive Factor Level Comparisons`
+         Factors Compared Estimates Standard Errors P-Value
+Estimate    male - female  13098.21        790.4451       0</code></pre>
+</div>
+</div>
+<p>The first half of this output is from <strong>lm()</strong>, which is called by <strong>dsldLinear()</strong>. The second half is the “value added” material from <strong>dsld</strong>.</p>
+<div class="page-columns page-full"><p>So, an approximate 95% confidence interval for the gender wage gap is </p><div class="no-row-height column-margin column-container"><span class="">Since the estimated gender gap here is simply b<sub>2</sub>, the CI could of course have also been obtained directly from the <strong>lm</strong> half of the output. But with an S having more than two levels, e.g.&nbsp;race, the <strong>dsld</strong> enhancement is quite valuable.</span></div></div>
+<blockquote class="blockquote">
+<p>13098.2091 ± 1.96 x 790.4451</p>
+</blockquote>
+<p>or (11548.94,14647.48).</p>
+</section>
+<section id="with-interactions-model" class="level3 page-columns page-full" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="with-interactions-model"><span class="header-section-number">2.1.4</span> With-interactions model</h3>
+<p>As discussed above, in our model</p>
+<blockquote class="blockquote">
+<p>mean W = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> M</p>
+</blockquote>
+<p>we identified b<sub>2</sub> as <em>the</em> difference in mean wage between men and women, regardless of age, so that for instance:</p>
+<blockquote class="blockquote">
+<p>According to the model, younger men earn about $13,000 more than younger women, with the same-sized gap between older men and older women.</p>
+</blockquote>
+<div class="page-columns page-full"><p>But that may not be true. On the contrary, gender discrimination and  age discrimination may interact. It may be, for instance, that the gender gap is small at younger ages but much larger for older people.</p><div class="no-row-height column-margin column-container"><span class="">Interaction between two types of discrimination is called <em>intersectionality</em> by some analysts.</span></div></div>
+<p>Technically, the with-interactions model adds a product term:</p>
+<blockquote class="blockquote">
+<p>mean W = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> M + <span class="math inline">\(\beta\)</span><sub>3</sub> AM</p>
+</blockquote>
+<p>So for example, the gender pay gap for people of age 36 is</p>
+<p>(<span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> 36 + <span class="math inline">\(\beta\)</span><sub>2</sub> 1 + <span class="math inline">\(\beta\)</span><sub>3</sub> 36) - (<span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> 36 ) =</p>
+<p><span class="math inline">\(\beta\)</span><sub>2</sub> 1 + <span class="math inline">\(\beta\)</span><sub>3</sub> 36</p>
+<p>And at age 43, the gap is</p>
+<p><span class="math inline">\(\beta\)</span><sub>2</sub> 1 + <span class="math inline">\(\beta\)</span><sub>3</sub> 43</p>
+<p>So, this model does indeed allow for interaction between age and gender.</p>
+<p>However, this added-product-term is a bit abstract, and it is easier (and approximately equivalent) to simply fit two linear models, one for men and one for women.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>dsldLinear</strong> function includes an argument <strong>interactions</strong>. The default value is FALSE, but if TRUE, it fits separate linear models for each level of S. An additional argument ‘newData’ is now needed, through which the user specifies a data frame consisting of one or more (X,C) values at which to compare the effect of S.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>newData <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age=</span><span class="fu">c</span>(<span class="dv">36</span>,<span class="dv">43</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus1,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,<span class="at">interactions=</span>T,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>   newData)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$female
+    Covariate   Estimate StandardError PValue
+1 (Intercept) 30551.4302    2123.44361      0
+2         age   502.9624      52.07742      0
+
+$male
+    Covariate  Estimate StandardError PValue
+1 (Intercept) 44313.159    1484.82216      0
+2         age   486.161      36.02116      0
+
+$`Sensitive Factor Level Comparisons`
+  Factors Compared New Data Row Estimates Standard Errors
+1    female - male            1 -13156.88        710.9696
+2    female - male            2 -13039.27        710.7782</code></pre>
+</div>
+</div>
+<p>In setting that <strong>newData</strong> argument, we need one row for every variable other than Y and S. In this case, there is just one such variable, age. So, in the above call, we are fitting two linear models, one for men and another for women, then comparing regression function values at the two specified ages.</p>
+<div class="page-columns page-full"><p>So the gender pay gap is estimated to be -13156.88 at age 36, and -13039.27  at age 43, differing by only about $100. The estimated gap between ages 36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here. The no-interactions model should be adequate after all.</p><div class="no-row-height column-margin column-container"><span class="">The classical approach to choosing between the no-interaction and with-interaction models is of course to test the hypothesis <span class="math inline">\(H_0: \beta_3=0\)</span>. As noted earlier and detailed in <a href="#sec-sig"><span>Section&nbsp;2.6</span></a>, modern practice discourages such approaches, which can be misleading.</span></div></div>
+</section>
+<section id="linearity-and-other-assumptions" class="level3 page-columns page-full" data-number="2.1.5">
+<h3 data-number="2.1.5" class="anchored" data-anchor-id="linearity-and-other-assumptions"><span class="header-section-number">2.1.5</span> Linearity and other assumptions</h3>
+<p>As noted, linear models are ubiquitous in observational data analysis. Open any professional journal in medicine, sociology, economics and so on, and you’ll see many applications of this methodology. But how would one check that most basic assumption, the linearity of the mean Y for given X, C (or O) and S values?</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Assumptions–not just a formality
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assumptions <em>matter</em>. They are never perfectly satisfied, but failure to be even approximately valid can mean deciding that there is no discrimination when it actually is there, or vice versa. It can mean bad medication being declared by the government as good, or vice versa. In litigation, if a key expert witness is exposed by opposing counsel as not having checked the assumptions in his/her analysis, the side for which the witness was testifying will likely lose the case on the spot.</p>
+</div>
+</div>
+<p>Typically, linearity is checked graphically. A common approach involves plotting the <em>residuals</em>, which are the differences between the fitted line and the Y values. Here, though, we use another graphical approach, via a <strong>dsld</strong> function that may be more informative.</p>
+<p>Returning to our earlier setting with just S = gender for our example, we run</p>
+<div class="page-columns page-full"><p>The function plots a smoothed graph of Y against a user-specified C  variable, once for each level of S. So, the call here says, “Plot smoothed wage income against age, for each gender.”</p><div class="no-row-height column-margin column-container"><span class="">The function has a ‘conditions’ argument; we have none here, so we just used a trival one, ‘age &gt; 0’</span></div></div>
+<p>The model has mean Y being a linear of function of age, so we should expect to see approximate straight lines here. Yet the relation certainly looks nonlinear, possibly reflecting age discrimination against both very young and very old workers. We are already investigating one kind of discrimination here, gender, so again for simplicity let’s just keep age as a confounder.</p>
+</section>
+<section id="updated-model" class="level3 page-columns page-full" data-number="2.1.6">
+<h3 data-number="2.1.6" class="anchored" data-anchor-id="updated-model"><span class="header-section-number">2.1.6</span> Updated model</h3>
+<div class="page-columns page-full"><p>But we must do something about the substantial nonlinearity  we’ve discovered, and one possible remedy is to add an age<sup>2</sup> term be added to the equation:</p><div class="no-row-height column-margin column-container"><span class="">Adding a squared term does not make our model nonlinear, as it is still linear in the <span class="math inline">\(\beta\)</span><sub>i</sub>; if we, say, double each of those, the entire expression is doubled, the definition of linearity. The model is nonlinear in age but linear in the <span class="math inline">\(\beta\)</span><sub>i</sub>.</span></div></div>
+<p>mean W = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> A<sup>2</sup> + <span class="math inline">\(\beta\)</span><sub>3</sub> M</p>
+<p>Let’s fit the updated model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>svcensus1<span class="sc">$</span>age2 <span class="ot">&lt;-</span> svcensus1<span class="sc">$</span>age<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus1,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(z)  <span class="co"># print the estimated coefficients b_i </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$gender
+  (Intercept)           age    gendermale          age2 
+-104196.65579    7251.30962   15270.56685     -79.16059 </code></pre>
+</div>
+</div>
+<p>So we see that the original wage gap figure of about $13,000 was incorrect; it’s actually estimated to be over $15,000, so the original model underestimated the gap by about 15%.</p>
+<p>We see in this example that misspecifying a linear model can have a major impact on its accuracy. As usual, though, we will try to keep things simple, and thus use only the original linear model in our subsequent examples below.</p>
+</section>
+<section id="other-assumptions" class="level3 page-columns page-full" data-number="2.1.7">
+<h3 data-number="2.1.7" class="anchored" data-anchor-id="other-assumptions"><span class="header-section-number">2.1.7</span> Other assumptions</h3>
+<div class="page-columns page-full"><p>Other than linearity, the standard errors reported by <strong>lm()</strong> also  assume that variance of wage income is approximately constant across ages and genders. Lack of this property has some effect on the accuracy of reported standard errors, but this can be adjusted via the so-called <em>sandwich</em> operation, an option in <strong>dsldLinear()</strong>.</p><div class="no-row-height column-margin column-container"><span class="">It is also assumed that wage income has a normal/gaussian distribution at each level, but the Central Limit Theorem’s implication for the sums created by <strong>lm()</strong> is that the <span class="math inline">\(b_i\)</span> are in fact approximately normal. The normality assumption is not very important.</span></div></div>
+</section>
+</section>
+<section id="s-may-consist-of-more-than-one-factor" class="level2 page-columns page-full" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="s-may-consist-of-more-than-one-factor"><span class="header-section-number">2.2</span> S may consist of more than one factor</h2>
+<p>In introducing this example, we noted the need to start simple. Let’s move away from that a bit.</p>
+<p>In the <strong>svcensus</strong> data, both age and gender are potential areas of discrimination. We can treat both as such by combining these two R factor variables into one “super R factor,” as follows.</p>
+<p>We’ll need to discretize age, and since federal law on age discrimination uses age 40 as the definition of “older,” let’s use that as an example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>svc <span class="ot">&lt;-</span> svcensus</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> svc<span class="sc">$</span>age</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(age <span class="sc">&gt;=</span> <span class="dv">40</span>,<span class="st">'40+'</span>,<span class="st">'under40'</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(age)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 40+     40+     under40 40+     40+     40+    
+Levels: 40+ under40</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>svc<span class="sc">$</span>age <span class="ot">&lt;-</span> age</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s make our “super factor,” using a function from <strong>qeML</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>AgeGend <span class="ot">&lt;-</span> <span class="fu">cartesianFactor</span>(<span class="st">'svc'</span>,<span class="fu">c</span>(<span class="st">'age'</span>,<span class="st">'gender'</span>)) </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>svc<span class="sc">$</span>AgeGend <span class="ot">&lt;-</span> AgeGend</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(svc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      age     educ occ wageinc wkswrkd gender        AgeGend
+1     40+ zzzOther 102   75000      52 female     40+.female
+2     40+ zzzOther 101   12300      20   male       40+.male
+3 under40 zzzOther 102   15400      52 female under40.female
+4     40+ zzzOther 100       0      52   male       40+.male
+5     40+ zzzOther 100     160       1 female     40+.female
+6     40+ zzzOther 100       0       0   male       40+.male</code></pre>
+</div>
+</div>
+<p>We have only three education codes here, with 14 and 16 representing a Master’s degree and 16 a PhD, and ‘zzzOther’ denoting all others. Since this dataset consists of Silicon Valley programmers and engineers, the vast majority of “others” have a Bachelor’s degree.</p>
+<p>We no longer need the original age and gender columns, so we’ll delete them and then try some analysis:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>svc<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>svc<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svc,<span class="st">'wageinc'</span>,<span class="st">'AgeGend'</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+               Covariate   Estimate StandardError       PValue
+1            (Intercept)   2482.330    1529.05560 1.044954e-01
+2                 educ16   8194.121    1717.11275 1.823745e-06
+3           educzzzOther -14554.025     747.54506 0.000000e+00
+4                 occ101   1703.896     899.52840 5.819707e-02
+5                 occ102  13627.089     829.14115 0.000000e+00
+6                 occ106   1351.235    2013.86471 5.022422e-01
+7                 occ140  11409.603    1643.94237 3.910205e-12
+8                 occ141  11407.453    1039.62019 0.000000e+00
+9                wkswrkd   1313.971      20.77242 0.000000e+00
+10       AgeGend40+.male   9834.035    1064.86666 0.000000e+00
+11 AgeGendunder40.female  -8176.053    1229.58483 2.942069e-11
+12   AgeGendunder40.male   -408.267    1030.00692 6.918298e-01
+
+$`Sensitive Factor Level Comparisons`
+               Factors Compared Estimates Standard Errors      P-Value
+1         40+.female - 40+.male -9834.035       1064.8667 0.000000e+00
+2   40+.female - under40.female  8176.053       1229.5848 2.942069e-11
+3     40+.female - under40.male   408.267       1030.0069 6.918298e-01
+4     40+.male - under40.female 18010.088        990.2130 0.000000e+00
+5       40+.male - under40.male 10242.302        705.2504 0.000000e+00
+6 under40.female - under40.male -7767.786        951.1388 2.220446e-16</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Ah, this is a more nuanced probe than the ones above in which we simply  used age as a confounder. The male-female differences at both the older and younger age levels, about $9800 and $7800, are both substantial, but smaller than the $13,100 overall figure we obtained earlier.</p><div class="no-row-height column-margin column-container"><span class="">This is an example of <em>Simpson’s Paradox</em>, in which an overall average effect might be larger than the terms that make up the average. In fact, the algebraic signs may change, as we saw with the UC Berkeley admissionss data in <a href="intro.html#sec-ucb"><span>Section&nbsp;1.1</span></a>.</span></div></div>
+<p>Note too the impact of age within genders. Older women made about $8200 more than younger women, but for men the figure was rather larger, about $10,200.</p>
+<p>On the other hand, this analysis is probably too coarse with respect to age, as it does not reveal the negative impact of age well beyond 40. It may be worth trying a finer discretization of age, say, 35-, 35-55 and 55+.</p>
+</section>
+<section id="the-logistic-model" class="level2 page-columns page-full" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="the-logistic-model"><span class="header-section-number">2.3</span> The Logistic model</h2>
+<p>The <em>logistic</em> model is an example of a <em>generalized linear model</em>, whose name stems from it having a linear component in the formula, as will be seen below.</p>
+<section id="general-form-of-the-model" class="level3 page-columns page-full" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="general-form-of-the-model"><span class="header-section-number">2.3.1</span> General form of the model</h3>
+<p>Just as linear models are the most commonly used for numeric Y, in the binary-Y case the go-to standard is the logistic model. To introduce it, let’s first consider a very simple prediction problem, in which Y is gender, say 1 for male, 0 for female, and X is simply income, using the <strong>svcensus</strong> data (no C here).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Probability is a special case of a mean
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that mean Y is now the probability that Y = 1. That’s because the average of a bunch of 1s and 0s is the proportion of 1s. In the data 1,0,1,1 for instance, the mean is (1+0+1+1) / 4 = 3/4, and indeed 3/4 of those numbers are 1s.</p>
+</div>
+</div>
+<p>Suppose that within each gender, X has a normal (Gaussian) distribution, the familiar “bell-shaped” curve, with the same standard deviation for each gender. Then it turns out that one can show mathematically that</p>
+<p>probability male = <span class="math display">\[
+\frac
+{1}{1 + e^{-(\beta_0 + \beta_1 income)}}
+\]</span></p>
+<p>The values <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> actually are expressions involving quantities such as the per-gender mean incomes, but the point is that in the end the probability has a linear component to it, <span class="math inline">\(\beta_0 + \beta_1 income\)</span>.</p>
+<p>That formula follows the form of the <em>logistic function</em>, <span class="math inline">\(f(t) = 1 / [1 + e^{-t}]\)</span>, which has the shape of an S-curve:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>x)),<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="PartI_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So at least the model retains a linear component, with much the same interpretability. For instance, if <span class="math inline">\(\beta_2 &gt; 0\)</span>, then the usual monotonicity relation holds, i.e.&nbsp;the higher the income, the greater the probability that the person is male.</p>
+<p>The estimates b<sub>i</sub> of the population values <span class="math inline">\(\beta_i\)</span> are obtained via a method generalizing the least-squares method used in the linear case.</p>
+<div class="page-columns page-full"><p> In the case of multiple predictor variables, the logistic form can again be motivated by considering within-group distributions:</p><div class="no-row-height column-margin column-container"><span class="">There is a similar situation for the linear case. If Y and the predictor variables have a multivariate normal distribution, one can show that mean Y as a function of the features is linear in the features, etc.</span></div></div>
+<p>Say we predict gender from age and wage income. If the latter two variables have a <em>bivariate normal</em> distribution (two-dimensional histogram has a 3-D bell shape) with the same variance matrices within each gender, it turns out that we again get a logistic form:</p>
+<p>probability male = <span class="math display">\[
+\frac
+{1}{1 + e^{-(\beta_0 + \beta_1 age + \beta_2 income)}}
+\]</span></p>
+<p>Now, what about that assumption of the normal distributions and so on? Just as many regression functions for numeric Y in practice are roughly linear, in predicting binary Y the S-curve model is often roughly valid. Moreover, the logistic model has two desirable properties for predicting binary Y:</p>
+<ul>
+<li><p>Its value is between 0 and 1, appropriate for modeling a probability.</p></li>
+<li><p>As noted earlier, the expression <span class="math inline">\(1 / [1 + e^{-t}]\)</span> is increasing in t, which we wish to model when our predictors have monotonic relations with Y.</p></li>
+</ul>
+<p>The point is that the logistic (popularly referred to as “logit”) is often a good model for binary-Y settings in general.</p>
+</section>
+<section id="we-no-longer-have-a-no-interactions-case" class="level3 page-columns page-full" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="we-no-longer-have-a-no-interactions-case"><span class="header-section-number">2.3.2</span> We no longer have a no-interactions case</h3>
+<p>In our earlier linear model, predicting wage income from age and gender,</p>
+<blockquote class="blockquote">
+<p>mean W = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> M</p>
+</blockquote>
+<p>recall that here <span class="math inline">\(\beta\)</span><sub>2</sub> has the nice interpretation of there being a uniform gender gap, independent of age. Similar statements hold for <span class="math inline">\(\beta_1\)</span>; a 1-year increase in age, for instance, on average is associated with a <span class="math inline">\(\beta_1\)</span> increase in mean income, identically for either gender.</p>
+<p>Geometrically, if we were to plot separate male and female regression lines against age, the male and female r lines would be parallel. That’s not possible in the logit case, as logit curves cannot be parallel:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>x)),<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>x)),<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>,<span class="at">add=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="PartI_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The curves are no longer parallel; they even cross. They typically don’t cross in applied settings, but they are always nonparallel.</p>
+<p>The implication of this is the same as in the linear case. We cannot speak of “the” impact of S on Y, as it will not be the same at different levels of the X and C variables. So there is no direct analog of the no-interactions case for linear models, in which we could speak of <span class="math inline">\(\beta_2\)</span> as being “the” gender pay gap.</p>
+<p>Some books motivate the logistic approach as the <em>log-odds</em> ratio, meaning in this example that the logarithm of the ratio (probability male) / (probability female) is linear in age and income.</p>
+<blockquote class="blockquote">
+<p>log [probability male / probability female] = <span class="math inline">\(\beta\)</span><sub>0</sub> + <span class="math inline">\(\beta\)</span><sub>1</sub> A + <span class="math inline">\(\beta\)</span><sub>2</sub> W</p>
+</blockquote>
+<div class="page-columns page-full"><p>So here we do have a formulation in which the impact of wage is the same  for any age level, albeit on this much less-interpretable log scale.</p><div class="no-row-height column-margin column-container"><span class="">Note that a log-odds measure can take on any value betwen <span class="math inline">\(-\infty\)</span> and <span class="math inline">\(\infty\)</span>.</span></div></div>
+</section>
+<section id="example-mortgage-data" class="level3 page-columns page-full" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="example-mortgage-data"><span class="header-section-number">2.3.3</span> Example: mortgage data</h3>
+<div class="page-columns page-full"><p>This dataset and its documentation are included in the <strong>SortedEffects</strong>  package. The issue here is whether racism played a role in mortgage denials in the Boston area. As this is a binary outcome, we might consider a logit model.</p><div class="no-row-height column-margin column-container"><span class="">We have done small modifications, to create R factors for some columns.</span></div></div>
+<p>Let’s try a no-interactions model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldLogit</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>,<span class="at">yesYVal=</span><span class="st">'1'</span>) </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+     Covariate    Estimate Standard.Error       PValue
+1  (Intercept) -4.68021873     0.73384720 1.798289e-10
+2       p_irat  5.15585388     1.06258659 1.221161e-06
+3       black1  0.64088712     0.18356747 4.806957e-04
+4      hse_inc -0.83228276     1.28336021 5.166497e-01
+5     loan_val  0.20205974     0.70171872 7.733852e-01
+6       ccred2  0.72353389     0.21417086 7.293486e-04
+7       ccred3  0.89094547     0.31542102 4.733628e-03
+8       ccred4  1.56403348     0.33660382 3.375955e-06
+9       ccred5  1.18009433     0.24808769 1.967220e-06
+10      ccred6  1.55681669     0.23373704 2.728094e-11
+11      mcred2  0.32167763     0.19927066 1.064678e-01
+12      mcred3  0.45713207     0.47817345 3.390741e-01
+13      mcred4  0.21616464     0.66923366 7.466928e-01
+14     pubrec1  1.26756099     0.21044970 1.711007e-09
+15     denpmi1  4.61566552     0.56425832 2.837083e-16
+16    selfemp1  0.63445399     0.21665184 3.406571e-03
+17     single1  0.41614600     0.15962315 9.132523e-03
+18     hischl1 -1.11171191     0.42286015 8.562887e-03
+19    probunmp  0.05565252     0.03459848 1.077202e-01
+20      condo1 -0.12673301     0.17493093 4.687744e-01
+21    ltv_med1  0.42773600     0.21618162 4.786155e-02
+22   ltv_high1  1.50099888     0.42183272 3.732914e-04
+
+$`Sensitive Factor Level Comparisons`
+         Factors Compared Estimates Standard Errors      P-Value
+Estimate            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
+</div>
+</div>
+<p>So, being Black resulted in an average increase in log-odds of about 0.6409. A 95% confidence interval is 0.6409 <span class="math inline">\(\pm\)</span> 1.96 x 0.1836 = (0.2810,1.0008). By comparison, being self-employed, for instance, has a similar estimated coefficient of about 0.6355.</p>
+</section>
+</section>
+<section id="machine-learning-approaches" class="level2 page-columns page-full" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="machine-learning-approaches"><span class="header-section-number">2.4</span> Machine learning approaches</h2>
+<p>We referred to the quantities <span class="math inline">\(\beta_i\)</span> above as “parameters.” The linear and logistic models are thus called <em>parametric</em> models. In each case, the regression function is modeled as linear, “S curve-shaped” and so on, that can be described with just a few parameters.</p>
+<p>But these models make assumptions, such as assuming the regression function is approximately linear. It would be nice to have available methods that don’t rely on such assumptions.</p>
+<p><em>Machine learning</em> (ML) algorithms typically do not assume the regression function has any particular form. They are thus “safer,” though on the other hand they are less interpretable than, say, that <span class="math inline">\(\beta_2\)</span> quantity in our no-interactions linear model above. Nor are standard errors available for regression function values at given points.</p>
+<p>ML is mainly concerned with prediction, while we here are interested in estimation of effect sizes. However, ML algorithms either directly or indirectly do their prediction by estimating the regression function, as we do here, so they can be quite useful in our context.</p>
+<section id="the-k-nearest-neighbor-algorithm" class="level3 page-columns page-full" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="the-k-nearest-neighbor-algorithm"><span class="header-section-number">2.4.1</span> The k-Nearest Neighbor algorithm</h3>
+<p>We’ll focus here on the k-Nearest Neighbor (k-NN) algorithm, as it is the simplest to explain. Say we are predicting people’s weights, knowing only their heights. We have training data, on which we know both the height and weight of each person. Faced with a new case of a person 70.2 inches tall but with unknown weight, we find the people in our training set whose heights are close to 70.2 inches, and average their weights. That average is our predicted weight for the new person, as well as our estimate for the value of the regression function at height = 70.2.</p>
+<div class="page-columns page-full"><p>How is “close to” defined? Should we look at the closest 5 people, the closest 50, or what? That number is k, the number of nearest neighbors.  It’s chosen by the analyst, just like the analyst chooses the number of bins in plotting a histogram. Typically k is chosen by trying several different values of k, then using the one that best predicts in the holdout set. Once we’ve settled on k, we might use the full dataset, no holdout.</p><div class="no-row-height column-margin column-container"><span class="">The number k here is called <em>hyperparameter</em> of the algorithms.</span></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'svcensus'</span>,<span class="fu">quote</span>(wageinc),<span class="st">'gender'</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,<span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>))  </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(z)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$testAccs
+$testAccs$female
+NULL
+
+$testAccs$male
+NULL
+
+
+$comparisons
+           age     educ occ wkswrkd female  male
+10502 37.43326 zzzOther 101      52  48914 61156
+19689 47.75017 zzzOther 100      52  57628 60422
+13609 42.46283 zzzOther 102      52  66182 86474
+12419 46.67517       14 100      52  69834 85650
+14402 52.66371 zzzOther 106      52  59200 69752</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>The first three arguments are as usual. The fourth states that the ML  algorithm we wish to use is kNN; the <strong>qeML</strong> package also includes random forests, boosting and neural networks. The <strong>opts</strong> argument states which non-default values we wish to use for arguments to the ML function; the default k actually is 25.</p><div class="no-row-height column-margin column-container"><span class="">The use of R’s <strong>quote</strong> function here is due to a nuance in the way R handles nested quotes.</span></div></div>
+<p>The comparison cases are by default a random sample of 5 rows of the training set. In order to obtain consistent results each time this book is processed by Quarto, we’ve called R’s <strong>set.seed</strong> function.</p>
+<p>It’s important to keep in mind that the output here is not simply for 5 persons; each row represents a subpopulation. Thus for instance in that first row of output, we estimate among <em>all</em> Silicon Valley techies of age 37.4, with a Bachelor’s degree or less, in occupation 101, and having worked 52 weeks, women’s average wage is 48,914 and for men it’s 61,156.</p>
+<p>As before, we see a substantial gender wage gap, but now we can feel more confident about it, since this analysis is unencumbered by assumptions on the form of the regression function. On the other hand, as noted, there is no easy way to obtain standard errors.</p>
+</section>
+<section id="the-random-forests-algorithm" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="the-random-forests-algorithm"><span class="header-section-number">2.4.2</span> The random forests algorithm</h3>
+<p>In the above example, in which we are predicting wage income, a random forests (RF) analysis would generate a large number of <em>decision trees</em>. As explained below, each tree would give us a predicted income, and our final prediction would simply the average of all those predicted values.</p>
+<p>So, what is a decision tree? It’s just a flow chart. Consider this example involving vertebral disease. Y is categorical, with values NO (normal), SL and DH. To predict a new case, we look at the X variables (which have the nondescript names V1 through V6) one at a time, and branch through the tree accordingly.</p>
+<p>For example, if the new case to be predicted has V6 of at least 16, we branch right, and immediately decide to predict that this patient’s disease status is SL. If on the other hand, V6 is less than 16, we look at V4. If it’s under 28, we immediately predict status DH, and so on.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="RpartVert.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">A decision tree</figcaption>
+</figure>
+</div>
+<p>The order in which variables are considered in building a tree is random for each tree. So, while V6 is considered first in the tree displayed here, in some other tree it may be, say, V2. The split points, e.g.&nbsp;16 in the root node in the picture, are obtained through formulas that depend on the data in complex (though not terribly deep) ways.</p>
+<p>There is no “universally best” predictive algorithm, with performance of a given algorithm being dependent on the given dataset. So, instead of doing a kNN analysis, we could try RF:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'svcensus'</span>,<span class="fu">quote</span>(wageinc),<span class="st">'gender'</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeRF'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required namespace: randomForest</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(w)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$testAccs
+$testAccs$female
+NULL
+
+$testAccs$male
+NULL
+
+
+$comparisons
+           age     educ occ wkswrkd   female     male
+10502 37.43326 zzzOther 101      52 51674.50 71698.44
+19689 47.75017 zzzOther 100      52 47598.81 67647.72
+13609 42.46283 zzzOther 102      52 72271.37 83922.60
+12419 46.67517       14 100      52 59621.01 63616.03
+14402 52.66371 zzzOther 106      52 56677.27 62521.89</code></pre>
+</div>
+</div>
+<p>Though still indicating a gender wage gap, the results here are rather different from what we obtained with kNN. Which one is better in this particular application? Again, we may decide this on the basis of prediction accuracy (<strong>testAcc</strong> values) on the holdout set. The RF version looks slightly better, but for full thoroughness, we would need to try different hyperparameter values, and so on. Short of going through all that, the two models are similar.</p>
+</section>
+<section id="other-ml-methods" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="other-ml-methods"><span class="header-section-number">2.4.3</span> Other ML methods</h3>
+<p>The most famous class of ML these days is of course <em>neural networks</em>, especially the refined version <em>deep learning</em>. These have been found highly useful in image recognition and language processing.</p>
+<p>In contrast to these fields of application, the ML people refer to the types of data we see in this book, where each row represents, say, one person, as <em>tabular</em> data. Their go-to method for such data is <em>gradient boosting</em> (GB), more specifically XGBoost, accessible in <strong>qeML</strong> via <strong>qeXGBoost</strong>. GB is again a tree-based method, but it works by starting with a primitive tree and repeatedly refining it.</p>
+</section>
+</section>
+<section id="sec-law-school" class="level2 page-columns page-full" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-law-school"><span class="header-section-number">2.5</span> Example: The Law School Admissions dataset</h2>
+<div class="page-columns page-full"><p>This is the dataset <strong>law.school.admissions</strong>, included in <strong>dsld</strong> via  <strong>fairml</strong>. It’s quite well-known in the ML world, but its full provenance is unclear. For instance, the age variable skews far to middle-aged and older, seemingly not consistent with the data’s description on Kaggle.</p><div class="no-row-height column-margin column-container"><span class="">Possible the ‘age’ variable is birth year. The data are from 1991, so an ‘age’ value of 69 would mean born in 1969, now age 22.</span></div></div>
+<p>Thus it should be kept in mind that this is just an illustration of methodology, and firm conclusions about the legal education process should not be drawn. The data concern students who were admitted to law school, so in spite of the title, it’s not about the admissions process itself.</p>
+<p>The main variables of interest here are:</p>
+<ul>
+<li><p><strong>decile1</strong>, <strong>decile2</strong>: Student’s standing after Year 1 and Year 3 of law school.</p></li>
+<li><p><strong>fam_inc</strong>: Apparently the income level of the family in which the law students was raised in.</p></li>
+<li><p><strong>lsat</strong>: Score on the LSAT, a major law school admissions test.</p></li>
+<li><p><strong>ugpa</strong>: Undergraduate GPA.</p></li>
+<li><p><strong>gender</strong>: Gender.</p></li>
+<li><p><strong>race1</strong>: Primary racial group.</p></li>
+<li><p><strong>cluster</strong>: Level of prestige of the law school.</p></li>
+<li><p><strong>bar</strong>: After law school, did this person pass the bar examination?</p></li>
+</ul>
+<p>Here’s what the data looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(law.school.admissions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   age decile1 decile3 fam_inc lsat ugpa gender race1 cluster fulltime   bar
+2   62      10      10       5 44.0  3.5 female white       1        1  TRUE
+3   62       5       4       4 29.0  3.5 female white       2        1  TRUE
+6   61       8       7       3 37.0  3.4   male white       1        1  TRUE
+7   60       8       7       4 43.0  3.3 female white       1        1  TRUE
+9   57       3       2       4 41.0  3.3 female white       4        1  TRUE
+11  59       1       1       4 24.5  2.2   male white       3        1 FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(law.school.admissions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "age"      "decile1"  "decile3"  "fam_inc"  "lsat"     "ugpa"    
+ [7] "gender"   "race1"    "cluster"  "fulltime" "bar"     </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>lsa <span class="ot">&lt;-</span> law.school.admissions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="is-the-lsat-fair" class="level3 page-columns page-full" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="is-the-lsat-fair"><span class="header-section-number">2.5.1</span> Is the LSAT fair?</h3>
+<p>There has been concern that the LSAT and other similar tests are biased against Black and Latino students, and might otherwise have racial issues. Let’s investigate, using <strong>dsld</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(lsa,<span class="st">'lsat'</span>,<span class="st">'race1'</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+     Covariate    Estimate StandardError       PValue
+1  (Intercept) 31.98578856   0.448435264 0.000000e+00
+2          age  0.02082458   0.005841758 3.641634e-04
+3      decile1  0.12754812   0.020946536 1.134602e-09
+4      decile3  0.21495015   0.020918737 0.000000e+00
+5      fam_inc  0.30085804   0.035953051 0.000000e+00
+6         ugpa -0.27817274   0.080430542 5.430993e-04
+7   gendermale  0.51377385   0.060037102 0.000000e+00
+8   race1black -4.74826307   0.198088318 0.000000e+00
+9    race1hisp -2.00145969   0.203504412 0.000000e+00
+10  race1other -0.86803104   0.262528590 9.449471e-04
+11  race1white  1.24708760   0.154627086 6.661338e-16
+12    cluster2 -5.10668358   0.119798362 0.000000e+00
+13    cluster3 -2.43613709   0.074744210 0.000000e+00
+14    cluster4  1.21094567   0.088478368 0.000000e+00
+15    cluster5  3.79427535   0.124476695 0.000000e+00
+16    cluster6 -5.53216090   0.210750853 0.000000e+00
+17   fulltime2 -1.38882076   0.116212777 0.000000e+00
+18     barTRUE  1.74973262   0.102818692 0.000000e+00
+
+$`Sensitive Factor Level Comparisons`
+   Factors Compared Estimates Standard Errors      P-Value
+1     asian - black  4.748263       0.1980883 0.000000e+00
+2      asian - hisp  2.001460       0.2035044 0.000000e+00
+3     asian - other  0.868031       0.2625286 9.449471e-04
+4     asian - white -1.247088       0.1546271 6.661338e-16
+5      black - hisp -2.746803       0.1863750 0.000000e+00
+6     black - other -3.880232       0.2515488 0.000000e+00
+7     black - white -5.995351       0.1409991 0.000000e+00
+8      hisp - other -1.133429       0.2562971 9.764506e-06
+9      hisp - white -3.248547       0.1457509 0.000000e+00
+10    other - white -2.115119       0.2194472 0.000000e+00</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p> There are very concerning racial differences here. Two very similar people—who attended the same quality law school, with the same undergraduate grades, the same law school grades, even having the same bar passage status—will have LSAT scores differing on average by almost 6 points if one person is Black and the other is white.</p><div class="no-row-height column-margin column-container"><span class="">Note the retrospective view–using later events to “predict” the past. This is valid, but may seem odd at first.</span></div></div>
+<p>Again, one must be very cautious in drawing conclusions as to causes, not only because of the questionable quality of the dataset but also because <em>hidden confounders</em> may be at work here. For instance, though we have data on undergraduate GPA, we don’t know the quality of the undergraduate institution. Equally important, we are looking only at those who were admitted to law school; there may be a different pattern in the general population. But the results here raise serious concerns.</p>
+</section>
+<section id="is-the-bar-exam-fair" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="is-the-bar-exam-fair"><span class="header-section-number">2.5.2</span> Is the bar exam fair?</h3>
+<p>And what about passage of the bar exam? Does race play a role?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>comparisonPts <span class="ot">&lt;-</span> lsa[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">22</span>,<span class="dv">222</span>,<span class="dv">2222</span>),<span class="sc">-</span><span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">11</span>)]</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLogit</span>(lsa,<span class="st">'bar'</span>,<span class="st">'race1'</span>,comparisonPts,<span class="at">yesYVal=</span> <span class="st">'TRUE'</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+     Covariate    Estimate Standard.Error        PValue
+1  (Intercept) -6.24270431    0.401137499  1.308749e-54
+2          age  0.03422736    0.004412075  8.651327e-15
+3      decile1  0.04757930    0.018427921  9.825421e-03
+4      decile3  0.48948790    0.020478831 2.909741e-126
+5      fam_inc -0.02199998    0.030373942  4.688788e-01
+6         lsat  0.08539196    0.005869773  6.036082e-48
+7         ugpa  0.35866792    0.068480789  1.627690e-07
+8   gendermale  0.15784971    0.052981691  2.888835e-03
+9   race1black  0.20964666    0.130530665  1.082497e-01
+10   race1hisp  0.07078955    0.136700672  6.045675e-01
+11  race1other  0.06268978    0.185086652  7.348320e-01
+12  race1white  0.37434379    0.111291746  7.692575e-04
+13    cluster2 -0.85200531    0.096842597  1.394793e-18
+14    cluster3 -0.15391198    0.069754152  2.734957e-02
+15    cluster4 -0.23351498    0.082896615  4.848324e-03
+16    cluster5  0.25793171    0.142650370  7.058485e-02
+17    cluster6 -1.33844995    0.145701743  4.068449e-20
+18   fulltime2 -0.54114731    0.088416220  9.330973e-10
+
+$`Sensitive Factor Level Comparisons`
+[1] "Factors Compared" "Estimates"        "Standard Errors"  "P-Value"         </code></pre>
+</div>
+</div>
+<p>That’s a lot of output. Let’s take a closer look.</p>
+<p>At least judging from the rows labled ‘black - white’, Black and white students having the same traits appear to have passed the bar exam at about the same rates.</p>
+<p>We might also do a little check of the appropriateness of the logistic model for this data. One rough approach might be to use <strong>dsldConditDisparity()</strong>, as we did in the linear case:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Y needs to be numeric, in this case 0,1</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>lsab <span class="ot">&lt;-</span> lsa</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>lsab<span class="sc">$</span>bar <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(lsab<span class="sc">$</span>bar<span class="sc">==</span><span class="st">'TRUE'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldConditDisparity</span>(lsab,<span class="st">'bar'</span>,<span class="st">'race1'</span>,<span class="st">'lsat'</span>,<span class="st">'lsab$age &gt; 0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="PartI_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Looks pretty good. But we can go further, using k-NN analysis, as it makes no assumptions about the form of the regression function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'lsa'</span>,<span class="fu">quote</span>(bar),<span class="st">'race1'</span>,<span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>,<span class="at">yesYVal=</span><span class="st">'TRUE'</span>))  </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(w)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$testAccs
+$testAccs$asian
+NULL
+
+$testAccs$black
+NULL
+
+$testAccs$hisp
+NULL
+
+$testAccs$other
+NULL
+
+$testAccs$white
+NULL
+
+
+$comparisons
+      age decile1 decile3 fam_inc lsat ugpa gender cluster fulltime asian black
+27449  57       2       1       4   29  2.7 female       1        1  0.72  0.60
+20515  60       7       8       4   32  3.4 female       3        1  1.00  0.96
+3410   61       1       1       3   23  2.7   male       3        1  0.68  0.40
+26569  51       6       7       3   34  2.7   male       3        2  0.72  0.60
+21745  61       8       7       3   42  3.3   male       2        1  0.52  0.76
+      hisp other white
+27449 0.64  0.68  0.52
+20515 0.84  1.00  0.96
+3410  0.60  0.68  0.56
+26569 0.68  0.88  0.84
+21745 0.96  0.84  0.96</code></pre>
+</div>
+</div>
+<p>The pattern here seems to be a bit uneven. Black and white test takers seem to be on par with each other in three cases, but with major differences in the other two rows. We should look at more cases, and revisit the logit analysis, possible checking for quadratic trends..</p>
+</section>
+</section>
+<section id="sec-sig" class="level2 page-columns page-full" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-sig"><span class="header-section-number">2.6</span> Case study: problems with significance testing</h2>
+<p>In 2016, the American Statistical Association released its first-ever position paper, to warn of the problems of significance testing and “p-values.” Though the issues had been well known for years<span class="math inline">\(\textemdash\)</span>some journals had even banned the use of p-values in their published research papers<span class="math inline">\(\textemdash\)</span>it was “significant” that the ASA finally took a stand. Let’s use the law school example in <a href="#sec-law-school"><span>Section&nbsp;2.5</span></a> to illustrate.</p>
+<div class="page-columns page-full"><p>There is concern that the LSAT and other similar tests may be  heavily influenced by family income, thus unfair, especially to underrepresented minorities. To investigate this, let’s consider the b<sub>i</sub>, the estimated coefficients in our linear model for the LSAT above.</p><div class="no-row-height column-margin column-container"><span class="">Review: To test the hypothesis <span class="math inline">\(H_0: \beta_i = 0\)</span>, one computes twice the area to the right of <span class="math inline">\(|b_i|\)</span> in the standard normal distribution. That number is the <em>significance</em> level, with values under 0.05 being termed <em>significant</em>; 0.01 is the criterion for <em>highly significant</em>, and so on.</span></div></div>
+<p>In particular, look at the coefficient for family income, 0.3009. The p-value is essentially 0, which in an academic research journal would classically be heralded with much fanfare, termed “very highly significant,” with a 3-star insignia. Indeed, the latter is seen in the output above. (This comes from R, not <strong>dlsd</strong>.) But actually, the impact of family income is not very large. Here’s why:</p>
+<div class="page-columns page-full"><p>Family income in this dataset is measured by quintiles. So  this estimated coefficient says that, for example, if we compare people who grew up in the bottom 20% of income with those who were raised in the next 20%, the mean LSAT score rises by only about 1/3 of 1 point<span class="math inline">\(\textemdash\)</span>a minuscule difference on a test where scores are typically in the 20s, 30s and 40s. The 95% confidence interval (CI), (0.2304,0.3714), again indicates that the effect size here is very small.</p><div class="no-row-height column-margin column-container"><span class="">Mathematically, testing for a 0 effect is equivalent to checking whether the CI contains 0. But this is missing the point of the CI, which is to (a) give us an idea of the effect <em>size</em>, and (b) to indicate how accurate our estimate is of that size. Aspect (a) is given by the location of the center of the interval, while (b) is seen from the CI’s width</span></div></div>
+<p>So family income is not an important factor after all, and the significance test was highly misleading.</p>
+<p>Some who read this may object, “Sure, there sometimes may be a difference between statistical significance and practical significance. But I just want to check whether my model fits the data.” Actually, it’s the same problem.</p>
+<p>For instance, suppose we are considering adding an interaction term between race and undergraduate GPA to our above model. For simplicity, let’s use R’s linear model function, <strong>lm()</strong>, directly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .,lsa)  <span class="co"># predict lsat from all other variables</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .<span class="sc">+</span>race1<span class="sc">:</span>ugpa,lsa)  <span class="co"># add interaction </span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = lsat ~ . + race1:ugpa, data = lsa)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-19.1783  -2.8065   0.1219   2.8879  16.0633 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     26.574993   1.219611  21.790  &lt; 2e-16 ***
+age              0.020612   0.005837   3.531 0.000415 ***
+decile1          0.127585   0.020926   6.097 1.10e-09 ***
+decile3          0.213918   0.020902  10.234  &lt; 2e-16 ***
+fam_inc          0.295042   0.035939   8.210 2.35e-16 ***
+ugpa             1.417659   0.363389   3.901 9.60e-05 ***
+gendermale       0.513686   0.059986   8.563  &lt; 2e-16 ***
+race1black       4.121631   1.439354   2.864 0.004194 ** 
+race1hisp        1.378504   1.570833   0.878 0.380191    
+race1other       2.212299   1.976702   1.119 0.263073    
+race1white       6.838251   1.201559   5.691 1.28e-08 ***
+cluster2        -5.105703   0.119879 -42.590  &lt; 2e-16 ***
+cluster3        -2.427800   0.074862 -32.430  &lt; 2e-16 ***
+cluster4         1.208794   0.088453  13.666  &lt; 2e-16 ***
+cluster5         3.777611   0.124422  30.361  &lt; 2e-16 ***
+cluster6        -5.565130   0.210945 -26.382  &lt; 2e-16 ***
+fulltime2       -1.406151   0.116132 -12.108  &lt; 2e-16 ***
+barTRUE          1.743800   0.102855  16.954  &lt; 2e-16 ***
+ugpa:race1black -2.876555   0.460281  -6.250 4.20e-10 ***
+ugpa:race1hisp  -1.022786   0.494210  -2.070 0.038508 *  
+ugpa:race1other -0.941852   0.617940  -1.524 0.127479    
+ugpa:race1white -1.737553   0.370283  -4.693 2.72e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.193 on 20778 degrees of freedom
+Multiple R-squared:  0.3948,    Adjusted R-squared:  0.3942 
+F-statistic: 645.4 on 21 and 20778 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>typx <span class="ot">&lt;-</span> lsa[<span class="dv">1</span>,<span class="sc">-</span><span class="dv">5</span>]  <span class="co"># set up an example case</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w,typx)  <span class="co"># estimated regression function value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      2 
+40.2294 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w1,typx)  <span class="co"># estimated regression function value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      2 
+40.2056 </code></pre>
+</div>
+</div>
+<p>Indeed, the Black and white interaction terms are “very highly significant.” But that does mean we should use the more complex model?</p>
+<p>Recall that many ML algorithms, including standard linear regression, use the estimated regression function value as its predicted value. So we see here that adding in term interaction term changed the estimated value of the regession function by only about 0.02 out of a 40.23 baseline. So, we may well prefer the simpler, no-interaction model.</p>
+<p>Again, we must not take small p-values literally.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The basic problem with significance testing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The central issue in the above examples, and essentially in any other testing situation, is that <em>the test is not answering the question of interest to us.</em></p>
+<p>We wish to know whether family income plays a substantial role in the LSAT, not whether they is any relation at all, no matter how meaningless. Similarly, we wish to know whether the interaction between race and GPA is substantial enough to include it in our model, not whether there is any interaction at all, no matter how tiny.</p>
+<p>The question at hand in research studies is rarely, if ever, whether a quantity is <em>exactly</em> 0, i.e.&nbsp;0.000… to infinitely many decimal places. Indeed, in most cases our measuring instrument is not this accurate in the first place, and there will always be systemic bias or missingness, unobserved variables and so on, so exact zeroness is not even a meaningful concept.</p>
+<p>Thus in almost all cases, significance tests don’t address the issue of interest, which is whether some population quantity is substantial enough to be considered important. Analysts should not be misled by words like “significant.” <a href="https://tinyurl.com/2s7x6h2v">As noted, modern statistical practice</a> places reduced value, or in the view of many, no value at all, on significance testing.</p>
+</div>
+</div>
+<p>To be sure, not all statistical professionals are “modern.” Some on the ASA committee that produced the position paper were more reserved on the matter, resulting in the paper not going further than some would have preferred. Nor is modernness necessarily a virtue.</p>
+<p>But readers of this book are urged to always keep in mind the two examples above<span class="math inline">\(\textemdash\)</span>family income and an interaction term each having minuscule impact even though the tests declared them “significant”<span class="math inline">\(\textemdash\)</span>in conducting future analyses, or assessing the analysis of others.</p>
+<p>Instead, form a confidence interval for the quantity of interest. Do <em>not</em> just note whether the CI contains 0. Where is the CI’s center? How wide is it, relative to the accuracy you wish to have? Then make your decision regarding importance of the effect on the basis of the overall situation, <em>not</em> by mechanically performing a test.</p>
+</section>
+<section id="sec-compas" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-compas"><span class="header-section-number">2.7</span> Example: COMPAS dataset</h2>
+<p>Recall that COMPAS is a tool developed to help judges decide on sentences in criminal trials, which it does by predicting whether the defendant is likely to recidivate. As noted earlier, one study found the tool to be biased against African-Americans; the creator of the tool, Northpointe, disagrees.</p>
+<p>Let’s investigate this, by predicting Y = the COMPAS score, with S = race and C = the remaining variables. Does S have much effect on Y?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(compas1)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(compas1,<span class="st">'decile_score'</span>,<span class="st">'race'</span>)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Summary Coefficients`
+             Covariate     Estimate StandardError       PValue
+1          (Intercept)  12.46413291   1.452859168 0.000000e+00
+2                  age  -0.09404721   0.002497211 0.000000e+00
+3        juv_fel_count   0.39479964   0.073934975 9.303767e-08
+4       juv_misd_count   0.16212898   0.061011256 7.875488e-03
+5      juv_other_count   0.29435177   0.060546864 1.164686e-06
+6         priors_count   0.22714719   0.006509637 0.000000e+00
+7              sexMale  -0.13540331   0.069213068 5.042679e-02
+8    two_year_recidYes   0.82273099   0.062559111 0.000000e+00
+9            raceAsian  -0.68595234   0.393500071 8.129735e-02
+10       raceCaucasian  -0.46795096   0.062339397 6.061818e-14
+11        raceHispanic  -0.93831638   0.101286306 0.000000e+00
+12 raceNative American   0.38640654   0.554347886 4.857734e-01
+13           raceOther  -1.30753368   0.123716368 0.000000e+00
+14           c_jail_in -69.51719068   9.027235193 1.354472e-14
+15          c_jail_out  70.72627748   7.301645508 0.000000e+00
+16      c_offense_date  -4.21691395   1.326098890 1.473059e-03
+17      screening_date  -7.75559525   5.422330875 1.526291e-01
+18          in_custody  -6.31642337   2.419684027 9.042765e-03
+19         out_custody   9.97020948   1.951867970 3.255267e-07
+
+$`Sensitive Factor Level Comparisons`
+                     Factors Compared  Estimates Standard Errors      P-Value
+1            African-American - Asian  0.6859523       0.3935001 8.129735e-02
+2        African-American - Caucasian  0.4679510       0.0623394 6.061818e-14
+3         African-American - Hispanic  0.9383164       0.1012863 0.000000e+00
+4  African-American - Native American -0.3864065       0.5543479 4.857734e-01
+5            African-American - Other  1.3075337       0.1237164 0.000000e+00
+6                   Asian - Caucasian -0.2180014       0.3935940 5.796653e-01
+7                    Asian - Hispanic  0.2523640       0.4015448 5.296877e-01
+8             Asian - Native American -1.0723589       0.6779716 1.137143e-01
+9                       Asian - Other  0.6215813       0.4077123 1.273692e-01
+10               Caucasian - Hispanic  0.4703654       0.1033446 5.328378e-06
+11        Caucasian - Native American -0.8543575       0.5555712 1.240975e-01
+12                  Caucasian - Other  0.8395827       0.1253271 2.096612e-11
+13         Hispanic - Native American -1.3247229       0.5612839 1.826678e-02
+14                   Hispanic - Other  0.3692173       0.1485386 1.293095e-02
+15            Native American - Other  1.6939402       0.5659026 2.759400e-03</code></pre>
+</div>
+</div>
+<p>Y, the decile score, is the risk of recidivism; the larger the value of Y, the greater the risk.</p>
+<p>A 95% confidence interval for the mean difference between Black and Caucasian risk scores, holding age, juvenile felony count and so on constant, is 0.4680 <span class="math inline">\(\pm\)</span> 1.96 x 0.0623 = (0.3459,0.5902). Since the risk of recidivism is given in deciles, the value is 1,2,…,10, we see that the tool does indeed appear to be biased against Black defendants. Though the effect is rather small, around 0.6 of a decile point or less,<br>
+and as usual, one must keep in mind the possibility of unseen confounders, it is still a matter of serious concern. Note that the estimated effect of being Blac, 0.4680, is actually larger than the estimated effect of having one additional juvenile felony count, 0.3948.</p>
+</section>
+<section id="deciding-on-a-set-of-confounders-c" class="level2 page-columns page-full" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="deciding-on-a-set-of-confounders-c"><span class="header-section-number">2.8</span> Deciding on a set of confounders C</h2>
+<p>One may have specific confounders in mind for a particular analysis, but it is often unclear as to which to use, or for that matter, why not use them all? This section addresses those issues.</p>
+<p>We will address that second question first: Why not use all our variables, other than Y and S, as confounders? We will see that if we have a large number of variables, there is good reason to select only a subset of potential confounders.</p>
+<p>How might we do so? We will first recommend some graphical and tabular methods aimed at preliminary exploration toward this end, and then present a <strong>dsld</strong> function that users may find useful for more systematic selection of confounders.</p>
+<section id="the-problem" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">2.8.1</span> The problem</h3>
+<p>The German credit dataset, included in the <strong>fairml</strong> package and thus with <strong>dsld</strong>, consists of a total of 21 variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(german.credit)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(german.credit)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Account_status"           "Duration"                
+ [3] "Credit_history"           "Purpose"                 
+ [5] "Credit_amount"            "Savings_bonds"           
+ [7] "Present_employment_since" "Installment_rate"        
+ [9] "Other_debtors_guarantors" "Resident_since"          
+[11] "Property"                 "Age"                     
+[13] "Other_installment_plans"  "Housing"                 
+[15] "Existing_credits"         "Job"                     
+[17] "People_maintenance_for"   "Telephone"               
+[19] "Foreign_worker"           "Credit_risk"             
+[21] "Gender"                  </code></pre>
+</div>
+</div>
+<p>Excluding Y = credit risk and S = gender, that gives us 19 variables to choose among for our confounders. Which ones should we use?</p>
+<p>Technically, almost any variable is a confounder. The impact may quite minuscule, but through a long chain of relations among many variables, there will usually be at least some connection, though again possibly very faint.</p>
+<p>Well, then, why not use them all? That is what we’ve done in our earlier examples. But there are several issues to consider not using the full set of variable,s i.e.&nbsp;every variable other than Y and S:</p>
+<ul>
+<li><p>It may result in overfitting, resulting in large standard errors.</p></li>
+<li><p>It is unwieldy, difficult to interpret. Many treatments of these issues speak of a desire for a “parsimonious” model.</p></li>
+<li><p>There is a concern regarding duplication. It may be that, say, some pair of confounders suffices, and adding further confounders does nothing to further clarify discrimination effects.</p></li>
+</ul>
+<p>Concerning this last point: We do not merely have 19 choices for confounders; we must choose from the set of all possible groups of confounders: singletons, pairs, triplets and so on. There are <span class="math inline">\(2^{19}\)</span> possibilities here, about half a million.</p>
+<p>Our specific purpose here is to find a reasonable set of confounders. In essence, that means find variables C such that C is substantially correlated with both Y and S. One way to approach that is to do separate predictions of Y and S, and see which features turn out to predict both well.</p>
+</section>
+<section id="exploratory-example-engineering-wages" class="level3 page-columns page-full" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="exploratory-example-engineering-wages"><span class="header-section-number">2.8.2</span> Exploratory example: engineering wages</h3>
+<p>One useful tool here is the function <strong>dsldFrequencyByS()</strong>, which aims to analyze categorical (not numeric) columns by printing out a list of frequencies. Since education level in the <strong>svcensus</strong> data is categorical, we can call the function as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"educ"</span>, <span class="st">"gender"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Frequency of zzzOther Frequency of 14 Frequency of 16
+female             0.2068052      0.02098615       0.7722086
+male               0.2177579      0.04110130       0.7411408</code></pre>
+</div>
+</div>
+<p>The similar frequency values between men and women suggests not using education as a confounder.</p>
+<p>On the other hand, we <em>do</em> see more interesting results if we look at <em>occupation</em> instead of <em>education</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"occ"</span>, <span class="st">"gender"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Frequency of 102 Frequency of 101 Frequency of 100 Frequency of 141
+female        0.3117359        0.2349226        0.3274246       0.04258354
+male          0.2016862        0.2203267        0.3433671       0.01923330
+       Frequency of 140 Frequency of 106
+female       0.02587612       0.05745721
+male         0.04446055       0.17092610</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Notice for instance the difference between the proportion of males in occupation 106  versus females in that same occupation–a difference of approximately 11%. The difference in frequencies here is much greater than with the ‘educ’ example, which suggests using occupation as a confounder. Since different occupations correlate with different wages, it is possible that this gender difference in occupations proportions could be affecting the perceived relationship between gender and wage.</p><div class="no-row-height column-margin column-container"><span class="">One might consider conducting formal statistical inference in this comparison, calculating a p-value from a <em>chi-square test</em>. But as we saw in <a href="#sec-sig"><span>Section&nbsp;2.6</span></a>. testing for model fit suffers from the same problems as testing for nonzero effects. At any rate, here we are merely doing an exploratory analysis anyway.</span></div></div>
+</section>
+<section id="exploratory-example-law-school-admissions-data" class="level3 page-columns page-full" data-number="2.8.3">
+<h3 data-number="2.8.3" class="anchored" data-anchor-id="exploratory-example-law-school-admissions-data"><span class="header-section-number">2.8.3</span> Exploratory example: Law school admissions data</h3>
+<p>Suppose we are investigating the relationships among the variables LSAT score, GPA and race. One way to visualize these relationships would be through <strong>dsldScatterPlot3D</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldScatterPlot3D</span>(law.school.admissions, </span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">c</span>(<span class="st">'lsat'</span>,<span class="st">'fam_inc'</span>,<span class="st">'ugpa'</span>), <span class="st">'race1'</span>, <span class="at">pointSize =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="graphTab/lawscatterplot3d2.png" class="img-fluid" style="width:90.0%"></p>
+<div class="page-columns page-full"><p> Of course, visualizing a 3-dimensional scatter plog is more challenging than viewing the ordinary 2-dimensional kind. But it does enable richer search for relationships. Here are a few trends suggested by the plot:</p><div class="no-row-height column-margin column-container"><span class="">This is a <strong>plotly</strong> interactive graph. To fully understand this function, the reader should execute the function outside of Quarto, i.e. run the above code directly from R. Try try features such as move, rotate, annotation display and so on.</span></div></div>
+<ul>
+<li><p>On the <strong>fam_inc</strong> axis, the lowest quintile of family income is mostly populated by Black and Latino students, while the upper two levels are almost entirely made up of white students.</p></li>
+<li><p>On the <strong>lsat</strong> axis, most of those with a lower score happen to be non-white, across all income levels.</p></li>
+<li><p>The <strong>ugpa</strong> axis has a similar trend to that of the <strong>lsat</strong> axis, albeit to a much weaker extent.</p></li>
+</ul>
+<p>Once again, this analysis is merely exploratory, but the graph lends some credence to claims that family income may confound the relationship between race and LSAT score. Note however, that these graphs do not do much to answer the question of whether, in this case, that relationship is substantial. The formal analysis we did earlier indicates that it is not.</p>
+<p>Returning to the question of whether race have a substantial impact on exam results, we can look at the density plot of LSAT scores against different races.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># requires 'webshot' package</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldDensityByS</span>(law.school.admissions, <span class="at">cName =</span> <span class="st">"lsat"</span>, <span class="at">sName =</span> <span class="st">"race1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="graphTab/lawdensitylsat.png" class="img-fluid" style="width:120.0%"></p>
+<p>Each curve represents the distribution of LSAT scores for one race. The graph suggests the possibility of racial bias in the LSAT. But again, this bias may be confounded.</p>
+<p>Recall that the scatter plot also suggested some trend between family income and race. We can investigate this possible relationship by generating another density plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldDensityByS</span>(law.school.admissions, <span class="at">cName =</span> <span class="st">"fam_inc"</span>, <span class="at">sName =</span> <span class="st">"race1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="graphTab/lawdensityfam.png" class="img-fluid" style="width:120.0%"></p>
+<div class="page-columns page-full"><p> White students have larger peaks at income levels 3, 4, and 5, indicating that a larger proportion of white students are in the higher income brackets than non-white students. Conversely, a larger proportion of black and Latino students occupy the lower income bracket levels.</p><div class="no-row-height column-margin column-container"><span class="">Recall that the <strong>fam_inc</strong> variable is measured in terms of quintiles, 1 through 5. This is the reason behind the seemingly-odd alignment of, say, the Black and Latino curves.</span></div></div>
+<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="">If we want to investigate other potential confounders, we can call <strong>dsldConfounders()</strong> with ‘race1’ as our sensitive variable.</span></div></div>
+<p>This suggests that family income could be confounding the potential relationship between race and LSAT scores. But, as noted, our earlier analysis indicated that the degree of this relationship is very small.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Almost anything is a confounder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Once one accounts for links of two variables, then links of links and so on, virtually everything in practice is a confounder to <em>some</em> degree, so it is up to the analyst to decide when a feature is confounding enough to be considered for inclusion in a model.</p>
+</div>
+</div>
+</section>
+<section id="variable-selection-methodology" class="level3 page-columns page-full" data-number="2.8.4">
+<h3 data-number="2.8.4" class="anchored" data-anchor-id="variable-selection-methodology"><span class="header-section-number">2.8.4</span> Variable selection methodology</h3>
+<p>The above graphical and tabular approaches may suffice to determine one’s confounders in some applications. We now present more formal, systematic methods.</p>
+<div class="page-columns page-full"><p>Many, many approaches to this <em>variable selection</em> or <em>feature selection</em>  problem have been proposed over the years. The <strong>qeML</strong> package includes five of them (see the documentation), and there are myriad others.</p><div class="no-row-height column-margin column-container"><span class="">A nice overview of such methodology, and implementations in R and Python, are given in <a href="https://explained.ai/rf-importance">Parr <em>et al</em></a>.</span></div></div>
+<p>One widely-used method is <em>permutation</em>, which we will use here. To gauge the importance of a variable V in the context of using some ML algorithm, we do two runs through the data, first with the original dataset, and then with the V column changed through a random shuffling of the values in that column. In that second run, our predictive accuracy should be compromised, and the importance measure is taken to be the proportional increase in error rate. The larger the increase, the more important we deem the variable.</p>
+</section>
+<section id="the-dsldchunting-function" class="level3" data-number="2.8.5">
+<h3 data-number="2.8.5" class="anchored" data-anchor-id="the-dsldchunting-function"><span class="header-section-number">2.8.5</span> The dsldCHunting() function</h3>
+<p>This function serves as an aid to selecting confounders, using the permutation-based computation in the <strong>randomForests</strong> package.</p>
+<p>Its operation is best described by example, which we will present next. Before reading it, though, recall that we are interested in finding variables that are correlated with, i.e.&nbsp;predict well, both Y and S.</p>
+</section>
+<section id="example-boston-mortgage-data" class="level3" data-number="2.8.6">
+<h3 data-number="2.8.6" class="anchored" data-anchor-id="example-boston-mortgage-data"><span class="header-section-number">2.8.6</span> Example: Boston mortgage data</h3>
+<p>Here is an example, using the mortgage data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$impForY
+       p_irat        denpmi      loan_val       hse_inc       ltv_med 
+ 1.546335e-02  1.474640e-02  1.216851e-02  1.102444e-02  7.679418e-03 
+       single         mcred         ccred         condo      ltv_high 
+ 1.803870e-03  1.589129e-03  1.541556e-03  1.519193e-03  1.199042e-03 
+     probunmp       selfemp        hischl        pubrec 
+ 1.085909e-03  9.391036e-04 -4.701694e-05 -3.851059e-04 
+
+$impForS
+     loan_val        p_irat       ltv_med       hse_inc         condo 
+ 1.270951e-02  1.066277e-02  1.012572e-02  6.074246e-03  5.285745e-03 
+        ccred        single      ltv_high        denpmi        hischl 
+ 3.063738e-03  2.966525e-03  9.887913e-04  8.359624e-04  3.385738e-04 
+     probunmp        pubrec       selfemp         mcred 
+ 2.252541e-04  1.573050e-04  4.236975e-05 -6.168608e-05 
+
+$inCommon
+$inCommon[[1]]
+character(0)
+
+$inCommon[[2]]
+[1] "p_irat"
+
+$inCommon[[3]]
+[1] "p_irat"   "loan_val"
+
+$inCommon[[4]]
+[1] "p_irat"   "loan_val" "hse_inc" 
+
+$inCommon[[5]]
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med" 
+
+$inCommon[[6]]
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med" 
+
+$inCommon[[7]]
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"  
+
+$inCommon[[8]]
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
+
+$inCommon[[9]]
+[1] "p_irat"   "denpmi"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
+[8] "condo"   
+
+$inCommon[[10]]
+[1] "p_irat"   "denpmi"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
+[8] "condo"    "ltv_high"</code></pre>
+</div>
+</div>
+<p>The importance measures are printed out (the ranking is what matters), followed by the “top-i” sets in common.</p>
+<p>For instance, the variables (excluding S) that predict Y well are first <strong>p_irat</strong>, then <strong>denpmi</strong> and so on. In predicting S, excluding Y, the best are <strong>p_irat</strong>, then <strong>loan_val</strong> et cetera.</p>
+<p>Since we are focusing on variables that are correlated with both Y and S, we take the intersection. For example, the intersection of the top three Y predictors and top three S predicts is <strong>p_irat</strong> and <strong>loan_val</strong>.</p>
+<p>As usual, there are no magic formulas to use here. The analyst is given a choice. One might use just the top two confounders, or the top three and so on.</p>
+</section>
+<section id="example-employer-bias-test" class="level3" data-number="2.8.7">
+<h3 data-number="2.8.7" class="anchored" data-anchor-id="example-employer-bias-test"><span class="header-section-number">2.8.7</span> Example: Employer bias test</h3>
+<p>In the paper “Are Emily and Greg More Employable Than Lakisha and Jamal? A Field Experiment on Labor Market Discrimination” (<em>Am. Econ. Rev.</em>, Sept.&nbsp;2004), researcher “test” employers by sending CVs with “white-sounding” and “Black-sounding” names, checking for bias. Did employers call “whites” more often than “Blacks” for an interview? The resulting data is <strong>lak</strong> in <strong>dsld</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lak)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 447  63</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "education"          "ofjobs"             "yearsexp"          
+ [4] "honors"             "volunteer"          "military"          
+ [7] "empholes"           "occupspecific"      "occupbroad"        
+[10] "workinschool"       "email"              "computerskills"    
+[13] "specialskills"      "firstname"          "sex"               
+[16] "race"               "h"                  "l"                 
+[19] "call"               "city"               "kind"              
+[22] "adid"               "fracblack"          "fracwhite"         
+[25] "lmedhhinc"          "fracdropout"        "fraccolp"          
+[28] "linc"               "col"                "expminreq"         
+[31] "schoolreq"          "eoe"                "parent_sales"      
+[34] "parent_emp"         "branch_sales"       "branch_emp"        
+[37] "fed"                "fracblack_empzip"   "fracwhite_empzip"  
+[40] "lmedhhinc_empzip"   "fracdropout_empzip" "fraccolp_empzip"   
+[43] "linc_empzip"        "manager"            "supervisor"        
+[46] "secretary"          "offsupport"         "salesrep"          
+[49] "retailsales"        "req"                "expreq"            
+[52] "comreq"             "educreq"            "compreq"           
+[55] "orgreq"             "manuf"              "transcom"          
+[58] "bankreal"           "trade"              "busservice"        
+[61] "othservice"         "missind"            "ownership"         </code></pre>
+</div>
+</div>
+<p>We’ll take Y to be <strong>call</strong>, which records whether the “applicant” received a call back in response to submitting the CV. S will be race, which now leaves us with 63 - 2 = 61 potential confounders!</p>
+<p>Actually, it’s even worse. Many rows of the dataset contain missing values (coded NA in R). The version here uses only intact rows, of which there are 447. (The original data had 4870 rows.) A rough rule of thumb commonly cited in statistics is that in regression estimation, the number of features should be less than the square root of the number of data points; by this or almost any other measure, 61 predictors is well beyond the capacity of 447 data points. And, as noted, that number of variables is unwieldy. Let’s see what we can do to reduce that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(lak,<span class="st">'call'</span>,<span class="st">'race'</span>,<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$impForY
+   fraccolp_empzip fracdropout_empzip        linc_empzip   lmedhhinc_empzip 
+      5.499015e-03       4.361030e-03       3.922478e-03       2.913287e-03 
+              linc   fracblack_empzip       parent_sales         branch_emp 
+      2.625403e-03       2.615064e-03       2.146387e-03       1.521750e-03 
+      branch_sales   fracwhite_empzip           fraccolp            manager 
+      1.413845e-03       1.395085e-03       1.381751e-03       1.366411e-03 
+              adid        fracdropout      specialskills          lmedhhinc 
+      1.234457e-03       1.220828e-03       1.038361e-03       1.022045e-03 
+           compreq          expminreq         parent_emp           yearsexp 
+      8.188585e-04       7.582611e-04       7.056381e-04       6.318586e-04 
+              city          fracwhite      occupspecific          secretary 
+      6.044175e-04       5.226365e-04       4.617007e-04       4.005274e-04 
+         fracblack           empholes          ownership              email 
+      3.536053e-04       2.633629e-04       2.377489e-04       2.227699e-04 
+       retailsales                  h                eoe               kind 
+      1.956400e-04       1.797562e-04       1.778599e-04       1.674892e-04 
+         education          schoolreq                sex             comreq 
+      1.176300e-04       7.786616e-05       7.686346e-05       7.409691e-05 
+            expreq           salesrep         supervisor                col 
+      6.464075e-05       5.780167e-05       4.137827e-05       4.060328e-05 
+        offsupport             ofjobs             honors         othservice 
+      3.919810e-05       3.660207e-05       1.792263e-05       1.586668e-05 
+            orgreq              trade           transcom            missind 
+      1.398601e-05       5.812189e-07       0.000000e+00       0.000000e+00 
+        occupbroad              manuf                fed           military 
+     -9.468491e-06      -2.887535e-05      -4.110741e-05      -4.166477e-05 
+          bankreal                req            educreq                  l 
+     -4.505495e-05      -4.771565e-05      -7.330976e-05      -8.455244e-05 
+         volunteer         busservice     computerskills          firstname 
+     -9.965509e-05      -1.080582e-04      -1.092721e-04      -1.179926e-04 
+      workinschool 
+     -3.082498e-04 
+
+$impForS
+         firstname               linc          lmedhhinc          fracwhite 
+      7.601098e-02       2.917741e-03       2.590713e-03       2.347715e-03 
+            ofjobs     computerskills         othservice           military 
+      1.253844e-03       8.314399e-04       4.699709e-04       4.635878e-04 
+         education          fracblack           empholes            compreq 
+      2.241179e-04       1.796035e-04       1.269505e-04       3.039656e-05 
+         ownership            missind           transcom               city 
+      1.139559e-05       0.000000e+00      -5.941901e-05      -6.025754e-05 
+           manager              manuf        fracdropout                sex 
+     -1.141520e-04      -1.360799e-04      -1.711292e-04      -1.956709e-04 
+              kind                col        retailsales              email 
+     -2.300770e-04      -2.370655e-04      -2.746826e-04      -2.777165e-04 
+            comreq                  l          schoolreq           fraccolp 
+     -2.850064e-04      -2.939751e-04      -3.657418e-04      -3.703502e-04 
+          bankreal            educreq           salesrep         offsupport 
+     -3.835777e-04      -4.139371e-04      -4.556876e-04      -4.669090e-04 
+               req             honors             expreq                fed 
+     -4.723912e-04      -5.165723e-04      -5.265490e-04      -5.457982e-04 
+         secretary      specialskills             orgreq         occupbroad 
+     -5.631163e-04      -5.741544e-04      -6.948797e-04      -7.628087e-04 
+        supervisor         busservice              trade          volunteer 
+     -7.656347e-04      -8.492082e-04      -8.692304e-04      -1.080123e-03 
+   fraccolp_empzip                  h       workinschool                eoe 
+     -1.158906e-03      -1.160250e-03      -1.604002e-03      -1.730779e-03 
+         expminreq   fracwhite_empzip      occupspecific fracdropout_empzip 
+     -2.416712e-03      -2.526489e-03      -2.579276e-03      -2.624324e-03 
+          yearsexp         parent_emp   lmedhhinc_empzip       branch_sales 
+     -2.812154e-03      -3.308079e-03      -3.445445e-03      -3.737839e-03 
+       linc_empzip         branch_emp       parent_sales   fracblack_empzip 
+     -4.155636e-03      -4.244323e-03      -4.428632e-03      -4.480281e-03 
+              adid 
+     -6.896452e-03 
+
+$inCommon
+$inCommon[[1]]
+character(0)
+
+$inCommon[[2]]
+character(0)
+
+$inCommon[[3]]
+character(0)
+
+$inCommon[[4]]
+character(0)
+
+$inCommon[[5]]
+[1] "linc"
+
+$inCommon[[6]]
+[1] "linc"
+
+$inCommon[[7]]
+[1] "linc"
+
+$inCommon[[8]]
+[1] "linc"
+
+$inCommon[[9]]
+[1] "linc"
+
+$inCommon[[10]]
+[1] "linc"
+
+$inCommon[[11]]
+[1] "linc"
+
+$inCommon[[12]]
+[1] "linc"
+
+$inCommon[[13]]
+[1] "linc"
+
+$inCommon[[14]]
+[1] "linc"
+
+$inCommon[[15]]
+[1] "linc"
+
+$inCommon[[16]]
+[1] "linc"      "lmedhhinc"
+
+$inCommon[[17]]
+[1] "linc"      "manager"   "lmedhhinc" "compreq"  
+
+$inCommon[[18]]
+[1] "linc"      "manager"   "lmedhhinc" "compreq"  
+
+$inCommon[[19]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+
+$inCommon[[20]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+
+$inCommon[[21]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[6] "city"       
+
+$inCommon[[22]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[6] "city"        "fracwhite"  
+
+$inCommon[[23]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[6] "city"        "fracwhite"  
+
+$inCommon[[24]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[6] "city"        "fracwhite"  
+
+$inCommon[[25]]
+[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[6] "city"        "fracwhite"   "fracblack"  </code></pre>
+</div>
+</div>
+<p>We are seeking variables that are correlated both with Y and S, yet there appear to be many that correlate with just one of these. That’s to be expected for datasets having a large number pf variables. But still, in the end we see a few that meet our goals.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction and Motivating Examples</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./PartII.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Part II: Discovering/Mitigating Bias in Machine Learning</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
