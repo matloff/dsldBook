@@ -566,14 +566,12 @@ might use the full dataset, no holdout.
 
 ```{R}
 set.seed(9999)
-z <- dsldML('svcensus',quote(wageinc),'gender',
+z <- dsldML(svcensus,'wageinc','gender',
    qeMLftnName='qeKNN',opts=list(k=50))  
 print(z)  
 ```
 
 The first three arguments are as usual.  The fourth states that the ML
-[The use of R's **quote** function here is due to a nuance
-in the way R handles nested quotes.]{.column-margin}
 algorithm we wish to use is kNN; the **qeML** package also includes
 random forests, boosting and neural networks.  The **opts** argument
 states which non-default values we wish to use for arguments to the ML
@@ -627,7 +625,7 @@ doing a kNN analysis, we could try RF:
 
 ```{R}
 set.seed(9999)
-w <- dsldML('svcensus',quote(wageinc),'gender',
+w <- dsldML(svcensus,'wageinc','gender',
    qeMLftnName='qeRF')  
 print(w)  
 ```
@@ -761,7 +759,7 @@ makes no assumptions about the form of the regression function:
 
 
 ```{R}
-w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',
+w <- dsldML(lsa,'bar','race1',qeMLftnName='qeKNN',
    opts=list(k=50,yesYVal='TRUE'))  
 print(w)  
 ```
@@ -1071,25 +1069,6 @@ dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 Each curve represents the distribution of LSAT scores for one race.  The
 graph suggests the possibility of racial bias in the LSAT.  But again,
 this bias may be confounded.
-
-Recall that the scatter plot also suggested some trend between family
-income and race. We can investigate this possible relationship by
-generating another density plot:
-
-```{r, eval=FALSE}
-data(law.school.admissions)
-dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
-```
-
-![](graphTab/lawdensityfam.png){width="120%"}
-
-[Recall that the **fam_inc** variable is measured in terms of quintiles,
-1 through 5.  This is the reason behind the seemingly-odd alignment of,
-say, the Black and Latino curves.]{.column-margin} White students have
-larger peaks at income levels 3, 4, and 5, indicating that a larger
-proportion of white students are in the higher income brackets than
-non-white students. Conversely, a larger proportion of black and Latino
-students occupy the lower income bracket levels.
 
 [If we want to investigate other potential confounders, we can call 
 **dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
