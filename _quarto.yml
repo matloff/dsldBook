@@ -21,10 +21,14 @@ book:
      - intro.qmd
      - PartI.qmd
      - PartII.qmd
-     - Appendices.qmd
    
 format:
   pdf:
+     toc: true
+     number-sections: true
+     fig_caption: no
+     fig_numbers: no
+  html:
      toc: true
      number-sections: true
      fig_caption: no
