@@ -1,5 +1,5 @@
 
-```{r}
+```{r,message=FALSE}
 library(dsld)
 data(svcensus)
 ```
@@ -65,6 +65,12 @@ svcensus1 <-
 z <- dsldLinear(svcensus1,'wageinc','gender')
 coef(z)  # print the estimated coefficients b_i 
 ```
+
+The familiar R **lm** function is called behind the scenes, but the call
+includes an addiitonal argument S, in this case gender. This is a theme
+common to many **dsld** functions: A call to these functions ultimately
+translates to calls to functions in base R or other packages -- but with
+extra discrimination-specific information in the input and output.
 
 Let's use b~i~ to denote our estimated $\beta$~i~.  So for instance b~1~
 = 489.5728 is our estimate of the unknown population parameter $\beta_1$.  
@@ -253,17 +259,16 @@ dsldConditDisparity(svcensus1,'wageinc','gender','age')
 
 The function plots a smoothed graph of Y against a user-specified C
 variable, once for each level of S. "Smoothing" here groups data points
-of similar age, and plots their average Y value.
-
-So, the call here says, "Plot
-smoothed wage income against age, for each gender."  
+of similar age, and plots their average Y value.  So, the call here
+says, "Plot smoothed wage income against age, for each gender."  
 
 The model has mean Y being a linear of function of age, so we  should
 expect to see approximate straight lines here.  Yet the relation
 certainly looks nonlinear, possibly reflecting age discrimination
 against both very young and very old workers.  We are already
 investigating one kind of discrimination here, gender, so again for
-simplicity let's just keep age as a confounder.  
+simplicity let's just keep age as a confounder C rather than a sensitive
+variable S.  
 
 ### Updated model
 
@@ -303,7 +308,8 @@ created by **lm()** is that the $b_i$ are in fact approximately normal.
 The normality assumption is not very important.]{.column-margin} assume
 that variance of wage income is approximately constant across ages and
 genders.  Lack of this property has some effect on the accuracy of
-reported standard errors, but this can be adjusted via the so-called
+reported standard errors, and thus on the validity of confidence
+intervals and p-values but this can be adjusted via the so-called
 *sandwich* operation, an option in **dsldLinear()**.
 
 ## S may consist of more than one factor 
