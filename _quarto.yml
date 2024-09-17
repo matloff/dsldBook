@@ -21,6 +21,7 @@ book:
      - intro.qmd
      - PartI.qmd
      - PartII.qmd
+     - AuthorBios.qmd
    
 format:
   pdf:
