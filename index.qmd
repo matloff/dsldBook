@@ -1,6 +1,9 @@
 
 # Overview {.unnumbered}
 
+[.This work is licensed under a Creative Commons Attribution--No
+Derivative Works 3.0 United States]{.column-margin}
+
 Discrimination is a key social issue in the US and in a number of other
 countries.  There is lots of available data with which one might
 investigate possible discrimination.  But how might such investigations
