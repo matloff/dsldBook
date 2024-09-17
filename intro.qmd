@@ -34,7 +34,7 @@ rate to below that of men.
 ![ ](USCensus.png){width=40%}
 
 The **svcensus** dataset is a subset of US census data from back in 2000,
-focusing on six engineering occupations.  [Included here in the **dsld**
+focusing on six engineering occupations.  [Included in the **dsld**
 package.]{.column-margin} The question at hand is whether there is a
 gender pay gap.  Again, the overall pay for men is higher, by about 25%.
 But what if we break things down by occupation?  Though it does turn out
@@ -50,7 +50,7 @@ the intuitive, including our notion here of a confounder. Actually, a
 fully precise definition is rather
 [problematic](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4276366/).]{.column-margin}
 rate and wage income$\textemdash$and a sensitive variable S, which was gender in
-both examples.  But in both cases, were are concerned that merely comparing
+both examples.  But in both cases, we were concerned that merely comparing
 mean Y for each gender was an oversimplication, due to a possible
 *confounder* C$\textemdash$department in the first example, occupation in the
 second$\textemdash$ that is related to both variables.  Failure to take confounders (there can be more than one, and 
@@ -81,7 +81,7 @@ tended to be given harsher ratings$\textemdash$i.e. higher estimated
 probabilities of recidivism$\textemdash$than similarly situated white
 defendants.
 
-Northpointe, the firm that developed COMPAS, [rejects the *Pro Publica*
+Northpointe, the firm that developed COMPAS, [rejected the *Pro Publica*
 analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
 and we are not supporting either side here.  
 [Note that both *Pro Publica*'s analysis and that of Northpointe used
@@ -93,8 +93,9 @@ A key point is that any remedy must not only avoid using race
 directly, but must also minimize the impact of variables O that are
 separate from race but still correlated with it, known as *proxies*.
 If, say, educational attainment is correlated with race, the inclusion
-of educational in our analysis will mean that race is still playing a
-role in our analysis after all.  
+of that variable in our analysis will mean that race is still playing a
+role in our analysis after all. On the other hand, eliminating all
+proxies may severely compromise our predictive ability. 
 
 ::: {.callout-note}
 ### Fair ML analysis
@@ -122,7 +123,7 @@ II, on fair ML, is more specific to discrimination settings.
 
 ## Summary of symbols
 
-The symbol X will at first denote all the the variables other than Y and
+The symbol X will at first denote all the variables other than Y and
 S.  The general terminology is that Y is variously called the *outcome
 variable*, *target variable* or *dependent variable*; the X variables
 are known collectively as *covariates*, *features* or *independent
@@ -149,11 +150,6 @@ As noted, the book consists of two main topics:
 * Part I, adjusting for confounders
 
 * Part II, fair ML
-
-In each case, we present explanations of the relevant concepts, so that
-this is a general tutorial on methodology for analysis of
-discrimination, and show the details of using our **dsld** package to
-make use of that methodology.
 
 So, let's get started.  One key point first, though:
 

@@ -35,7 +35,7 @@ We might treat age as a confounder C, reasoning as follows.  Older
 workers tend to have more experience and thus higher wages, and if there
 is an age differential in our data, say with female workers tending to
 be older, this may mask a gender pay gap:  If men make more money than
-women of the same age, but women tend to be old, the gender and age
+women of the same age, but women tend to be older, the gender and age
 effects may largely cancel out.
 
 So, let's take the set of confounders C to consist of age, and for
@@ -110,15 +110,8 @@ women.
 The above approach to dealing with confounders is a very common one.
 But it raises questions, such as:
 
-* What are the assumptions underlying that model?  And how might we [In
-  addition, the data here are, as is commonly the case, *observational*,
-  as opposed to being the result of a *randomized clinical trial*; there
-  may be serious issues, due to unobserved confounders.  Such problems
-  might be solvable via an advanced (and rather controversial)
-  methodology known as *causal inference*.  Unfortunately, details are
-  beyond our scope in this tutorial, but we will explain some basic
-  concepts in @sec-causal.]{.column-margin} check whether they are
-  (approximately) valid?
+* What are the assumptions underlying that model?  And how might we 
+  check whether they are (approximately) valid?
 
 * We chose only one C variable here, age.  We might also include
 occupation, as noted earlier.  In some datasets, might have dozens of
@@ -253,6 +246,9 @@ via a **dsld** function that may be more informative.
 Returning to our earlier setting with just S = gender for our example,
 we run
 
+```{r}
+dsldConditDisparity(svcensus1,'wageinc','gender','age')
+```
 
 The function plots a smoothed graph of Y against a user-specified C
 [The function has a 'conditions' argument; we have none here, so we just used a
