@@ -394,12 +394,15 @@ gender, say 1 for male, 0 for female, and X is simply income, using the
 Note that mean Y is now the probability that Y = 1.  That's because the
 average of a bunch of 1s and 0s is the proportion of 1s.  In the data
 1,0,1,1 for instance, the mean is (1+0+1+1) / 4 = 3/4, and indeed 3/4 of
-those numbers are 1s.
+those numbers are 1s; if we were to choose one of those four numbers at
+random, the probability of obtaining a 1 would be 3/4.
 :::
 
-Suppose that within each gender, X has a normal (Gaussian) distribution,
-the familiar "bell-shaped" curve, with the same standard deviation for
-each gender.  Then it turns out that one can show mathematically that
+Now, what is the logistic model (often called "logit"), and where does
+it come from?  To motivate this, suppose that within each gender Y, X
+has a normal (Gaussian) distribution, the familiar "bell-shaped" curve,
+with the same standard deviation of Y within each gender.  Then it turns out
+that one can show mathematically that
 
 probability male =
 $$
