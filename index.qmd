@@ -21,8 +21,9 @@ use cases:
 
 * Concerned citizenry. 
 
-This book provides a tutorial regarding applicable methodology, as
-well as introduction to use of the package.
+This book provides a tutorial regarding applicable methodology,
+using **dsld** examples (though it is not a user manual for the
+package).
 
 ## Prerequisite background
 
@@ -48,4 +49,18 @@ through various graphical and tabular functions.
 * To enable formal statistical analysis of such effects via both
   enhanced access to general R functions such as **lm()** and **glm()**
   and various functions from the **qeML** machine learning package.
+
+```{r}
+#| include: false
+library(dsld)
+library(qeML)
+```
+
+{{< pagebreak >}}
+
+```{r,echo=FALSE}
+data(svcensus)
+dsldDensityByS(svcensus,'wageinc',
+   'educ','plot',fill=TRUE)
+```
 

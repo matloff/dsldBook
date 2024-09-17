@@ -8,12 +8,6 @@ library(qeML)
 
 {{< pagebreak >}}
 
-```{r,echo=FALSE}  
-data(svcensus)
-dsldDensityByS(svcensus,'wageinc',
-   'educ','plot',fill=TRUE)
-```
-
 # Introduction and Motivating Examples
 
 To set the stage, consider the following:
