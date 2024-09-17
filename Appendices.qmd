@@ -44,15 +44,13 @@ analysis.
 
 ## Appendix B: Standard Errors via the Bootstrap {#sec-boot}
 
-## Appendix C: Installing the Software
+## Appendix C: Python Interface 
 
-## Python Interface 
-
-As previously mentioned, python wrappers are included for most functions. 
+As previously mentioned, Python wrappers are included for most functions. 
 
 ### Requirements For All Python Functions
 
-To use these python functions, users need to have **Python** version **3.10** 
+To use these Python functions, users need to have Python version **3.10** 
 installed on their system. 
 
 If the user has a later version of Python 
@@ -77,7 +75,7 @@ After installing miniconda, refer to [this section](https://docs.conda.io/projec
 and later sections of the Conda user guide to set up an environment with 
 Python 3.10.
 
-Python 3.10 conveniently comes with **pip**, the python package installer. 
+Python 3.10 conveniently comes with **pip**, the Python package installer. 
 It can be used to install various Python packages/modules that will be 
 required to run the dsld Python functions. **All** of our Python functions
 [To install rpy2, run **pip install rpy2** within the Python 3.10 environment, 
@@ -86,13 +84,13 @@ require **rpy2**, which allows for Python/R environment interaction.
 
 ### Running dsld Python Functions
 
-As an example, let's use the python interface for dsldTakeALookAround 
-(the python-equivalent function is called **dsldPyTakeALookAround**)  
+As an example, let's use the Python interface for ##dsldTakeALookAround## 
+(the Python-equivalent function is called **dsldPyTakeALookAround**)  
 to view tabular information on how data features relate to Y and S. The 
-python function allows users to enter arguments using Python data types 
+Python function allows users to enter arguments using Python data types 
 and converts the resultant R dataframe into a Pandas dataframe.
 
-Different python functions will require different libraries 
+Different Python functions will require different libraries 
 depending on what the function does -- **Pandas**
 [These libraries can also (usually) be installed with **pip**]{.column-margin} 
 is required for dsldPyTakeALookAround.
@@ -102,9 +100,9 @@ are using devtools::install_github and have access to /dsld folder -->
 The user should open the Python Shell Prompt by typing **python** from the 
 package Python directory (/dsld/inst/Python) in the terminal/cmd prompt.
 Then, to run the Python function, we can run the following commands in the 
-python shell:
+Python shell:
 
-```{python, eval=FALSE}
+```python}
 from dsldTakeALook_Py_R import dsldPyTakeALookAround    
 import rpy2.robjects as robjects   
 robjects.r['data']('svcensus')    
