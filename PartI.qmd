@@ -1180,8 +1180,7 @@ there appear to be many that correlate with just one of these.  That's
 to be expected for datasets having a large number pf variables.  But
 still, in the end we see a few that meet our goals.
 
-
-## On Causal Inference (advanced material) {#sec-causal}
+## Observationational Studies
 
 An *observational study* is, in essence, one that is not planned. For
 instance, say we are comparing an old and a new drug for hypertension.
@@ -1189,20 +1188,23 @@ Suppose that, unknown to us, the new medication does well on younger
 patients but not on older ones.  Say the nature of the data collection
 process results in disproportionately sampling older patients, but our
 data itself does not include patient ages.  This could unfairly make the
-new drug appear ineffective.
+new drug appear ineffective.  So age would be a confounder, but alas, an
+unobsered one.
 
-In a *randomized clinical trial* (RCTs), we would randomly assign
+In a *randomized clinical trial* (RCT), we would randomly assign
 treatments to patients, so there would likely be no strong imbalance in
 age distribution in the two drug groups.  So, even if our data still did
 not record patient age, there would be no age bias in our analysis.
+But in most cases in practice, RCTs are infeasible or impossible; we cannot
+"assign" race, for instance. 
 
-In many cases, RCTs are infeasible or impossible; we cannot "assign"
-race, for instance.  *Causal analysis* (CA) can be viewed both as a way
-to deal with observational studies, and in its graphical forms, as a
-descriptive alternative to traditional statistical relational analysis.  
+The analyst must always keep this issue in mind.
 
-Though CA takes on many forms, our discussion here will focus 
-on two topics:
+## On Causal Analysis (advanced material) {#sec-causal}
+
+Causal analysis (CA) takes on many forms, and indeed, there is no good
+definition of what it entails. Moreover, it tends to be controversial.
+our discussion here will focus on two topics:
 
 * covariate matching methods.
 
