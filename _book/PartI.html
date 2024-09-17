@@ -161,8 +161,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Appendices.html" class="sidebar-item-text sidebar-link">
+  <a href="./AuthorBios.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Author Bios</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Appendices</span></span></a>
   </div>
 </li>
     </ul>
@@ -214,6 +220,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-dsldchunting-function" id="toc-the-dsldchunting-function" class="nav-link" data-scroll-target="#the-dsldchunting-function"><span class="header-section-number">2.8.5</span> The dsldCHunting() function</a></li>
   <li><a href="#example-boston-mortgage-data" id="toc-example-boston-mortgage-data" class="nav-link" data-scroll-target="#example-boston-mortgage-data"><span class="header-section-number">2.8.6</span> Example: Boston mortgage data</a></li>
   <li><a href="#example-employer-bias-test" id="toc-example-employer-bias-test" class="nav-link" data-scroll-target="#example-employer-bias-test"><span class="header-section-number">2.8.7</span> Example: Employer bias test</a></li>
+  </ul></li>
+  <li><a href="#observationational-studies" id="toc-observationational-studies" class="nav-link" data-scroll-target="#observationational-studies"><span class="header-section-number">2.9</span> Observationational Studies</a></li>
+  <li><a href="#sec-causal" id="toc-sec-causal" class="nav-link" data-scroll-target="#sec-causal"><span class="header-section-number">2.10</span> On Causal Analysis (advanced material)</a>
+  <ul class="collapse">
+  <li><a href="#covariate-matching" id="toc-covariate-matching" class="nav-link" data-scroll-target="#covariate-matching"><span class="header-section-number">2.10.1</span> Covariate matching</a></li>
+  <li><a href="#dags" id="toc-dags" class="nav-link" data-scroll-target="#dags"><span class="header-section-number">2.10.2</span> DAGS</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -386,7 +398,7 @@ Important term: the <em>regression function</em>
 <li><p>We chose only one C variable here, age. We might also include occupation, as noted earlier. In some datasets, might have dozens of possible confounders. How do we choose which ones to use in our model? And for that matter, why not use them all?</p></li>
 <li><p>The above model, in which the gender wage gap was uniform across all wages, may not be adequate. How can we determine this, and what alternative models might we use?</p></li>
 </ul>
-<div class="no-row-height column-margin column-container"><span class="">In addition, the data here are, as is commonly the case, <em>observational</em>, as opposed to being the result of a <em>randomized clinical trial</em>; there may be serious issues, due to unobserved confounders. Such problems might be solvable via an advanced (and rather controversial) methodology known as <em>causal inference</em>. Unfortunately, details are beyond our scope in this tutorial, but we will explain some basic concepts in <a href="Appendices.html#sec-causal"><span>Section&nbsp;5.2</span></a>.</span></div></section>
+<div class="no-row-height column-margin column-container"><span class="">In addition, the data here are, as is commonly the case, <em>observational</em>, as opposed to being the result of a <em>randomized clinical trial</em>; there may be serious issues, due to unobserved confounders. Such problems might be solvable via an advanced (and rather controversial) methodology known as <em>causal inference</em>. Unfortunately, details are beyond our scope in this tutorial, but we will explain some basic concepts in <a href="#sec-causal"><span>Section&nbsp;2.10</span></a>.</span></div></section>
 <section id="statistical-inference" class="level3 page-columns page-full" data-number="2.1.3">
 <h3 data-number="2.1.3" class="anchored" data-anchor-id="statistical-inference"><span class="header-section-number">2.1.3</span> Statistical inference</h3>
 <p>The full output of <strong>dsldLinear()</strong> goes to the heart of discrimination analysis, enabling statistical inferences on differences in levels of the sensitive variable S. Let’s take a look, continuing from the above code:</p>
@@ -708,28 +720,24 @@ Estimate            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
 <div class="page-columns page-full"><p>How is “close to” defined? Should we look at the closest 5 people, the closest 50, or what? That number is k, the number of nearest neighbors.  It’s chosen by the analyst, just like the analyst chooses the number of bins in plotting a histogram. Typically k is chosen by trying several different values of k, then using the one that best predicts in the holdout set. Once we’ve settled on k, we might use the full dataset, no holdout.</p><div class="no-row-height column-margin column-container"><span class="">The number k here is called <em>hyperparameter</em> of the algorithms.</span></div></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'svcensus'</span>,<span class="fu">quote</span>(wageinc),<span class="st">'gender'</span>,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,<span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>))  </span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(z)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$testAccs
-$testAccs$female
-NULL
-
-$testAccs$male
-NULL
-
+  female     male 
+21336.37 27196.96 
 
 $comparisons
            age     educ occ wkswrkd female  male
-10502 37.43326 zzzOther 101      52  48914 61156
-19689 47.75017 zzzOther 100      52  57628 60422
-13609 42.46283 zzzOther 102      52  66182 86474
-12419 46.67517       14 100      52  69834 85650
-14402 52.66371 zzzOther 106      52  59200 69752</code></pre>
+10502 37.43326 zzzOther 101      52  50614 65596
+19689 47.75017 zzzOther 100      52  57420 61382
+13609 42.46283 zzzOther 102      52  66122 83352
+12419 46.67517       14 100      52  71954 85050
+14402 52.66371 zzzOther 106      52  60590 73848</code></pre>
 </div>
 </div>
-<div class="page-columns page-full"><p>The first three arguments are as usual. The fourth states that the ML  algorithm we wish to use is kNN; the <strong>qeML</strong> package also includes random forests, boosting and neural networks. The <strong>opts</strong> argument states which non-default values we wish to use for arguments to the ML function; the default k actually is 25.</p><div class="no-row-height column-margin column-container"><span class="">The use of R’s <strong>quote</strong> function here is due to a nuance in the way R handles nested quotes.</span></div></div>
+<p>The first three arguments are as usual. The fourth states that the ML algorithm we wish to use is kNN; the <strong>qeML</strong> package also includes random forests, boosting and neural networks. The <strong>opts</strong> argument states which non-default values we wish to use for arguments to the ML function; the default k actually is 25.</p>
 <p>The comparison cases are by default a random sample of 5 rows of the training set. In order to obtain consistent results each time this book is processed by Quarto, we’ve called R’s <strong>set.seed</strong> function.</p>
 <p>It’s important to keep in mind that the output here is not simply for 5 persons; each row represents a subpopulation. Thus for instance in that first row of output, we estimate among <em>all</em> Silicon Valley techies of age 37.4, with a Bachelor’s degree or less, in occupation 101, and having worked 52 weeks, women’s average wage is 48,914 and for men it’s 61,156.</p>
 <p>As before, we see a substantial gender wage gap, but now we can feel more confident about it, since this analysis is unencumbered by assumptions on the form of the regression function. On the other hand, as noted, there is no easy way to obtain standard errors.</p>
@@ -749,7 +757,7 @@ $comparisons
 <p>There is no “universally best” predictive algorithm, with performance of a given algorithm being dependent on the given dataset. So, instead of doing a kNN analysis, we could try RF:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'svcensus'</span>,<span class="fu">quote</span>(wageinc),<span class="st">'gender'</span>,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeRF'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required namespace: randomForest</code></pre>
@@ -757,20 +765,16 @@ $comparisons
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(w)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$testAccs
-$testAccs$female
-NULL
-
-$testAccs$male
-NULL
-
+  female     male 
+20748.78 27955.95 
 
 $comparisons
            age     educ occ wkswrkd   female     male
-10502 37.43326 zzzOther 101      52 51674.50 71698.44
-19689 47.75017 zzzOther 100      52 47598.81 67647.72
-13609 42.46283 zzzOther 102      52 72271.37 83922.60
-12419 46.67517       14 100      52 59621.01 63616.03
-14402 52.66371 zzzOther 106      52 56677.27 62521.89</code></pre>
+10502 37.43326 zzzOther 101      52 51937.17 72126.99
+19689 47.75017 zzzOther 100      52 47494.44 67178.71
+13609 42.46283 zzzOther 102      52 71107.03 83606.01
+12419 46.67517       14 100      52 56353.56 69237.44
+14402 52.66371 zzzOther 106      52 58431.52 63392.62</code></pre>
 </div>
 </div>
 <p>Though still indicating a gender wage gap, the results here are rather different from what we obtained with kNN. Which one is better in this particular application? Again, we may decide this on the basis of prediction accuracy (<strong>testAcc</strong> values) on the holdout set. The RF version looks slightly better, but for full thoroughness, we would need to try different hyperparameter values, and so on. Short of going through all that, the two models are similar.</p>
@@ -891,7 +895,17 @@ $`Sensitive Factor Level Comparisons`
 18   fulltime2 -0.54114731    0.088416220  9.330973e-10
 
 $`Sensitive Factor Level Comparisons`
-[1] "Factors Compared" "Estimates"        "Standard Errors"  "P-Value"         </code></pre>
+   Factors Compared    Estimates Standard Errors      P-Value
+1     asian - black -0.209646661      0.13053067 0.1082496509
+2      asian - hisp -0.070789554      0.13670067 0.6045674668
+3     asian - other -0.062689778      0.18508665 0.7348319612
+4     asian - white -0.374343793      0.11129175 0.0007692575
+5      black - hisp  0.138857107      0.11256856 0.2173906884
+6     black - other  0.146956884      0.16926160 0.3852820509
+7     black - white -0.164697131      0.09362748 0.0785806070
+8      hisp - other  0.008099776      0.17545132 0.9631788810
+9      hisp - white -0.303554239      0.09885125 0.0021374826
+10    other - white -0.311654015      0.15832839 0.0490349927</code></pre>
 </div>
 </div>
 <p>That’s a lot of output. Let’s take a closer look.</p>
@@ -908,40 +922,27 @@ $`Sensitive Factor Level Comparisons`
 </div>
 <p>Looks pretty good. But we can go further, using k-NN analysis, as it makes no assumptions about the form of the regression function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(<span class="st">'lsa'</span>,<span class="fu">quote</span>(bar),<span class="st">'race1'</span>,<span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,</span>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(lsa,<span class="st">'bar'</span>,<span class="st">'race1'</span>,<span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>,<span class="at">yesYVal=</span><span class="st">'TRUE'</span>))  </span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(w)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$testAccs
-$testAccs$asian
-NULL
-
-$testAccs$black
-NULL
-
-$testAccs$hisp
-NULL
-
-$testAccs$other
-NULL
-
-$testAccs$white
-NULL
-
+    asian     black      hisp     other     white 
+0.2151899 0.3583333 0.2473118 0.1081081 0.0930000 
 
 $comparisons
       age decile1 decile3 fam_inc lsat ugpa gender cluster fulltime asian black
-27449  57       2       1       4   29  2.7 female       1        1  0.72  0.60
-20515  60       7       8       4   32  3.4 female       3        1  1.00  0.96
-3410   61       1       1       3   23  2.7   male       3        1  0.68  0.40
-26569  51       6       7       3   34  2.7   male       3        2  0.72  0.60
-21745  61       8       7       3   42  3.3   male       2        1  0.52  0.76
+16719  56       9       9       3   32  3.5   male       4        1  1.00  0.90
+25464  61       6       5       2   29  3.1 female       2        1  0.68  0.46
+16441  62       8       7       4   36  2.8   male       4        1  0.92  0.84
+24103  57       9       9       4   33  3.3   male       1        1  0.98  0.90
+22083  57       7       6       5   39  3.4   male       3        1  0.92  0.82
       hisp other white
-27449 0.64  0.68  0.52
-20515 0.84  1.00  0.96
-3410  0.60  0.68  0.56
-26569 0.68  0.88  0.84
-21745 0.96  0.84  0.96</code></pre>
+16719 0.98  1.00  1.00
+25464 0.78  0.94  0.78
+16441 0.94  0.84  1.00
+24103 0.96  0.96  1.00
+22083 0.86  0.90  1.00</code></pre>
 </div>
 </div>
 <p>The pattern here seems to be a bit uneven. Black and white test takers seem to be on par with each other in three cases, but with major differences in the other two rows. We should look at more cases, and revisit the logit analysis, possible checking for quadratic trends..</p>
@@ -1179,13 +1180,6 @@ male         0.04446055       0.17092610</code></pre>
 </div>
 <p><img src="graphTab/lawdensitylsat.png" class="img-fluid" style="width:120.0%"></p>
 <p>Each curve represents the distribution of LSAT scores for one race. The graph suggests the possibility of racial bias in the LSAT. But again, this bias may be confounded.</p>
-<p>Recall that the scatter plot also suggested some trend between family income and race. We can investigate this possible relationship by generating another density plot:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldDensityByS</span>(law.school.admissions, <span class="at">cName =</span> <span class="st">"fam_inc"</span>, <span class="at">sName =</span> <span class="st">"race1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><img src="graphTab/lawdensityfam.png" class="img-fluid" style="width:120.0%"></p>
-<div class="page-columns page-full"><p> White students have larger peaks at income levels 3, 4, and 5, indicating that a larger proportion of white students are in the higher income brackets than non-white students. Conversely, a larger proportion of black and Latino students occupy the lower income bracket levels.</p><div class="no-row-height column-margin column-container"><span class="">Recall that the <strong>fam_inc</strong> variable is measured in terms of quintiles, 1 through 5. This is the reason behind the seemingly-odd alignment of, say, the Black and Latino curves.</span></div></div>
 <div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="">If we want to investigate other potential confounders, we can call <strong>dsldConfounders()</strong> with ‘race1’ as our sensitive variable.</span></div></div>
 <p>This suggests that family income could be confounding the potential relationship between race and LSAT scores. But, as noted, our earlier analysis indicated that the degree of this relationship is very small.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1217,24 +1211,24 @@ Almost anything is a confounder
 <h3 data-number="2.8.6" class="anchored" data-anchor-id="example-boston-mortgage-data"><span class="header-section-number">2.8.6</span> Example: Boston mortgage data</h3>
 <p>Here is an example, using the mortgage data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$impForY
-       p_irat        denpmi      loan_val       hse_inc       ltv_med 
- 1.546335e-02  1.474640e-02  1.216851e-02  1.102444e-02  7.679418e-03 
-       single         mcred         ccred         condo      ltv_high 
- 1.803870e-03  1.589129e-03  1.541556e-03  1.519193e-03  1.199042e-03 
-     probunmp       selfemp        hischl        pubrec 
- 1.085909e-03  9.391036e-04 -4.701694e-05 -3.851059e-04 
+       denpmi        p_irat      loan_val       hse_inc       ltv_med 
+ 0.0147809927  0.0145627277  0.0115778621  0.0113391532  0.0078584746 
+       single         mcred         condo      ltv_high         ccred 
+ 0.0018733865  0.0018533472  0.0012931002  0.0010681350  0.0010592614 
+     probunmp        pubrec       selfemp        hischl 
+ 0.0005752676  0.0004823619  0.0004626509 -0.0001048125 
 
 $impForS
      loan_val        p_irat       ltv_med       hse_inc         condo 
- 1.270951e-02  1.066277e-02  1.012572e-02  6.074246e-03  5.285745e-03 
-        ccred        single      ltv_high        denpmi        hischl 
- 3.063738e-03  2.966525e-03  9.887913e-04  8.359624e-04  3.385738e-04 
-     probunmp        pubrec       selfemp         mcred 
- 2.252541e-04  1.573050e-04  4.236975e-05 -6.168608e-05 
+ 0.0129525280  0.0094211116  0.0090298573  0.0061711267  0.0044294133 
+        ccred        single        pubrec      ltv_high        denpmi 
+ 0.0026117584  0.0023983252  0.0016617747  0.0008335726  0.0005516326 
+       hischl       selfemp      probunmp         mcred 
+ 0.0001515775  0.0001217180 -0.0004341749 -0.0008345865 
 
 $inCommon
 $inCommon[[1]]
@@ -1259,15 +1253,14 @@ $inCommon[[7]]
 [1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"  
 
 $inCommon[[8]]
-[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"   "condo"   
 
 $inCommon[[9]]
-[1] "p_irat"   "denpmi"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
-[8] "condo"   
+[1] "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"   "condo"    "ltv_high"
 
 $inCommon[[10]]
-[1] "p_irat"   "denpmi"   "loan_val" "hse_inc"  "ltv_med"  "single"   "ccred"   
-[8] "condo"    "ltv_high"</code></pre>
+[1] "denpmi"   "p_irat"   "loan_val" "hse_inc"  "ltv_med"  "single"   "condo"   
+[8] "ltv_high" "ccred"   </code></pre>
 </div>
 </div>
 <p>The importance measures are printed out (the ranking is what matters), followed by the “top-i” sets in common.</p>
@@ -1279,12 +1272,12 @@ $inCommon[[10]]
 <h3 data-number="2.8.7" class="anchored" data-anchor-id="example-employer-bias-test"><span class="header-section-number">2.8.7</span> Example: Employer bias test</h3>
 <p>In the paper “Are Emily and Greg More Employable Than Lakisha and Jamal? A Field Experiment on Labor Market Discrimination” (<em>Am. Econ. Rev.</em>, Sept.&nbsp;2004), researcher “test” employers by sending CVs with “white-sounding” and “Black-sounding” names, checking for bias. Did employers call “whites” more often than “Blacks” for an interview? The resulting data is <strong>lak</strong> in <strong>dsld</strong>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lak)</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lak)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 447  63</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "education"          "ofjobs"             "yearsexp"          
  [4] "honors"             "volunteer"          "military"          
@@ -1312,75 +1305,75 @@ $inCommon[[10]]
 <p>We’ll take Y to be <strong>call</strong>, which records whether the “applicant” received a call back in response to submitting the CV. S will be race, which now leaves us with 63 - 2 = 61 potential confounders!</p>
 <p>Actually, it’s even worse. Many rows of the dataset contain missing values (coded NA in R). The version here uses only intact rows, of which there are 447. (The original data had 4870 rows.) A rough rule of thumb commonly cited in statistics is that in regression estimation, the number of features should be less than the square root of the number of data points; by this or almost any other measure, 61 predictors is well beyond the capacity of 447 data points. And, as noted, that number of variables is unwieldy. Let’s see what we can do to reduce that.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(lak,<span class="st">'call'</span>,<span class="st">'race'</span>,<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(lak,<span class="st">'call'</span>,<span class="st">'race'</span>,<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$impForY
-   fraccolp_empzip fracdropout_empzip        linc_empzip   lmedhhinc_empzip 
-      5.499015e-03       4.361030e-03       3.922478e-03       2.913287e-03 
-              linc   fracblack_empzip       parent_sales         branch_emp 
-      2.625403e-03       2.615064e-03       2.146387e-03       1.521750e-03 
-      branch_sales   fracwhite_empzip           fraccolp            manager 
-      1.413845e-03       1.395085e-03       1.381751e-03       1.366411e-03 
-              adid        fracdropout      specialskills          lmedhhinc 
-      1.234457e-03       1.220828e-03       1.038361e-03       1.022045e-03 
-           compreq          expminreq         parent_emp           yearsexp 
-      8.188585e-04       7.582611e-04       7.056381e-04       6.318586e-04 
-              city          fracwhite      occupspecific          secretary 
-      6.044175e-04       5.226365e-04       4.617007e-04       4.005274e-04 
-         fracblack           empholes          ownership              email 
-      3.536053e-04       2.633629e-04       2.377489e-04       2.227699e-04 
-       retailsales                  h                eoe               kind 
-      1.956400e-04       1.797562e-04       1.778599e-04       1.674892e-04 
-         education          schoolreq                sex             comreq 
-      1.176300e-04       7.786616e-05       7.686346e-05       7.409691e-05 
-            expreq           salesrep         supervisor                col 
-      6.464075e-05       5.780167e-05       4.137827e-05       4.060328e-05 
-        offsupport             ofjobs             honors         othservice 
-      3.919810e-05       3.660207e-05       1.792263e-05       1.586668e-05 
-            orgreq              trade           transcom            missind 
-      1.398601e-05       5.812189e-07       0.000000e+00       0.000000e+00 
-        occupbroad              manuf                fed           military 
-     -9.468491e-06      -2.887535e-05      -4.110741e-05      -4.166477e-05 
-          bankreal                req            educreq                  l 
-     -4.505495e-05      -4.771565e-05      -7.330976e-05      -8.455244e-05 
-         volunteer         busservice     computerskills          firstname 
-     -9.965509e-05      -1.080582e-04      -1.092721e-04      -1.179926e-04 
-      workinschool 
-     -3.082498e-04 
+   fraccolp_empzip fracdropout_empzip        linc_empzip   fracblack_empzip 
+      4.772650e-03       4.627861e-03       4.349551e-03       3.744587e-03 
+              linc         branch_emp   lmedhhinc_empzip         parent_emp 
+      2.847057e-03       2.422533e-03       2.301625e-03       2.096364e-03 
+      branch_sales          lmedhhinc       parent_sales            manager 
+      1.682490e-03       1.662307e-03       1.365164e-03       1.147235e-03 
+          fraccolp   fracwhite_empzip               city            compreq 
+      1.062280e-03       8.188254e-04       7.840211e-04       7.511824e-04 
+       fracdropout           yearsexp               adid          expminreq 
+      7.088380e-04       6.996802e-04       6.727436e-04       6.175214e-04 
+               sex          education          secretary            educreq 
+      4.642575e-04       4.314903e-04       3.976907e-04       3.701735e-04 
+        occupbroad                req              trade         othservice 
+      3.412396e-04       3.239205e-04       2.631443e-04       2.504701e-04 
+                 h                col      occupspecific          schoolreq 
+      2.215522e-04       1.723987e-04       1.457608e-04       1.444915e-04 
+               fed             orgreq       workinschool                eoe 
+      1.143394e-04       7.610630e-05       7.230243e-05       6.991121e-05 
+    computerskills      specialskills             comreq          ownership 
+      4.764673e-05       3.129636e-05       3.076923e-05       2.289900e-05 
+          salesrep           transcom            missind               kind 
+      1.328484e-06       0.000000e+00       0.000000e+00      -2.825163e-06 
+             email             ofjobs           bankreal          volunteer 
+     -6.121203e-06      -6.360268e-06      -1.725572e-05      -2.572591e-05 
+          empholes             honors             expreq         supervisor 
+     -3.131322e-05      -3.380254e-05      -7.057885e-05      -7.493107e-05 
+                 l        retailsales         offsupport         busservice 
+     -7.664920e-05      -8.825736e-05      -1.131883e-04      -1.433669e-04 
+             manuf          fracblack           military          fracwhite 
+     -1.932477e-04      -2.030080e-04      -2.143711e-04      -2.353473e-04 
+         firstname 
+     -5.472534e-04 
 
 $impForS
-         firstname               linc          lmedhhinc          fracwhite 
-      7.601098e-02       2.917741e-03       2.590713e-03       2.347715e-03 
-            ofjobs     computerskills         othservice           military 
-      1.253844e-03       8.314399e-04       4.699709e-04       4.635878e-04 
-         education          fracblack           empholes            compreq 
-      2.241179e-04       1.796035e-04       1.269505e-04       3.039656e-05 
-         ownership            missind           transcom               city 
-      1.139559e-05       0.000000e+00      -5.941901e-05      -6.025754e-05 
-           manager              manuf        fracdropout                sex 
-     -1.141520e-04      -1.360799e-04      -1.711292e-04      -1.956709e-04 
-              kind                col        retailsales              email 
-     -2.300770e-04      -2.370655e-04      -2.746826e-04      -2.777165e-04 
-            comreq                  l          schoolreq           fraccolp 
-     -2.850064e-04      -2.939751e-04      -3.657418e-04      -3.703502e-04 
-          bankreal            educreq           salesrep         offsupport 
-     -3.835777e-04      -4.139371e-04      -4.556876e-04      -4.669090e-04 
-               req             honors             expreq                fed 
-     -4.723912e-04      -5.165723e-04      -5.265490e-04      -5.457982e-04 
-         secretary      specialskills             orgreq         occupbroad 
-     -5.631163e-04      -5.741544e-04      -6.948797e-04      -7.628087e-04 
-        supervisor         busservice              trade          volunteer 
-     -7.656347e-04      -8.492082e-04      -8.692304e-04      -1.080123e-03 
-   fraccolp_empzip                  h       workinschool                eoe 
-     -1.158906e-03      -1.160250e-03      -1.604002e-03      -1.730779e-03 
-         expminreq   fracwhite_empzip      occupspecific fracdropout_empzip 
-     -2.416712e-03      -2.526489e-03      -2.579276e-03      -2.624324e-03 
-          yearsexp         parent_emp   lmedhhinc_empzip       branch_sales 
-     -2.812154e-03      -3.308079e-03      -3.445445e-03      -3.737839e-03 
-       linc_empzip         branch_emp       parent_sales   fracblack_empzip 
-     -4.155636e-03      -4.244323e-03      -4.428632e-03      -4.480281e-03 
-              adid 
-     -6.896452e-03 
+         firstname          lmedhhinc               linc          fracwhite 
+      6.686840e-02       3.792683e-03       2.184668e-03       1.937198e-03 
+          military               city            manager                sex 
+      1.170462e-03       9.194788e-04       6.147443e-04       5.498834e-04 
+      workinschool          ownership            educreq           fraccolp 
+      4.687138e-04       9.049113e-05       8.116598e-05       7.425017e-05 
+           missind              trade              email           transcom 
+      0.000000e+00      -1.202213e-05      -1.494294e-05      -3.162388e-05 
+          empholes        fracdropout                  l            compreq 
+     -1.064715e-04      -1.220808e-04      -1.365759e-04      -1.391709e-04 
+          bankreal         supervisor          volunteer             comreq 
+     -1.918775e-04      -1.949936e-04      -1.995482e-04      -2.254765e-04 
+        offsupport         occupbroad                col              manuf 
+     -2.358398e-04      -2.809561e-04      -3.519604e-04      -3.533836e-04 
+               eoe           salesrep          secretary         othservice 
+     -3.593646e-04      -3.622374e-04      -4.093889e-04      -4.351911e-04 
+               req          schoolreq             expreq                  h 
+     -4.837630e-04      -4.902926e-04      -5.306430e-04      -5.625066e-04 
+    computerskills          education             orgreq             honors 
+     -5.889709e-04      -6.004271e-04      -6.325028e-04      -6.408441e-04 
+               fed      specialskills        retailsales          fracblack 
+     -6.540626e-04      -6.617703e-04      -7.498588e-04      -8.162425e-04 
+      parent_sales      occupspecific               kind    fraccolp_empzip 
+     -8.293911e-04      -9.536404e-04      -1.061916e-03      -1.245931e-03 
+            ofjobs fracdropout_empzip         busservice   lmedhhinc_empzip 
+     -1.247235e-03      -1.280764e-03      -1.294118e-03      -1.483864e-03 
+        parent_emp   fracwhite_empzip           yearsexp        linc_empzip 
+     -1.682487e-03      -2.194421e-03      -2.316927e-03      -2.384270e-03 
+         expminreq               adid   fracblack_empzip         branch_emp 
+     -2.548126e-03      -3.453402e-03      -3.700286e-03      -3.934042e-03 
+      branch_sales 
+     -4.905349e-03 
 
 $inCommon
 $inCommon[[1]]
@@ -1411,60 +1404,158 @@ $inCommon[[9]]
 [1] "linc"
 
 $inCommon[[10]]
-[1] "linc"
-
-$inCommon[[11]]
-[1] "linc"
-
-$inCommon[[12]]
-[1] "linc"
-
-$inCommon[[13]]
-[1] "linc"
-
-$inCommon[[14]]
-[1] "linc"
-
-$inCommon[[15]]
-[1] "linc"
-
-$inCommon[[16]]
 [1] "linc"      "lmedhhinc"
 
+$inCommon[[11]]
+[1] "linc"      "lmedhhinc"
+
+$inCommon[[12]]
+[1] "linc"      "lmedhhinc" "manager"  
+
+$inCommon[[13]]
+[1] "linc"      "lmedhhinc" "manager"   "fraccolp" 
+
+$inCommon[[14]]
+[1] "linc"      "lmedhhinc" "manager"   "fraccolp" 
+
+$inCommon[[15]]
+[1] "linc"      "lmedhhinc" "manager"   "fraccolp"  "city"     
+
+$inCommon[[16]]
+[1] "linc"      "lmedhhinc" "manager"   "fraccolp"  "city"     
+
 $inCommon[[17]]
-[1] "linc"      "manager"   "lmedhhinc" "compreq"  
+[1] "linc"      "lmedhhinc" "manager"   "fraccolp"  "city"     
 
 $inCommon[[18]]
-[1] "linc"      "manager"   "lmedhhinc" "compreq"  
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "fracdropout"
 
 $inCommon[[19]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "fracdropout"
 
 $inCommon[[20]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout"
 
 $inCommon[[21]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
-[6] "city"       
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout" "sex"        
 
 $inCommon[[22]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
-[6] "city"        "fracwhite"  
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout" "sex"        
 
 $inCommon[[23]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
-[6] "city"        "fracwhite"  
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout" "sex"        
 
 $inCommon[[24]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
-[6] "city"        "fracwhite"  
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout" "sex"         "educreq"    
 
 $inCommon[[25]]
-[1] "linc"        "manager"     "fracdropout" "lmedhhinc"   "compreq"    
-[6] "city"        "fracwhite"   "fracblack"  </code></pre>
+[1] "linc"        "lmedhhinc"   "manager"     "fraccolp"    "city"       
+[6] "compreq"     "fracdropout" "sex"         "educreq"    </code></pre>
 </div>
 </div>
 <p>We are seeking variables that are correlated both with Y and S, yet there appear to be many that correlate with just one of these. That’s to be expected for datasets having a large number pf variables. But still, in the end we see a few that meet our goals.</p>
+</section>
+</section>
+<section id="observationational-studies" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="observationational-studies"><span class="header-section-number">2.9</span> Observationational Studies</h2>
+<p>An <em>observational study</em> is, in essence, one that is not planned. For instance, say we are comparing an old and a new drug for hypertension. Suppose that, unknown to us, the new medication does well on younger patients but not on older ones. Say the nature of the data collection process results in disproportionately sampling older patients, but our data itself does not include patient ages. This could unfairly make the new drug appear ineffective. So age would be a confounder, but alas, an unobsered one.</p>
+<p>In a <em>randomized clinical trial</em> (RCT), we would randomly assign treatments to patients, so there would likely be no strong imbalance in age distribution in the two drug groups. So, even if our data still did not record patient age, there would be no age bias in our analysis. But in most cases in practice, RCTs are infeasible or impossible; we cannot “assign” race, for instance.</p>
+<p>The analyst must always keep this issue in mind.</p>
+</section>
+<section id="sec-causal" class="level2 page-columns page-full" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="sec-causal"><span class="header-section-number">2.10</span> On Causal Analysis (advanced material)</h2>
+<p>Causal analysis (CA) takes on many forms, and indeed, there is no good definition of what it entails. Moreover, it tends to be controversial. our discussion here will focus on two topics:</p>
+<ul>
+<li><p>covariate matching methods.</p></li>
+<li><p><em>directed acyclic graphs</em> (DAGs)</p></li>
+</ul>
+<section id="covariate-matching" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="covariate-matching"><span class="header-section-number">2.10.1</span> Covariate matching</h3>
+<p>The basic idea here is quite simple. Consider our above example comparing two medications, A and B, with Y being the response variable. Instead of comparing the two sample means of Y, we form pairs of data points, with an A group and B group member in each pair. These pairs form our new data. (Not every one of the original data points will now be represented, though some may appear more than once.) We then compare mean Y values among the two groups in this new data.</p>
+<p>Here is an example, involving a jobs training program::</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde,<span class="at">package=</span><span class="st">'Matching'</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">&lt;-</span> lalonde</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>treat <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ll<span class="sc">$</span>treat)</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re74 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re75 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">dsldMatchedATE</span>(ll,<span class="st">'re78'</span>,<span class="st">'treat'</span>,<span class="st">'1'</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The data structure is</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>  age educ black hisp married nodegr     re78 u74 u75 treat</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>  <span class="dv">37</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">1</span>      <span class="dv">1</span>  <span class="fl">9930.05</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">0</span>    <span class="dv">1</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">3595.89</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span>  <span class="dv">30</span>   <span class="dv">12</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">0</span> <span class="fl">24909.50</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span>  <span class="dv">27</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">7506.15</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span>  <span class="dv">33</span>    <span class="dv">8</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>   <span class="fl">289.79</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="dv">6</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">4056.49</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Participants in the program had <strong>treat</strong> coded 1, the others 0. Income several years later (1978) is shown in <strong>re78</strong>. In the matched pairs, the average difference in income was estimated to be 1374.7.</p>
+<p>A key point is the manner in which the matching is done. In most cases, it can be done only approximately. In the medication example, for instance,,we probably could not find two patients of the same age <em>and</em> the same gender <em>and</em> the same race and so on. But the more variables we have, the harder it is to find even approximate matches. One solution is to use <em>propensity scores</em>, not covered here.</p>
+<p>An even larger problem is interpretation. Let X denote the vector of our predictors, e.g.&nbsp;age, gender and so on. The regression methods covered earlier in this book estimate the mean Y for a given X, whereas matching methods estimate the unconditional mean of Y. The interpretation of the latter may be problematic, since our matching process itself may have changed the distribution of X.</p>
+<p>We then compute mean Y</p>
+</section>
+<section id="dags" class="level3 page-columns page-full" data-number="2.10.2">
+<h3 data-number="2.10.2" class="anchored" data-anchor-id="dags"><span class="header-section-number">2.10.2</span> DAGS</h3>
+<p>In a DAG, an arrow from A to B signifies that A “causes” B.</p>
+<p>For instance, a graphical description of a situation in which older people (say who came of age before anti-smoking campaigns) might be more likely to smoke, and for other reasons may be more likely to develop cancer even if they are nonsmokers. A graphical description would be</p>
+<p><img src="appendixB/ascdag.png" class="img-fluid" style="width:40.0%"></p>
+<p>Here is an example the <strong>bnlearn</strong> package on our <strong>svcensus</strong> dataset:</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>        <span class="fu">data</span>(svcensus)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>        <span class="co"># iamb does not accept integer data</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>        svcensus<span class="sc">$</span>wkswrkd <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wkswrkd)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>        svcensus<span class="sc">$</span>wageinc <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wageinc)</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>        iambOut <span class="ot">&lt;-</span> <span class="fu">dsldIamb</span>(svcensus)</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">plot</span>(iambOut)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="svcensusDAG.png" class="img-fluid" style="width:100.0%"></p>
+<div class="page-columns page-full"><p>There are a couple of undirected arcs, e.g.&nbsp;between gender and  occupation–found to be relations, but with indeterminate direction, using available data.</p><div class="no-row-height column-margin column-container"><span class="">Though again we omit a detailed treatment of CA DAGs here, we note that that field defines a confounder of two variables as a variable that is an “ancestor” to both, education being a confounder for income and occupation.</span></div></div>
+<p>More interesting, though, is the lack of a causal arc from gender to wage income. This is in stark contrast to what <strong>dsldLinear</strong> suggests:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,<span class="at">interactions=</span><span class="cn">FALSE</span>)</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$gender
+ (Intercept)          age       educ16 educzzzOther       occ101       occ102 
+ -21264.9056     469.8373    7597.2521  -14167.3888    1838.5510   13688.3012 
+      occ106       occ140       occ141      wkswrkd   gendermale 
+   1380.0254   11732.5837   10791.0158    1323.1999    8595.5831 </code></pre>
+</div>
+</div>
+<p>Here, even correcting for age, education and so on, we still find a substantial gender pay gap. Gender does seem to matter, on its own.</p>
+<p>It should be noted that if the <strong>bnlearn</strong> function <strong>hc</strong> is used instead of <strong>iamb</strong> (not shown), there is indeed a link from ‘gender’ to ‘wageinc’, but apparently at the cost of other anomalies. For example, there is no arc, or path of arcs, from ‘wkswrkd’ to ‘wageinc’.</p>
+<p>CA DAGs are of course quite visually appealing, and many people find causal concepts helpful in their thoughts processes regarding the data. But as pointed out by the developers of such methodology, the graphs can be very misleading. Using DAGs effectively requires deep understanding of the concepts. A treatment of these concepts is well beyond the scope of this course, but we urge users and consumers of CA to keep the following points in mind:</p>
+<ul>
+<li><p>The definition of <em>cause</em> is of course central to proper use of CA DAGs. It does <em>not</em> mean what one ordinarily thinks of as causal (“The sidewalk was icy, so the man slipped and fell”), and it can become quite complex; “wrapping one’s head around” the definition can be a challenge even for experienced probabilistic modelers.</p></li>
+<li><p>Unseen variables, such as age in the above example, can be just as harmful in CI contexts as in observational data.</p></li>
+<li><p>Causal analysis is just as much at the mercy of sample size as is classical statistical analysis, indeed even more so, since the causal version in effect estimates many more parameters. Absence of a link may be due to insufficient data, and nonlinks at the population level may appear as “links” in our graph by random chance in small datasets.</p></li>
+<li><p>Most important, DAGs have a highly concerning uniqueness problem:</p></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+DAGS are not unique
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Most important, for any given dataset, there is typically no unique DAG:  DAG. Typically many DAGs can fit the dataset equally well, and they can be in conflict with each other. One DAG might say that A causes B, while another, equally credible in terms of data fit, might have B causing A, while a third says A and B are independent.</p>
+<p>M. Scutari, author of <strong>bnlearn</strong>, shows an example in his Cambridge lectures:</p>
+<p><img src="TwoEquivDAGs.png" class="img-fluid" style="width:100.0%"></p>
+<p>The nonuniqueness is of course very concerning. In recent years, there has been much handwringing in science about the Replication Crisis, in which scientists try to replicate the findings of an earlier published paper, and discover serious problems with the earlier results. Imagine the replication problems that can arise if authors of a paper present just one of many equally-credible DAGs, as is usually the case.</p></li>
+</ul>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><span class="callout-margin-content">CMU professor C. Shalizi has <a href="https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf">bluntly noted</a> that in cases of nonuniqueness, presenting just one DAG without mentioning the equivalent ones, “…[which] is often what people seem to do,” might be viewed as “lying by omission.” Recognizing the nonuniqueness is “simply a matter of scientific honesty.”</span></div><p>DAGs can indeed lead to valuable insight, but can be misleading as well. A healthy skepticism and a solid understanding of the concepts are mandatory for avoiding misleading or invalid results.</p>
 
 
 </section>

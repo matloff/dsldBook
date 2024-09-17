@@ -44,6 +44,8 @@ analysis.
 
 ## Appendix B: Standard Errors via the Bootstrap {#sec-boot}
 
+(to be added)
+
 ## Appendix C: Python Interface 
 
 As previously mentioned, Python wrappers are included for most functions. 
