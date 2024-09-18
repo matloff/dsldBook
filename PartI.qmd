@@ -611,7 +611,7 @@ We can then run the algorithm with various values of k, and settle on the
 one that predicts the holdout data best.
 [The function **fineTuning** in the **regtools** package can be used
 to automate the process of trying many values of the hyperparameters,
-averaging over many holdout sets.{.column-margin} 
+averaging over many holdout sets.]{.column-margin} 
 
 ```{R}
 set.seed(9999)
