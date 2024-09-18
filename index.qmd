@@ -28,7 +28,7 @@ package).
 ## Prerequisite background
 
 In addition to having rudimentary skill in R, the user should have a
-very basic knowledge of statistical inference--mean, variance,
+very basic knowledge of statistical inference -- mean, variance,
 confidence intervals and tests, and histograms.  A short, intuitive,
 "bare bones" refresher, focused on confidence intervals, is given in
 Appendix A.

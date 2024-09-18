@@ -662,6 +662,9 @@ at V4.  If it's under 28, we immediately predict status DH, and so on.
 
 ![A decision tree](RpartVert.png){width=100%}
 
+RF typically has several hyperparameters, e.g. a limit on the number of
+levels in a tree, and the number of trees.
+
 The order in which variables are considered in building a tree is random
 for each tree.  So, while V6 is considered first in the tree displayed
 here, in some other tree it may be, say, V2.  The split points, e.g. 16
@@ -675,14 +678,16 @@ doing a kNN analysis, we could try RF:
 ```{R}
 set.seed(9999)
 w <- dsldML(svcensus,'wageinc','gender',
-   qeMLftnName='qeRF')  
+   qeMLftnName='qeRF')  # default values for hyperparameters
 print(w)  
 ```
 
 Though still indicating a gender wage gap, the results here are rather
 different from what we obtained with kNN.   Which one is better in this
 particular application?  Again, we may decide this on the basis of
-prediction accuracy (**testAcc** values) on a *holdout set*, as follows:
+prediction accuracy (**testAcc** values) on a *holdout set*. In this
+case, the Mean Absolute Prediction Error was about $20700 for women and
+28000 for men.
 
 ### Other ML methods
 
@@ -1250,7 +1255,7 @@ The analyst must always keep this issue in mind.
 
 Causal analysis (CA) takes on many forms, and indeed, there is no good
 definition of what it entails. Moreover, it tends to be controversial.
-our discussion here will focus on two topics:
+Our discussion here will focus on two topics:
 
 * covariate matching methods.
 
