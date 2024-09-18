@@ -375,7 +375,7 @@ age, as it does not reveal the negative impact of age well beyond 40.
 It may be worth trying a finer discretization of age, say, 35-, 
 35-55 and 55+.
 
-## The Logistic model 
+## The Logistic Model 
 
 The *logistic* model is an example of a *generalized linear model*,
 whose name stems from it having a linear component in the formula, as
@@ -399,10 +399,10 @@ random, the probability of obtaining a 1 would be 3/4.
 :::
 
 Now, what is the logistic model (often called "logit"), and where does
-it come from?  To motivate this, suppose that within each gender Y, X
-has a normal (Gaussian) distribution, the familiar "bell-shaped" curve,
-with the same standard deviation of Y within each gender.  Then it turns out
-that one can show mathematically that
+it come from?  To motivate this, suppose that within each gender Y, the
+income level X has a normal (Gaussian) distribution, the familiar
+"bell-shaped" curve, with the same standard deviation of X within each
+gender.  Then it turns out that one can show mathematically that
 
 probability male =
 $$
@@ -410,10 +410,8 @@ $$
 {1}{1 + e^{-(\beta_0 + \beta_1 income)}}
 $$
 
-The values $\beta_0$ and $\beta_1$ actually are expressions involving
-quantities such as the per-gender mean incomes, but the point is that in
-the end the probability has a linear component to it, $\beta_0 + \beta_1
-income$.
+So the probability has a linear component to it, $\beta_0 + \beta_1
+income$, hence the term "generalized" linear model..
 
 That formula follows the form of the *logistic function*,
 $f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
@@ -425,7 +423,7 @@ curve(1/(1+exp(-x)),-4,4)
 So at least the model retains a linear component, with much the same
 interpretability.  For instance, if $\beta_2 > 0$, then the usual
 monotonicity relation holds, i.e. the higher the income, the greater
-the probability that the person is male.
+the probability that the person is male. 
 
 The estimates b~i~ of the population values $\beta_i$ are obtained via a
 method generalizing the least-squares method used in the linear case.
@@ -433,7 +431,8 @@ method generalizing the least-squares method used in the linear case.
 [There is a similar situation for the linear case.  If Y and the
 predictor variables have a multivariate normal distribution, one can
 show that mean Y as a function of the features is linear in the
-features, etc.]{.column-margin} In the case of multiple predictor
+features, with homogeneous conditional variance and normal conditional
+distributions.]{.column-margin} In the case of multiple predictor
 variables, the logistic form can again be motivated by considering
 within-group distributions:
 
@@ -477,7 +476,7 @@ is associated with a $\beta_1$ increase in mean income, identically for
 either gender.
 
 Geometrically, if we were to plot separate male and female regression
-lines against age, the male and female r lines would be parallel.  That's
+lines against age, the male and female lines would be parallel.  That's
 not possible in the logit case, as logit curves cannot be parallel:
 
 ```{r}
@@ -503,18 +502,20 @@ male) / (probability female) is linear in age and income.
 
 So here we do have a formulation in which the impact of wage is the same
 [Note that a log-odds measure can take on any value betwen $-\infty$ and
-$\infty$.]{.column-margin} for any age level, albeit on this much
-less-interpretable log scale.  
+$\infty$.]{.column-margin} for any age level. But this log scale is hard
+to interpret.
+
+To be sure, we still choose whether or not to have product terms, of S with
+other predictors, by setting **interactions** to TRUE or FALSE,
+respectively. In the TRUE case, the interactions become even more complex.
 
 ### Example: mortgage data
 
-This dataset and its documentation are included in the **SortedEffects**
-[We have done small modifications, to create R factors for some
-columns.]{.column-margin} package.  The issue here is whether racism
-played a role in mortgage denials in the Boston area.  As this is a
-binary outcome, we might consider a logit model.   
-
-Let's try a no-interactions model:
+This dataset and its documentation are included in **dsld** from the
+**SortedEffects** package.  [We have done small modifications, to create
+R factors for some columns.]{.column-margin} package.  The issue here is
+whether racism played a role in mortgage denials in the Boston area.  As
+this is a binary outcome, we might consider a logit model.   
 
 ```{r}
 data(mortgageSE)
@@ -525,10 +526,26 @@ summary(z)
 So, being Black resulted in an average increase in log-odds of about
 0.6409.  A 95% confidence interval is 0.6409 $\pm$ 1.96 x 0.1836 =
 (0.2810,1.0008).  By comparison, being self-employed, for instance, has
-a similar estimated coefficient of about 0.6355.
+a similar estimated coefficient of about 0.6355. Again, interpretation
+on a log scale is difficult -- imagine trying to convince a nontechnical
+person that logarithms of probabilities are meaningful -- but at least
+it is interesting that being Black is a similar handicap to being
+self-employed; the latter trait means lack of a steady income, thus a
+possible risk to not repay the loan.
 
 
 ## Machine learning approaches
+
+::: {.callout-note}
+
+### Important note
+
+In spite of the fancy name *machine learning*, the methods discussed
+here, *k-Nearest Neighbor* estimation, *random forests* and *gradient
+boosting*, were originally developed in the statistics field, and have
+long been used by statisticians.
+
+:::
 
 We referred to the quantities $\beta_i$ above as "parameters."  The
 linear and logistic models are thus called *parametric* models.  In each
@@ -552,7 +569,7 @@ we do here, so they can be quite useful in our context.
 
 ### The k-Nearest Neighbor algorithm
 
-We'll focus here on the k-Nearest Neighbor (k-NN) algorithm, as it is
+We'll focus here on the k-Nearest Neighbor (kNN) algorithm, as it is
 the simplest to explain.  Say we are predicting people's weights,
 knowing only their heights.  We have training data, on which we know
 both the height and weight of each person.  Faced with a new case of a
@@ -640,10 +657,18 @@ print(w)
 Though still indicating a gender wage gap, the results here are rather
 different from what we obtained with kNN.   Which one is better in this
 particular application?  Again, we may decide this on the basis of
-prediction accuracy (**testAcc** values) on the holdout set.   The RF
-version looks slightly better, but for full thoroughness, we would need
-to try different hyperparameter values, and so on.  Short of going
-through all that, the two models are similar.
+prediction accuracy (**testAcc** values) on a *holdout set*, as follows:
+
+Most **dsld** functions have an argument **holdout**. Say we set it to
+1000 and our dataset has 5000 rows. Then the function will randomly
+partition our data into a *training set* of 4000 rows and the holdout
+set of 1000 rows. The give algorithm, say kNN, will fit the training
+data, and then use the result to predict the holdout data. The latter is
+considered "fresh" data, so we obtain an unbiased estimate of our
+predictive power.
+
+We can then run the algorithm with various values of k, and settl on the
+one that predicts the holdout data best.
 
 ### Other ML methods
 
@@ -761,7 +786,7 @@ lsab$bar <- ifelse(lsab$bar=='TRUE',1,0)
 dsldConditDisparity(lsab,'bar','race1','lsat','lsab$age > 0')
 ```
 
-Looks pretty good.  But we can go further, using k-NN analysis, as it
+Looks pretty good.  But we can go further, using kNN analysis, as it
 makes no assumptions about the form of the regression function:
 
 
