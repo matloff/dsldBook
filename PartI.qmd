@@ -581,17 +581,42 @@ height = 70.2.
 
 How is "close to" defined?  Should we look at the closest 5 people, the
 closest 50, or what?  That number is k, the number of nearest neighbors.
-[The number k here is called *hyperparameter* of the
-algorithms.]{.column-margin} It's chosen by the analyst, just like the
-analyst chooses the number of bins in plotting a histogram.  Typically k
-is chosen by trying several different values of k, then using the one
-that best predicts in the holdout set.  Once we've settled on k, we
-might use the full dataset, no holdout.
+The number k here is called a *hyperparameter* of the
+algorithm. It's chosen by the analyst, just like the
+analyst chooses the number of bins in plotting a histogram.  
+
+If in forming a histogram, we use too many bins, each bin may have a
+very small sample, thus producing a ragged graph. If we have too few
+bins, there may be rather disparate values in the same bin, producing a
+graph that is *too* smooth.
+
+The situation with kNN is very similar. If k is too small, we average
+over a small sample; if it is too large, then we might be including data
+points that are far from, in the above situation, 72.5, thus not
+representative.
+
+Typically k is chosen by trying several different values of k, then
+using the one that best predicts in the holdout set.  Once we've settled
+on k, we might use the full dataset, no holdout. 
+
+Most **dsld** functions have an argument **holdout**. Say we set it to
+1000 and our dataset has 5000 rows. Then the function will randomly
+partition our data into a *training set* of 4000 rows and the holdout
+set of 1000 rows. The give algorithm, say kNN, will fit the training
+data, and then use the result to predict the holdout data. The latter is
+considered "fresh" data, so we obtain an unbiased estimate of our
+predictive power.
+
+We can then run the algorithm with various values of k, and settle on the
+one that predicts the holdout data best.
+[The function **fineTuning** in the **regtools** package can be used
+to automate the process of trying many values of the hyperparameters,
+averaging over many holdout sets.{.column-margin} 
 
 ```{R}
 set.seed(9999)
 z <- dsldML(svcensus,'wageinc','gender',
-   qeMLftnName='qeKNN',opts=list(k=50))  
+   qeMLftnName='qeKNN',opts=list(k=50))  # default holdout size
 print(z)  
 ```
 
@@ -658,17 +683,6 @@ Though still indicating a gender wage gap, the results here are rather
 different from what we obtained with kNN.   Which one is better in this
 particular application?  Again, we may decide this on the basis of
 prediction accuracy (**testAcc** values) on a *holdout set*, as follows:
-
-Most **dsld** functions have an argument **holdout**. Say we set it to
-1000 and our dataset has 5000 rows. Then the function will randomly
-partition our data into a *training set* of 4000 rows and the holdout
-set of 1000 rows. The give algorithm, say kNN, will fit the training
-data, and then use the result to predict the holdout data. The latter is
-considered "fresh" data, so we obtain an unbiased estimate of our
-predictive power.
-
-We can then run the algorithm with various values of k, and settl on the
-one that predicts the holdout data best.
 
 ### Other ML methods
 
