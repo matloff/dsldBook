@@ -342,10 +342,8 @@ svc$AgeGend <- AgeGend
 head(svc)
 ```
 
-We have only three education codes here, with 14 and 16 representing a
-Master's degree and 16 a PhD, and 'zzzOther' denoting all others.  Since
-this dataset consists of Silicon Valley programmers and engineers, the
-vast majority of "others" have a Bachelor's degree.
+We have only three education codes here, with 14, 16 and 'zzzOther'
+representing a PhD, Bachelor's and Master's respectively. 
 
 We no longer need the original age and gender columns, so we'll delete
 them and then try some analysis:
@@ -704,14 +702,16 @@ predict(w,typx)  # estimated regression function value
 predict(w1,typx)  # estimated regression function value
 ```
 
-Indeed, the Black and white interaction terms are "very highly
-significant."  But that does mean we should use the more complex model?
+Indeed, the Black and white interaction terms are "significant," even
+"very highly significant."  But that does mean we should use the more
+complex model?
 
-Recall that many ML algorithms, including standard linear regression,
-use the estimated regression function value as its predicted value.  So
-we see here that adding in an interaction term changed the estimated
-value of the regession function by only about 0.02 out of a 40.23
-baseline.  So, we may well prefer the simpler, no-interaction model.
+Recall that many machine learning algorithms, including standard linear
+regression, use the estimated regression function value as its predicted
+value.  So we see here that adding in an interaction term changed the
+estimated value of the regession function by only about 0.02 out of a
+40.23 baseline.  So, we may well prefer the simpler, no-interaction
+model.
 
 Again, we must not take small p-values literally.
 
@@ -767,7 +767,7 @@ Recall that COMPAS is a tool developed to help judges decide on
 sentences in criminal trials, which it does by predicting whether the
 defendant is likely to recidivate.  As noted earlier, one study found
 the tool to be biased against African-Americans; the creator of the
-tool, Northpointe, disagrees.
+tool, Northpointe, disagreed.
 
 Let's investigate this, by predicting Y = the COMPAS score, with S =
 race and C = the remaining variables.  Does S have much effect on Y?
@@ -830,14 +830,16 @@ Well, then, why not use them all?  That is what we've done in our
 earlier examples.  But there are several issues to consider not using
 the full set of variable,s i.e. every variable other than Y and S:
 
-* It may result in overfitting, resulting in large standard errors.
+* It may cause overfitting, resulting in large standard errors.
 
 * It is unwieldy, difficult to interpret.  Many treatments of these
   issues speak of a desire for a "parsimonious" model.
 
-* There is a concern regarding duplication.  It may be that, say, some
-  pair of confounders suffices, and adding further confounders does
-  nothing to further clarify discrimination effects.
+* There is a concern regarding partial duplication.  It 
+  may be that, say, some pair of confounders suffices, with the rest 
+  being highly correlated with this pair. Then adding 
+  further confounders does nothing to further clarify 
+  discrimination effects.
 
 Concerning this last point:  We do not merely have 19
 choices for confounders; we must choose from the set of all possible
@@ -866,11 +868,12 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-The similar frequency values between men and women suggests
-not using education as a confounder.
+Abpit 21% pf the women had a Mast3r's degree, with a figure of 22% for
+men, and so on.  The similar frequency values between men and women
+suggests not using education as a confounder.
 
 On the other hand, we *do* see more interesting results if we look at 
-*occupation* instead of *education*:
+occupation instead of education:
 
 ```{r}
 library(dsld)
@@ -884,7 +887,7 @@ inference in this comparison, calculating a p-value from a *chi-square
 test*.  But again as we saw in @sec-sig. testing for model fit suffers from
 the same problems as testing for nonzero effects.]{.column-margin} versus
 females in that same occupation--a difference of approximately 11%.  The
-difference in frequencies here is much greater than with the 'educ'
+difference in frequencies here is much greater than with the educationW
 example, which suggests using occupation as a confounder.  Since
 different occupations correlate with different wages, it is possible
 that this gender difference in occupations proportions could be
@@ -907,9 +910,9 @@ dsldScatterPlot3D(law.school.admissions,
 
 [This is a **plotly** interactive graph.  To fully understand this
 function, the reader should execute the function outside of Quarto, i.e.
-run the above code directly from R.  Try try features such as move,
+run the above code directly from R.  Try features such as move,
 rotate, annotation display and so on.]{.column-margin} Of course,
-visualizing a 3-dimensional scatter plog is more challenging than
+visualizing a 3-dimensional scatter plot is more challenging than
 viewing the ordinary 2-dimensional kind.  But it does enable richer
 search for relationships.  Here are a few trends suggested by the plot:
 
@@ -918,23 +921,26 @@ search for relationships.  Here are a few trends suggested by the plot:
   levels are almost entirely made up of white students. 
 
 * On the **lsat** axis, most of those with a lower score happen to be
-  non-white, across all income levels. 
+  non-white, *across all income levels*. 
 
 * The **ugpa** axis has a similar trend to that of the **lsat** axis, albeit
   to a much weaker extent.
 
 Once again, this analysis is merely exploratory, but the graph lends
-some credence to claims that family income may confound the relationship
-between race and LSAT score.  Note however, that these graphs do not do much to 
-answer the question of whether, in this case, that relationship is substantial.
-The formal analysis we did earlier indicates that it is not.
+some credence to our earlier analysis  that family income may confound
+the relationship between race and LSAT score. Indeed, if we wish to
+present the earlier analysis, say in a meeting, the graph would make for
+a nice visual illustration.
 
-Returning to the question of whether race have a substantial impact on
-exam results, we can look at the density plot of LSAT scores against
+Note however, that these graphs do not do much to answer the question of
+whether, in this case, that relationship is substantial.  The formal
+analysis we did earlier indicates that it is not.
+
+Returning to the question of whether race has a substantial impact on
+exam results, we can look at the density plot of LSAT scores for
 different races.
 
 ```{r, eval=FALSE}
-# requires 'webshot' package
 data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 ```
@@ -968,20 +974,22 @@ one's confounders in some applications.  We now present more formal,
 systematic methods.
 
 Many, many approaches to this *variable selection* or *feature
-selection* [A nice overview of such methodology, and implementations in
-R and Python, are given in [Parr *et
+selection* [A nice overview of such methodology, implementations in
+R and Python, and problems that may arise, is given in [Parr *et
 al*](https://explained.ai/rf-importance).]{.column-margin} problem have
 been proposed over the years.  The **qeML** package includes five of
 them (see the documentation), and there are myriad others.
 
 One widely-used method is *permutation*, which we will use here.  To
 gauge the importance of a variable V in the context of using some ML
-algorithm, we do two runs through the data, first with the original dataset,
-and then with the V column changed through a random shuffling of the
-values in that column.  In that second run, our predictive accuracy
-should be compromised, and the importance measure is taken to be the
-proportional increase in error rate.  The larger the increase, the
-more important we deem the variable.
+algorithm, we do two runs through the data, first with the original
+dataset, and then with the V column changed through a random shuffling
+of the values in that column. This may seem counterproductive at first,
+but the point is that if the variable in question really is important,
+our predictive accuracy should be compromised in that second run.  The
+importance measure is thentaken to be the proportional increase in error
+rate.  The larger the increase, the more important we deem the variable
+to have.
 
 ### The dsldCHunting() function
 
@@ -1004,14 +1012,14 @@ dsldCHunting(mortgageSE,'deny','black')
 The importance measures are printed out (the ranking is what matters),
 followed by the "top-i" sets in common.
 
-For instance, the variables (excluding S) that predict Y well are
+For instance, the singlevariables (excluding S) that predict Y well are
 first **p_irat**, then **denpmi** and so on.  In predicting S, excluding Y,
 the best are **p_irat**, then **loan_val** et cetera.
 
 Since we are focusing on variables that are correlated with both Y and
 S, we take the intersection.  For example, the intersection of the top
 three Y predictors and top three S predicts is  **p_irat** and
-**loan_val**.
+**loan_val**. We may wish to use these as our confounders.
 
 As usual, there are no magic formulas to use here.  The analyst is given
 a choice.  One might use just the top two confounders, or the top three
@@ -1022,14 +1030,14 @@ and so on.
 
 In the paper "Are Emily and Greg More Employable Than Lakisha and Jamal?
 A Field Experiment on Labor Market Discrimination" (*Am. Econ. Rev.*,
-Sept. 2004), researcher "test" employers by sending CVs with
+Sept. 2004), researchera "tested" employers by sending CVs with
 "white-sounding" and "Black-sounding" names, checking for bias.  Did
 employers call "whites" more often than "Blacks" for an interview?  The
 resulting data is **lak** in **dsld**.
 
 ```{r}
 data(lak)
-dim(lak)
+dim(lak)  # number of rows and columns
 names(lak)
 ```
 
@@ -1068,12 +1076,15 @@ unobsered one.
 
 In a *randomized clinical trial* (RCT), we would randomly assign
 treatments to patients, so there would likely be no strong imbalance in
-age distribution in the two drug groups.  So, even if our data still did
+age distribution in the two drug groups.  Thus, even if our data still did
 not record patient age, there would be no age bias in our analysis.
 But in most cases in practice, RCTs are infeasible or impossible; we cannot
 "assign" race, for instance. 
 
-The analyst must always keep this issue in mind.
+Trying to guess important variables that we do not have is difficult, of
+course. It depends crucially on domain expertise, and then dealing with
+it statistically is difficult if not impossible. Nevertheless,
+the analyst must always keep this issue in mind.
 
 ## On causal analysis (advanced material) {#sec-causal}
 
