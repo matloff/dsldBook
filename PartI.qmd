@@ -1092,19 +1092,19 @@ Causal analysis (CA) takes on many forms, and indeed, there is no good
 definition of what it entails. Moreover, it tends to be controversial.
 Our discussion here will focus on two topics:
 
-* covariate matching methods.
+* covariate matching methods
 
 * *directed acyclic graphs* (DAGs)
 
 ### Covariate matching
 
-The basic idea here is quite simple. Consider our above example comparing two
-medications, A and B, with Y being the response variable. Instead of
-comparing the two sample means of Y, we form pairs of data points, with
-an A group and B group member in each pair. These pairs form our new
-data. (Not every one of the original data points will now be
-represented, though some may appear more than once.) We then compare
-mean Y values among the two groups in this new data.
+The basic idea here is quite simple. Consider our above example
+comparing two medications, A and B, with Y being the response variable.
+Instead of comparing the two sample means of Y, we form pairs of data
+points, with an A group and B group member in each pair. These pairs
+form our new data. (Not every one of the original data points will
+necessarily now be represented, though some may appear more than once.)
+We then compare mean Y values among the two groups in this new data.
 
 Here is an example, involving a jobs training program::
 
@@ -1136,21 +1136,23 @@ the average difference in income was estimated to be 1374.7.
 
 A key point is the manner in which the matching is done. In most cases,
 it can be done only approximately. In the medication example, for
-instance,,we probably could not find two patients of the same age *and*
+instance, we probably could not find two patients of the same age *and*
 the same gender *and* the same race and so on. But the more variables we
 have, the harder it is to find even approximate matches. One solution is
 to use *propensity scores*, not covered here.
 
 An even larger problem is interpretation. Let X denote the vector of our
 predictors, e.g. age, gender and so on. The regression methods covered
-earlier in this book estimate the mean Y for a given X, whereas matching
-methods estimate the unconditional mean of Y. The interpretation of the
-latter may be problematic, since our matching process itself may have
-changed the distribution of X. 
+earlier in this book estimate the conditional mean Y for a given X,
+whereas matching methods estimate the unconditional mean of Y. The
+interpretation of the latter may be problematic, since our matching
+process itself may have changed the distribution of X. (By the way,
+changing the distribution of X does not change the conditional mean of
+Y given X, as long as the change doesn't affect Y.)
 
-We then compute mean Y 
+We then compute mean Y in both groups.
 
-### DAGS
+### Directed Acyclic Graphs (DAGS)
 
 In a DAG, an arrow from A to B signifies that A "causes" B.
 
@@ -1161,7 +1163,11 @@ cancer even if they are nonsmokers.  A graphical description would be
 
 ![](appendixB/ascdag.png){width=40%}
 
-Here is an example the **bnlearn** package on our **svcensus** dataset:
+DAGS are usually just writeups of one's "gut feelings" as to what causes
+what. They cannot be derived from our data.  More on this below, but
+under very stringent assumptions, we can attempt to from a DAG from the
+data.  Here is an example of that, using a function in the **bnlearn**
+package, for which a **dsld* wrapper is available: 
 
 ``` r
         data(svcensus)
@@ -1178,11 +1184,12 @@ There are a couple of undirected arcs, e.g. between gender and [Though
 again we omit a detailed treatment of CA DAGs here, we note that that
 field defines a confounder of two variables as a variable that is an
 "ancestor" to both, education being a confounder for income and
-occupation.]{.column-margin} occupation--found to be relations, but 
+occupation.]{.column-margin} occupation -- found to be relations, but 
 with indeterminate direction, using available data.
 
 More interesting, though, is the lack of a causal arc from gender to
-wage income.  This is in stark contrast to what **dsldLinear** suggests:
+wage income. In other words, no wage gap!  This is in stark contrast to
+what **dsldLinear** suggests:
 
 ```{r}
 library(dsld)
@@ -1200,7 +1207,7 @@ instead of **iamb** (not shown), there is indeed a link from 'gender' to
 there is no arc, or path of arcs, from 'wkswrkd' to 'wageinc'.
 
 CA DAGs are of course quite visually appealing, and many people find
-causal concepts helpful in their thoughts processes regarding the data.
+causal concepts helpful in their thought processes regarding the data.
 But as pointed out by the developers of such methodology, the graphs can
 be very misleading.  Using DAGs effectively requires deep understanding
 of the concepts.  A treatment of these concepts is well beyond the scope
@@ -1215,7 +1222,7 @@ following points in mind:
   challenge even for experienced probabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
-harmful in CI contexts as in observational data.
+harmful in CI contexts as in general observational data methods.
 
 * Causal analysis is just as much at the mercy of sample size as is
   classical statistical analysis, indeed even more so, since the causal
@@ -1229,7 +1236,7 @@ harmful in CI contexts as in observational data.
 ### DAGS are not unique
 
 * Most important, for any given dataset, there is typically no unique
-  DAG: [CMU professor C. Shalizi has [bluntly
+  DAG: [[CMU professor C. Shalizi has bluntly
   noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf)
   that in cases of nonuniqueness, presenting just one DAG without
   mentioning the equivalent ones, "...[which] is often what people seem
