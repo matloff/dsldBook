@@ -1274,24 +1274,25 @@ mandatory for avoiding misleading or invalid results.
 In spite of the fancy name *machine learning*, the methods discussed
 here, *k-Nearest Neighbor* estimation, *random forests* and *gradient
 boosting*, were originally developed in the statistics field, and have
-long been used by statisticians, and there are many R packages that
+long been used by statisticians. There are many R packages that
 implement them.
 
 :::
 
-We referred to the quantities $\beta_i$ above as "parameters."  The
-linear and logistic models are thus called *parametric* models.  In each
-case, the regression function is modeled as linear, "S curve-shaped" and
-so on, that can be described with just a few parameters.
+We referred to the quantities $\beta_i$ in the linear and logit models
+as "parameters."  These models are thus called *parametric* models.  In
+each case, the regression function is modeled as linear, "S
+curve-shaped" and so on, that can be described with just a few
+parameters.
 
-But these models make assumptions, such as assuming the regression
-function is approximately linear.  It would be nice to have available
-methods that don't rely on such assumptions.
+But assuming, say, that our  regression function is approximately
+linear.  It would be nice to have available methods that don't rely on
+such assumptions.
 
 *Machine learning* (ML) algorithms typically do not assume the regression
 function has any particular form.  They are thus "safer," though on the
 other hand they are less interpretable than, say, that $\beta_2$
-quantity in our no-interactions linear model above.  Nor are standard
+quantity in our no-interactions linear model.  Nor are standard
 errors available for regression function values at given points.
 
 ML is mainly concerned with prediction, while we here are interested in
@@ -1391,10 +1392,10 @@ As explained below, each tree would give us a predicted income, and our
 final prediction would simply the average of all those predicted values.
 
 So, what is a decision tree?  It's just a flow chart.  Consider this
-example involving vertebral disease.  Y is categorical, with values NO
-(normal), SL and DH.  To predict a new case, we look at the X variables
-(which have the nondescript names V1 through V6) one at a time, and
-branch through the tree accordingly.
+famous example involving vertebral disease.  Y is categorical, with
+values NO (normal), SL and DH.  To predict a new case, we look at the X
+variables (which have the nondescript names V1 through V6) one at a
+time, and branch through the tree accordingly.
 
 For example, if the new case to be predicted has V6 of at least 16, we 
 branch right, and immediately decide to predict that this patient's
@@ -1417,12 +1418,13 @@ levels in a tree, and the number of trees.
 The order in which variables are considered in building a tree is random
 for each tree.  So, while V6 is considered first in the tree displayed
 here, in some other tree it may be, say, V2.  The split points, e.g. 16
-in the root node in the picture, are obtained through formulas that
-depend on the data in complex (though not terribly deep) ways.
+in the root node in the picture, are also random. They are obtained
+through formulas that depend on the data in complex (though not terribly
+deep) ways.
 
 This means there is quite a bit of randomness in a tree, so RF hedges
 its bets by generating many trees from our dataset, and then predicts
-new cases by averaging the predictions for that case by the individual
+new cases by averaging the predictions for that case from the individual
 trees. Let's make that concrete via an example. Let's run RF directly
 from the **qeML** function (to enable predictions), and then predict a
 hypothetical new case of a 32-year-old woman etc.:
@@ -1437,6 +1439,8 @@ predict(z,data.frame(age=32,educ='zzzOther',occ='102',
 RF generated 500 trees (the default in **qeRF**), generating 500
 predictions for this hypothetical person, and averaged them.
 
+As usual, the **dsld** wrapper adds S comparison information:
+
 ```{R}
 set.seed(9999)
 w <- dsldML(svcensus,'wageinc','gender',
@@ -1445,13 +1449,6 @@ w
 ```
 
 The code generated 500 trees, the default value, from our training set.
-
-Though still indicating a gender wage gap, the results here are rather
-different from what we obtained with kNN.   Which one is better in this
-particular application?  Again, we may decide this on the basis of
-prediction accuracy (**testAcc** values) on a *holdout set*. In this
-case, the Mean Absolute Prediction Error was about $20700 for women and
-28000 for men.
 
 ### Other ML methods
 
