@@ -16,14 +16,27 @@ of X as O, with X then being all variables except Y, S and O.]{.column-margin}
 
 * Y: outcome variable, to be predicted
 
+* X: variables to be used to predict Y
+
 * S: sensitive variable
 
 * O: proxy variables
 
-* X: other variables to be used to predict Y
+We wish to predict Y from X, either omitting S or reducing its impact,
+but with concern that we may be indirectly using S via O.  But there is
+a large amount of variation in which fair ML methods actually handle S
+and O. 
 
-We wish to predict Y from X and O, either omitting S or reducing its
-impact, but with concern that we may be indirectly using S via O.
+* Some methods do not deal with O explicitly, merely aiming to "reduce
+the influence of S," which implicitly means controlling the impact of O as
+well. 
+
+* Some methods aim to eliminate the effect of S entirely, which may
+implicitly mean eliminating O as well.
+
+* Other methods may deal with O explicitly.
+
+
 Contrast this from our material in Part I:
 
 * In Part I, we fit models for predicting Y, but with the goal of using
@@ -34,19 +47,27 @@ distorting our look at the impact of S on Y.  Any X variable unrelated
 to Y was not of interest.
 
 * Here in Part II, prediction of Y is our central goal, rather than
-  effect assessment.  We will either omit or reduce the impact of SS,
+  effect assessment.  We will either omit or reduce the impact of S,
   relying our prediction fully on X and partly on O.  The variables O
   are related to S; the stronger the relation of an O variable to S, the
   less weight we will put on that variable in predicting Y.
 
+### The Fairness-Utility Tradeoff
+
+The role of the O variables is key. On the one hand, we are worried that
+they would indirectly allow S to influence predictions -- Fairness --
+but on the other hand, omitting them would reduce our predictive power
+-- Utility. We hope to find a good middle ground.
+
 ### Deciding proxies  
 
-As with choosing confounders in Part I, the analyst may simply choose
-all possible candidate O variables. But then we would risk allowing S to
-have major influence on Y, exactly what we are trying to avoid. Or
-we might choose the proxies based on domain expertise.  But a more formal
-approach may involve correlation.  The function **dsldOHunting**
-calculates the correlations between S and possible proxies O.
+As with choosing confounders in Part I, the analyst may simply choose to
+include all possible candidate O variables. But then we would risk
+allowing S to have major influence on Y, exactly what we are trying to
+avoid. Or we might choose the proxies based on domain expertise.  But a
+more formal approach may involve correlation.  The function
+**dsldOHunting** calculates the correlations between S and possible
+proxies O.
 
 Here's an example, using the COMPAS data:
 
@@ -61,7 +82,7 @@ dsldOHunting(cmp,'two_year_recid','race')
 
 
 The output here  suggests possibly
-using, say, the **age** and **priors_count** variables as proxies.
+using, say, the age and priors count variables as proxies.
 
 The function does not use the classic *Pearson product moment*
 correlation here, opting instead for *Kendall's tau* correlation.  Both
@@ -72,7 +93,7 @@ geared toward continuous numeric variables, Kendall is also usable for
 and compare two people. If one of the people is both taller and heavier
 than the other, that is a concordance.  If on the other hand, one is
 shorter but heavier than the other, that is a discordance.  We consider
-all possible pairs of people in our dataset, then sets tau to the
+all possible pairs of people in our dataset, then set tau to the
 difference in concordance and discordance counts, divided by the number
 of pairs.]{.column-margin} 
 binary or ordinal integer-valued variables.  
