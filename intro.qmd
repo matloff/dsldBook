@@ -83,11 +83,10 @@ defendants.
 
 Northpointe, the firm that developed COMPAS, [rejected the *Pro Publica*
 analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
-and we are not supporting either side here.  
-[Note that both *Pro Publica*'s analysis and that of Northpointe used
-methodology like that presented in this book.]{.column-margin}
-But if the COMPAS tool were
-in fact biased, how could the analysis be fixed?  
+and we are not supporting either side here.  [Note that both *Pro
+Publica*'s analysis and that of Northpointe used methodology like that
+presented in this book.]{.column-margin} But if the COMPAS tool were in
+fact biased, how could the analysis be fixed?  
 
 A key point is that any remedy must not only avoid using race
 directly, but must also minimize the impact of variables O that are
