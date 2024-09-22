@@ -47,10 +47,8 @@ distorting our look at the impact of S on Y.  Any X variable unrelated
 to Y was not of interest.
 
 * Here in Part II, prediction of Y is our central goal, rather than
-  effect assessment.  We will either omit or reduce the impact of S,
-  relying our prediction fully on X and partly on O.  The variables O
-  are related to S; the stronger the relation of an O variable to S, the
-  less weight we will put on that variable in predicting Y.
+effect assessment.  We will either omit S or reduce its impact, possibly
+in concert with action regarding O.
 
 ### The Fairness-Utility Tradeoff
 
@@ -59,15 +57,11 @@ they would indirectly allow S to influence predictions -- Fairness --
 but on the other hand, omitting them would reduce our predictive power
 -- Utility. We hope to find a good middle ground.
 
-### Deciding proxies  
+### Exploring proxies  
 
-As with choosing confounders in Part I, the analyst may simply choose to
-include all possible candidate O variables. But then we would risk
-allowing S to have major influence on Y, exactly what we are trying to
-avoid. Or we might choose the proxies based on domain expertise.  But a
-more formal approach may involve correlation.  The function
-**dsldOHunting** calculates the correlations between S and possible
-proxies O.
+As a preliminary step, the analyst may wish to identify possible
+proxies.  The function **dsldOHunting** calculates the correlations
+between S and possible proxies O.
 
 Here's an example, using the COMPAS data:
 
@@ -80,8 +74,14 @@ cmp <- compas1[,-3]
 dsldOHunting(cmp,'two_year_recid','race')
 ```
 
+The output here shows a trend under which older age suggests that the
+person is not Black, while a higher prior count indicates the opposite.
+Neither correlation is large (and they are subject to sampling variation
+anyway), but together these two variables may cause our predictions to
+be somewhat biased against African-Americans.
 
-The output here  suggests possibly
+
+possibly
 using, say, the age and priors count variables as proxies.
 
 The function does not use the classic *Pearson product moment*
@@ -160,11 +160,11 @@ those times* in which Y is actually negative.  Two other common terms:
 A simple but quite common measure of utility in binary classification
 problems is the overall misclassification probability [The *F1-score*
 has recently been especially popular in the ML research world.  It is
-defined as the harmonic mean of precision and recall, and is thought to
-be especially useful in applications in which one class or the other is
-very rare.]{.column-margin} of misclassification; **qeML** predictive
-functions report this in the **testAcc** component of the functions'
-return object.  There are many, many other measures.
+defined as the harmonic mean of precision and recall, and is thought by
+some to be especially useful in applications in which one class or the
+other is very rare.]{.column-margin} of misclassification; **qeML**
+predictive functions report this in the **testAcc** component of the
+functions' return object.  There are many, many other measures.
 
 For whatever reason, ML research has tended to focus on that binary Y
 case, and there are no analogous acronyms for numeric Y.  Accuracy of
@@ -187,7 +187,7 @@ measure also will depend on the given application.
 
 A direct way to measure where Y and S are still related in spite of
 physically omitting the latter is to compute the correlation between
-predicted Y, to be denoted $\hat{Y}$ and S.  As noted earlier, we use
+predicted Y, to be denoted $Y_{pred}$ and S.  As noted earlier, we use
 Kendall's Tau correlation here.
 
 [Here and below, to keep things simple, we will not use a holdout
