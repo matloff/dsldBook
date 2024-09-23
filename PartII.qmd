@@ -356,7 +356,7 @@ $\sqrt{3.2^2+1.1^2} = 3.38$
 
 That puts equal weight in the left-right direction and the forward-back
 direction, which makes sense for geometric distance.  But in data
-prediction, we can use different weights.  In prediction wage income in
+prediction, we can use different weights.  In predicting wage income in
 the Census data, say, we can place large weight on age and occupation,
 and less weight on education.  The above call would change to:
 
@@ -391,36 +391,40 @@ Why might this odd action be helpful?  Shrinking introduces a bias, but
 reduces variance (roughly speaking, smaller variables vary less).  If
 outliers (extreme values, not errors) are common in the data, these
 result in large estimator variance, possibly so much that shrinkage's
-reduction in variance overwhelms our increase in bias.
+reduction in variance more than compensates for our increase in bias.
 
 Some readers may have heard of *ridge regression* and the *LASSO*, both
 of which impose shrinkage.  For our fair ML context, though we wish to
-perform our shrinkage focusing on *only some* of the estimated regression
-coefficients, specifically those corresponding to our proxies.  To be
-sure, it should be noted that non-proxy coefficients are affected too,
-but the main effects will be on the proxies.
+perform our shrinkage focusing on *only some* of the estimated
+regression coefficients, specifically those corresponding to our
+proxies.  To be sure, it should be noted that non-proxy coefficients are
+affected too, but the main effects will be on the proxies.  This is what
+**dsldQeFairRidgeLin** and **dsldQeFairRidgeLog** do, with linear and
+logit cases.
 
 Note that these estimators also have the potential ancillary benefit
-obtained from shrinkage in general, i.e. better utility.
+obtained from shrinkage in general, i.e. better utility. 
 
-### The **dsldFgrrm** function
 
-This is a wrapper to a corresponding function in the **fairml** package,
-based on [a
+### The **dsldFrrm** and **dsldFgrrm** function
+
+These are wrappers to functions in the **fairml** package, based on [a
 paper](https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf)
-by the authors of the package.
+by the authors of the package. Their methods apply a ridge penalty to S,
+thus reducing its influence.
 
 Let's see what it does with the COMPAS data:
 
-```{r,eval=FALSE}
+```{r}
+set.seed(9999)
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
 ```
 
 The **unfairness** argument is a number in (0,1].  The smaller the
 value, the fairer the fit.  The first value, 0.1, gave an estimate
-coefficient for Caucasian of -0.73, while using 0.01 reduced this to
--0.15.  (Note that the base for the dummy variables is apparently
-African-American.]  But both values are small relative some of the other
-coefficients.
+coefficient for Caucasian of -0.37, while using 0.01 reduced this to
+-0.03.  (Note that the base for the dummy variables is apparently
+African-American.] There seems to be almost no effect on our possible
+proxies, age and priors count.
 
