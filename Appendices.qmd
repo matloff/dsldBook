@@ -10,21 +10,23 @@ California, Davis.  It would be infeasible to measure them all, so I
 take a random sample of 100 students.  The mean weight of those 100
 students, denoted $\bar{X}$, is an estimate of $\mu$.
 
-I know that $\bar{X}$ will have some unknowm amount of error as an estimate of
+I know that $\bar{X}$ will have some unknown amount of error as an estimate of
 $\mu$.  One measure of this is its *standard error* (SE).  What is this?
 
 Remember, we took a random sample of students.  Different samples will
 have different values of $\bar{X}$, i.e. $\bar{X}$ will have *sampling
 variation*.  Then the SE of $\bar{X}$ is defined to be the standard
 deviation of all possible $\bar{X}$ values, from all possible samples.
+Of course, we only have one sample, so SE is unknown, but we can
+estimate it.
 
 The smaller the SE is, the more confident we are that the $\bar{X}$ from
-[Meaning of that 95% probability figure: Think of all possible 
-samples. Each one has an $\bar{X}$ value, and an SE value. So, each
-possible sample, there is a different confidence interval (CI). 
-95% of those CIs will contain the true $\mu$.]{.column-margin}
-our particular sample is pretty accurate.  Of course, we can't be
-completely sure, but we can quantify it probabilistically:
+[Meaning of that 95% probability figure: Think of all possible samples.
+Each one has an $\bar{X}$ value, and an estimated SE value. So, each
+possible sample, there is a different confidence interval (CI).  95% of
+those CIs will contain the true $\mu$.]{.column-margin} our particular
+sample is pretty accurate.  Of course, we can't be completely sure, but
+we can quantify it probabilistically:
 
 > An approximate 95% *confidence interval* for $\mu$, based on
 > $\bar{X}$, is $\bar{X} \pm 1.96 \times SE$.
@@ -42,13 +44,14 @@ CIs are generally taught together with *hypothesis testing* or
 @sec-sig reviews the notion, and discusses problems with this kind of
 analysis.
 
-## Appendix B: Standard Errors via the Bootstrap {#sec-boot}
+## Appendix B: Estimated Standard Errors via the Bootstrap {#sec-boot}
 
 (to be added)
 
 ## Appendix C: Python Interface 
 
-As previously mentioned, Python wrappers are included for most functions. 
+As previously mentioned, Python wrappers are included for most **dsld**
+functions. 
 
 ### Requirements For All Python Functions
 
@@ -86,25 +89,26 @@ require **rpy2**, which allows for Python/R environment interaction.
 
 ### Running dsld Python Functions
 
-As an example, let's use the Python interface for ##dsldTakeALookAround## 
-(the Python-equivalent function is called **dsldPyTakeALookAround**)  
-to view tabular information on how data features relate to Y and S. The 
-Python function allows users to enter arguments using Python data types 
-and converts the resultant R dataframe into a Pandas dataframe.
+As an example, let's use the Python interface for
+**dsldTakeALookAround** (the Python-equivalent function is called
+**dsldPyTakeALookAround**)  to view tabular information on how data
+features relate to Y and S. The Python function allows users to enter
+arguments using Python data types and converts the resultant R dataframe
+into a Pandas dataframe.
 
-Different Python functions will require different libraries 
-depending on what the function does -- **Pandas**
-[These libraries can also (usually) be installed with **pip**]{.column-margin} 
-is required for dsldPyTakeALookAround.
+Different Python functions will require different libraries depending on
+what the function does -- **Pandas** [These libraries can also (usually)
+be installed with **pip**]{.column-margin} is required for
+**dsldPyTakeALookAround**.
 
 <!-- This part may change if installation method changes -- assuming that we 
-are using devtools::install_github and have access to /dsld folder -->
+are using devtools::install_github and have access to **dsld** folder -->
 The user should open the Python Shell Prompt by typing **python** from the 
-package Python directory (/dsld/inst/Python) in the terminal/cmd prompt.
+package Python directory (**dsld/inst/Python**) in the terminal/cmd prompt.
 Then, to run the Python function, we can run the following commands in the 
 Python shell:
 
-```python}
+```{verbatim}
 from dsldTakeALook_Py_R import dsldPyTakeALookAround    
 import rpy2.robjects as robjects   
 robjects.r['data']('svcensus')    

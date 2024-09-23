@@ -322,7 +322,21 @@ prediction, we will predict the first case in the dataset:
 newx <- cmp[1,-(7:8)]  # just X, not Y and S
 ```
 
-## **dsldQeFairRF**
+## Functions based on the Explicitly Deweighted Features (EDF) Method
+
+[EDF](https://arxiv.org/abs/2208.06557) addresses the fairness issue by
+
+* omitting S from the analysis entirely
+
+* explicitly reducing the weights of the O variables, according to user
+specification
+
+The deweighting parameters are set via an argument **deweightPars** in
+the function calls.  This argument takes the form of an R list, with one
+component for each variable in the user's O set. The meanings of the
+parameters will vary according to the ML algorithm used, as seen below.
+
+### **dsldQeFairRF**
 
 This function fits an RF model, but with deweighting of the proxies.
 
@@ -333,8 +347,9 @@ z$corrs
 predict(z,newx)
 ```
 
-Recall that in RFs, each tree will use a different random ordering of
-the X variables.  At any given node in a tree, a variable is
+The meaning of the deweighting parameters in this function is as
+follows: Recall that in RFs, each tree will use a different random
+ordering of the X variables.  At any given node in a tree, a variable is
 chosen at random to set up a possible split point.  But here we are
 specifying that the age and priors count variables be used only 20% and
 10% as often as other variables, in order to reduce their impact.
@@ -343,11 +358,10 @@ Yet the S-Correlation valuea are still substantial in the Black and
 Hispanic cases.  We need to give the O variables even smaller weights or
 possibly include additional variables in our O set.
 
-## **dsldQeFairKNN**
+### **dsldQeFairKNN**
 
-Remember, the common theme here is reducing the role played in
-prediction by the proxies O.  How might this be done with k-NN?
-
+The role of the deweighting parameters in this k-NN implementation of
+EDF is as follows:
 An easy answer is to weight the distance metric.  Ordinarily, if we move
 3.2 meters to the right and then 1.1 meters forward, the distance
 between our new point and our original one is
@@ -367,7 +381,7 @@ z$corrs
 predict(z,newx)
 ```
 
-## Remedies based on "shrunken" linear models
+### **dsldQeFairRidgeLin** and **dsldQeFairRidgeLog** 
 
 One of the most striking advances in modern statistics was the discovery
 that classical estimators tend to be  "too big," and that one may
@@ -413,16 +427,20 @@ paper](https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf)
 by the authors of the package. Their methods apply a ridge penalty to S,
 thus reducing its influence.
 
+These functions aim to address the fairness issue through an argument
+**unfairness**, a number in (0,1].  The smaller the value, the fairer
+the fit. Note that unlike
+
 Let's see what it does with the COMPAS data:
 
 ```{r}
 set.seed(9999)
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=1.0,family='binomial')
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
 ```
 
-The **unfairness** argument is a number in (0,1].  The smaller the
-value, the fairer the fit.  The first value, 0.1, gave an estimate
+The first value, 0.1, gave an estimate
 coefficient for Caucasian of -0.37, while using 0.01 reduced this to
 -0.03.  (Note that the base for the dummy variables is apparently
 African-American.] There seems to be almost no effect on our possible
