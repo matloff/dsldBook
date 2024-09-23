@@ -210,26 +210,10 @@ That's a pretty substantial correlation, definitely a cause for concern
 that our ML analysis here is unfair.  Of course, it's not the algorithm
 itself's fault, but we must find a way to mitigate the problem.
 
-[Prediction of income might be of interest in, say, a marketing context.
-Actually, the field of marketing has been the subject of much concern in
-fair ML; e.g. see
-[FWA](https://thefwa.com/cases/a-marketers-guide-to-machine-learning-fairness).]{.column-margin}
-An advantage of the S-Correlation measure is that it can also be used in
-non-classification problems, say predicting wage income, and take age as
-our sensitive variable S:
-
-```{r}
-data(svcensus)
-z <- qeKNN(svcensus,'wageinc',holdout=NULL)
-cor(z$regests,svcensus$age,method='kendall') 
-```
-
-So, again, our ML tool seems to be biased, this time in terms of age.
-
 ### Demographic Parity
 
 The criterion for demographic parity is that the same proportion of each
-sub-group within the sensitive feature is classified at equal rates for
+subgroup within the sensitive feature is classified at equal rates for
 each of the possible outcomes 
 
 For example, let's consider the COMPAS dataset again. Demographic Parity
@@ -266,7 +250,7 @@ mean(NonblackYhats)
 ```
 
 That's quite a difference!  Overall, our ML model predicts about 51% of
-Black defendants to recidivate,j versus than 27% for non-Blacks.
+Black defendants to recidivate, versus than 27% for non-Blacks.
 
 However, such a criterion is generally considered too coarse, since it doesn't
 account for possible differences in qualifications between the two groups.
@@ -306,7 +290,7 @@ criterion was not met, even approximately.  Nor was Demographic Parity.
 Having established that ML prediction models can be biased against
 certain sensitive groups, what remedies are available?  The **dsld**
 package includes a few of these, presented in this section.  Of course,
-all of them recognize a basic principle:
+all of them recognize the basic principle that we stated earlierr:
 
 ::: {.callout-note}
 ### The Fairness-Utility Tradefoff
@@ -324,18 +308,6 @@ fairness and utility.  The parameters essentially allow us to "dial" the
 weight that our proxies will play in predicting Y; lighter weight means
 more fairness but poorer utility, and vice versa.
 
-Our context will be:
-
-* Due to legal requirements or simply a desire for fairness, we will
-  omit S from all analyses, other than for fairness assessment of our
-  derived prediction tool.
-
-* But we are concerned about the impact of proxies, and have chosen a
-  set of variables O to play this role.
-
-* We have chosen fairness and utility measures with which we will choose
-  a desired point in the Fairness-Utility Tradefoff.
-
 Many, many fair ML algorithms have been proposed, most of which are
 technically complex.  The ones we present here have been chosen (a) for
 their technical simplicity and (b) availability as R packages.
@@ -347,7 +319,7 @@ with age and prior convictions count as proxies.  To illustrate
 prediction, we will predict the first case in the dataset:
 
 ```{r}
-newx <- cmp[1,-(7:8)]  # just X and O, not Y and S
+newx <- cmp[1,-(7:8)]  # just X, not Y and S
 ```
 
 ## **dsldQeFairRF**
@@ -362,14 +334,14 @@ predict(z,newx)
 ```
 
 Recall that in RFs, each tree will use a different random ordering of
-the X and O variables.  At any given node in a tree, a variable is
+the X variables.  At any given node in a tree, a variable is
 chosen at random to set up a possible split point.  But here we are
 specifying that the age and priors count variables be used only 20% and
 10% as often as other variables, in order to reduce their impact.
 
-Yet the S-Correlation valuea are still substantial.  We need to give
-the O variables even smaller weights or possibly include additional
-variables in our O set.
+Yet the S-Correlation valuea are still substantial in the Black and
+Hispanic cases.  We need to give the O variables even smaller weights or
+possibly include additional variables in our O set.
 
 ## **dsldQeFairKNN**
 
