@@ -419,7 +419,7 @@ logit cases.
 Note that these estimators also have the potential ancillary benefit
 obtained from shrinkage in general, i.e. better utility. 
 
-### Wrappers for fairML functions
+## Wrappers for fairML functions
 
 We consider here **dsldFrrm** and **dsldFgrrm**,
 wrappers to functions in the **fairml** package, based on [a
