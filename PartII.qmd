@@ -361,10 +361,9 @@ possibly include additional variables in our O set.
 ### **dsldQeFairKNN**
 
 The role of the deweighting parameters in this k-NN implementation of
-EDF is as follows:
-An easy answer is to weight the distance metric.  Ordinarily, if we move
-3.2 meters to the right and then 1.1 meters forward, the distance
-between our new point and our original one is
+EDF is as follows: We use weighted distances in finding near neighbors.
+Ordinarily, if we move 3.2 meters to the right and then 1.1 meters
+forward, the distance between our new point and our original one is
 
 $\sqrt{3.2^2+1.1^2} = 3.38$
 
@@ -372,7 +371,8 @@ That puts equal weight in the left-right direction and the forward-back
 direction, which makes sense for geometric distance.  But in data
 prediction, we can use different weights.  In predicting wage income in
 the Census data, say, we can place large weight on age and occupation,
-and less weight on education.  The above call would change to:
+and less weight on education.  Our COMPAS data call would work in this
+manner:
 
 ```{r,eval=FALSE}
 z <- dsldQeFairKNN(cmp,'two_year_recid','race',
@@ -408,7 +408,7 @@ result in large estimator variance, possibly so much that shrinkage's
 reduction in variance more than compensates for our increase in bias.
 
 Some readers may have heard of *ridge regression* and the *LASSO*, both
-of which impose shrinkage.  For our fair ML context, though we wish to
+of which impose shrinkage.  For our EDF context, though, we wish to
 perform our shrinkage focusing on *only some* of the estimated
 regression coefficients, specifically those corresponding to our
 proxies.  To be sure, it should be noted that non-proxy coefficients are
@@ -419,19 +419,33 @@ logit cases.
 Note that these estimators also have the potential ancillary benefit
 obtained from shrinkage in general, i.e. better utility. 
 
+### Wrappers for fairML functions
 
-### The **dsldFrrm** and **dsldFgrrm** function
-
-These are wrappers to functions in the **fairml** package, based on [a
+We consider here **dsldFrrm** and **dsldFgrrm**,
+wrappers to functions in the **fairml** package, based on [a
 paper](https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf)
 by the authors of the package. Their methods apply a ridge penalty to S,
-thus reducing its influence.
+thus reducing its influence. Note that contrast to EDF:
 
-These functions aim to address the fairness issue through an argument
-**unfairness**, a number in (0,1].  The smaller the value, the fairer
-the fit. Note that unlike
+The **fairML**  functions aim to address the fairness issue through an
+argument **unfairness**, a number in (0,1].  The smaller the value, the
+fairer the fit. 
 
-Let's see what it does with the COMPAS data:
+* EDF omits S from its analysis; the **fairML** functions retain S, and
+in fact compute regression coefficients for it.
+
+* EDF has multiple inputs for deweighting, while *fairML* has a single
+parameter.
+
+* EDF explicitly deweights the O variables, under the control of the
+user; **fairML** does so only indirectly via their relation to S, 
+without user input.
+
+Of course, each may work better than the other for any particular
+dataset.
+
+Let's see what it does with the COMPAS data, trying three different
+values of **unfairness**:
 
 ```{r}
 set.seed(9999)
@@ -440,9 +454,9 @@ dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
 ```
 
-The first value, 0.1, gave an estimate
-coefficient for Caucasian of -0.37, while using 0.01 reduced this to
--0.03.  (Note that the base for the dummy variables is apparently
-African-American.] There seems to be almost no effect on our possible
-proxies, age and priors count.
+The first value, 1.0, yielded a Caucasian coefficient of -0.73, which
+then shrank to -0.37 with **unfairness** = 0.1, and then to -0,03 with
+**unfairness** = 0.01.  (Note that the base for the dummy variables is
+apparently African-American.] There seems to be rather little effect on
+our possible proxies, age and priors count.
 
