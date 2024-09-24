@@ -181,26 +181,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#goals" id="toc-goals" class="nav-link active" data-scroll-target="#goals"><span class="header-section-number">3.1</span> Goals</a></li>
-  <li><a href="#comparison-to-part-i" id="toc-comparison-to-part-i" class="nav-link" data-scroll-target="#comparison-to-part-i"><span class="header-section-number">3.2</span> Comparison to Part I</a>
+  <li><a href="#comparison-to-part-i" id="toc-comparison-to-part-i" class="nav-link active" data-scroll-target="#comparison-to-part-i"><span class="header-section-number">3.1</span> Comparison to Part I</a>
   <ul class="collapse">
-  <li><a href="#deciding-proxies" id="toc-deciding-proxies" class="nav-link" data-scroll-target="#deciding-proxies"><span class="header-section-number">3.2.1</span> Deciding proxies</a></li>
+  <li><a href="#the-fairness-utility-tradeoff" id="toc-the-fairness-utility-tradeoff" class="nav-link" data-scroll-target="#the-fairness-utility-tradeoff"><span class="header-section-number">3.1.1</span> The Fairness-Utility Tradeoff</a></li>
+  <li><a href="#exploring-proxies" id="toc-exploring-proxies" class="nav-link" data-scroll-target="#exploring-proxies"><span class="header-section-number">3.1.2</span> Exploring proxies</a></li>
   </ul></li>
-  <li><a href="#measuring-utility" id="toc-measuring-utility" class="nav-link" data-scroll-target="#measuring-utility"><span class="header-section-number">3.3</span> Measuring utility</a></li>
-  <li><a href="#measuring-unfairness" id="toc-measuring-unfairness" class="nav-link" data-scroll-target="#measuring-unfairness"><span class="header-section-number">3.4</span> Measuring unfairness</a>
+  <li><a href="#measuring-utility" id="toc-measuring-utility" class="nav-link" data-scroll-target="#measuring-utility"><span class="header-section-number">3.2</span> Measuring utility</a></li>
+  <li><a href="#measuring-unfairness" id="toc-measuring-unfairness" class="nav-link" data-scroll-target="#measuring-unfairness"><span class="header-section-number">3.3</span> Measuring unfairness</a>
   <ul class="collapse">
-  <li><a href="#s-correlation" id="toc-s-correlation" class="nav-link" data-scroll-target="#s-correlation"><span class="header-section-number">3.4.1</span> S-Correlation</a></li>
-  <li><a href="#demographic-parity" id="toc-demographic-parity" class="nav-link" data-scroll-target="#demographic-parity"><span class="header-section-number">3.4.2</span> Demographic Parity</a></li>
-  <li><a href="#equalized-odds" id="toc-equalized-odds" class="nav-link" data-scroll-target="#equalized-odds"><span class="header-section-number">3.4.3</span> Equalized Odds</a></li>
-  <li><a href="#the-fairness-package" id="toc-the-fairness-package" class="nav-link" data-scroll-target="#the-fairness-package"><span class="header-section-number">3.4.4</span> The <strong>fairness</strong> package</a></li>
+  <li><a href="#s-correlation" id="toc-s-correlation" class="nav-link" data-scroll-target="#s-correlation"><span class="header-section-number">3.3.1</span> S-Correlation</a></li>
+  <li><a href="#demographic-parity" id="toc-demographic-parity" class="nav-link" data-scroll-target="#demographic-parity"><span class="header-section-number">3.3.2</span> Demographic Parity</a></li>
+  <li><a href="#equalized-odds" id="toc-equalized-odds" class="nav-link" data-scroll-target="#equalized-odds"><span class="header-section-number">3.3.3</span> Equalized Odds</a></li>
+  <li><a href="#the-fairness-package" id="toc-the-fairness-package" class="nav-link" data-scroll-target="#the-fairness-package"><span class="header-section-number">3.3.4</span> The <strong>fairness</strong> package</a></li>
   </ul></li>
-  <li><a href="#remedies" id="toc-remedies" class="nav-link" data-scroll-target="#remedies"><span class="header-section-number">3.5</span> Remedies</a></li>
-  <li><a href="#dsldqefairrf" id="toc-dsldqefairrf" class="nav-link" data-scroll-target="#dsldqefairrf"><span class="header-section-number">3.6</span> <strong>dsldQeFairRF</strong></a></li>
-  <li><a href="#dsldqefairknn" id="toc-dsldqefairknn" class="nav-link" data-scroll-target="#dsldqefairknn"><span class="header-section-number">3.7</span> <strong>dsldQeFairKNN</strong></a></li>
-  <li><a href="#remedies-based-on-shrunken-linear-models" id="toc-remedies-based-on-shrunken-linear-models" class="nav-link" data-scroll-target="#remedies-based-on-shrunken-linear-models"><span class="header-section-number">3.8</span> Remedies based on “shrunken” linear models</a>
+  <li><a href="#remedies" id="toc-remedies" class="nav-link" data-scroll-target="#remedies"><span class="header-section-number">3.4</span> Remedies</a></li>
+  <li><a href="#functions-based-on-the-explicitly-deweighted-features-edf-method" id="toc-functions-based-on-the-explicitly-deweighted-features-edf-method" class="nav-link" data-scroll-target="#functions-based-on-the-explicitly-deweighted-features-edf-method"><span class="header-section-number">3.5</span> Functions based on the Explicitly Deweighted Features (EDF) Method</a>
   <ul class="collapse">
-  <li><a href="#the-dsldfgrrm-function" id="toc-the-dsldfgrrm-function" class="nav-link" data-scroll-target="#the-dsldfgrrm-function"><span class="header-section-number">3.8.1</span> The <strong>dsldFgrrm</strong> function</a></li>
+  <li><a href="#dsldqefairrf" id="toc-dsldqefairrf" class="nav-link" data-scroll-target="#dsldqefairrf"><span class="header-section-number">3.5.1</span> <strong>dsldQeFairRF</strong></a></li>
+  <li><a href="#dsldqefairknn" id="toc-dsldqefairknn" class="nav-link" data-scroll-target="#dsldqefairknn"><span class="header-section-number">3.5.2</span> <strong>dsldQeFairKNN</strong></a></li>
+  <li><a href="#dsldqefairridgelin-and-dsldqefairridgelog" id="toc-dsldqefairridgelin-and-dsldqefairridgelog" class="nav-link" data-scroll-target="#dsldqefairridgelin-and-dsldqefairridgelog"><span class="header-section-number">3.5.3</span> <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong></a></li>
   </ul></li>
+  <li><a href="#wrappers-for-fairml-functions" id="toc-wrappers-for-fairml-functions" class="nav-link" data-scroll-target="#wrappers-for-fairml-functions"><span class="header-section-number">3.6</span> Wrappers for fairML functions</a></li>
   </ul>
 </nav>
     </div>
@@ -225,35 +226,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <div style="page-break-after: always;"></div>
-<p>In modern applications of machine learning as a predictive modeling tool, it would be irresponsible to produce a model that biases one sensitive group over another. As such, it becomes imperative to find methods of uncovering and reducing any such biases.</p>
-<section id="goals" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="goals"><span class="header-section-number">3.1</span> Goals</h2>
-<p>There are two main aspects of fair machine learning:</p>
-<ul>
-<li><p><strong>Measuring unfairness</strong>: A number of measures have been proposed.</p></li>
-<li><p><strong>Reducing unfairness</strong>: For a given ML algorithm, how can we ameliorate its unfairness, yet still maintain an acceptable utility (predictive power) level?</p></li>
-</ul>
-<p>In our earlier COMPAS example: Is the risk assessment tool biased against African-Americans? And if so, how can we reduce that bias while still maintaining good predictive ability?</p>
-</section>
-<section id="comparison-to-part-i" class="level2 page-columns page-full" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="comparison-to-part-i"><span class="header-section-number">3.2</span> Comparison to Part I</h2>
-<div class="page-columns page-full"><p>First, recall our notation: </p><div class="no-row-height column-margin column-container"><span class="">As before with C, think of X as, at first, consisting of all variables other than Y and S, but then selecting some of X as O, with X then being all variables but Y, S and O.</span></div></div>
+<p>In applications of machine learning as a predictive modeling tool, our model may be biases against some sensitive group. As such, it becomes imperative to find methods of uncovering and reducing any such biases.</p>
+<section id="comparison-to-part-i" class="level2 page-columns page-full" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="comparison-to-part-i"><span class="header-section-number">3.1</span> Comparison to Part I</h2>
+<div class="page-columns page-full"><p>First, recall our notation: </p><div class="no-row-height column-margin column-container"><span class="">As before with C, think of X as, at first, consisting of all variables other than Y and S, but then selecting some of X as O, with X then being all variables except Y, S and O.</span></div></div>
 <ul>
 <li><p>Y: outcome variable, to be predicted</p></li>
+<li><p>X: variables to be used to predict Y</p></li>
 <li><p>S: sensitive variable</p></li>
 <li><p>O: proxy variables</p></li>
-<li><p>X: other variables to be used to predict Y</p></li>
 </ul>
-<p>We wish to predict Y from X and O, omitting S, but with concern that we may be indirectly using S via O. Contrast this from our material in Part I:</p>
+<p>We wish to predict Y from X, either omitting S or reducing its impact, but with concern that we may be indirectly using S via O. But there is a large amount of variation in which fair ML methods actually handle S and O.</p>
+<ul>
+<li><p>Some methods do not deal with O explicitly, merely aiming to “reduce the influence of S,” which implicitly means controlling the impact of O as well.</p></li>
+<li><p>Some methods aim to eliminate the effect of S entirely, which may implicitly mean eliminating O as well.</p></li>
+<li><p>Other methods may deal with O explicitly.</p></li>
+</ul>
+<p>Contrast this from our material in Part I:</p>
 <ul>
 <li><p>In Part I, we fit models for predicting Y, but with the goal of using such models to assess the effect of S on Y; we were not interested in actually predicting Y. We included S in our models, but wished to find variables C that were correlated with both Y and S, so as to avoid distorting our look at the impact of S on Y. Any X variable unrelated to Y was not of interest.</p></li>
-<li><p>Here in Part II, prediction of Y is our central goal, rather than effect assessment. We will omit S, relying our prediction fully on X and partly on O. The variables O are related to S; the stronger the relation of an O variable to S, the less weight we will put on that variable in predicting Y.</p></li>
+<li><p>Here in Part II, prediction of Y is our central goal, rather than effect assessment. We will either omit S or reduce its impact, possibly in concert with action regarding O.</p></li>
 </ul>
-<p>We will describe some common measures of unfairness shortly. But first, how do we choose the O variables?</p>
-<section id="deciding-proxies" class="level3 page-columns page-full" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="deciding-proxies"><span class="header-section-number">3.2.1</span> Deciding proxies</h3>
-<div class="page-columns page-full"><p>As with choosing confounders in Part I, the analyst may simply choose  all possible candidate O variables.<br>
-the proxies based on his/her domain expertise. But a more formal approach may involve correlation. The function <strong>dsldOHunting</strong> calculates the correlations between S and</p><div class="no-row-height column-margin column-container"><span class="">It should be kept in mind that, as with any statistic, all utility and fairness measures are subject to sampling variation.</span></div></div>
+<section id="the-fairness-utility-tradeoff" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="the-fairness-utility-tradeoff"><span class="header-section-number">3.1.1</span> The Fairness-Utility Tradeoff</h3>
+<p>The role of the O variables is key. On the one hand, we are worried that they would indirectly allow S to influence predictions – Fairness – but on the other hand, omitting them would reduce our predictive power – Utility. We hope to find a good middle ground.</p>
+</section>
+<section id="exploring-proxies" class="level3 page-columns page-full" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="exploring-proxies"><span class="header-section-number">3.1.2</span> Exploring proxies</h3>
+<p>As a preliminary step, the analyst may wish to identify possible proxies. The function <strong>dsldOHunting</strong> calculates the correlations between S and possible proxies O.</p>
 <p>Here’s an example, using the COMPAS data:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -323,8 +323,10 @@ Attaching package: 'qeML'</code></pre>
   +.gg   ggplot2</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(compas1) </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cmp <span class="ot">&lt;-</span> compas1[,<span class="sc">-</span><span class="dv">3</span>]  <span class="co"># omit decile; we are developing our own risk tool</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldOHunting</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># omit decile; we are developing our own </span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># risk recidivism tool</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>cmp <span class="ot">&lt;-</span> compas1[,<span class="sc">-</span><span class="dv">3</span>]  </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldOHunting</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                               age juv_fel_count juv_misd_count juv_other_count
 race.African-American -0.156957517    0.10966300    0.114479498      0.07478931
@@ -356,12 +358,13 @@ race.Native American  -0.003430048
 race.Other            -0.027359200</code></pre>
 </div>
 </div>
-<p>The output here suggests possibly using, say, the <strong>age</strong> and <strong>priors_count</strong> variables as proxies.</p>
-<div class="page-columns page-full"><p>The function does not use the classic <em>Pearson product moment</em> correlation here, opting instead for <em>Kendall’s tau</em> correlation. Both are widely-used, and both take on values in [-1,], but while Pearson is geared toward continuous numeric variables, Kendall is also usable for  binary or ordinal integer-valued variables.</p><div class="no-row-height column-margin column-container"><span class="">Tau is defined in terms of <em>concordances</em> and <em>discordances</em>. Say we look at height and weight, and compare two people. If one of the people is both taller and heavier than the other, that is a concordance. If on the other hand, one is shorter but heavier than the other, that is a discordance. We consider all possible pairs of people in our dataset, then sets tau to the difference in concordance and discordance counts, divided by the number of pairs.</span></div></div>
+<p>The output here shows a trend under which older age suggests that the person is not Black, while a higher prior count indicates the opposite. Neither correlation is large (and they are subject to sampling variation anyway), but together these two variables may cause our predictions to be somewhat biased against African-Americans.</p>
+<p>possibly using, say, the age and priors count variables as proxies.</p>
+<div class="page-columns page-full"><p>The function does not use the classic <em>Pearson product moment</em> correlation here, opting instead for <em>Kendall’s tau</em> correlation. Both are widely-used, and both take on values in [-1,], but while Pearson is geared toward continuous numeric variables, Kendall is also usable for  binary or ordinal integer-valued variables.</p><div class="no-row-height column-margin column-container"><span class="">Tau is defined in terms of <em>concordances</em> and <em>discordances</em>. Say we look at height and weight, and compare two people. If one of the people is both taller and heavier than the other, that is a concordance. If on the other hand, one is shorter but heavier than the other, that is a discordance. We consider all possible pairs of people in our dataset, then set tau to the difference in concordance and discordance counts, divided by the number of pairs.</span></div></div>
 </section>
 </section>
-<section id="measuring-utility" class="level2 page-columns page-full" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="measuring-utility"><span class="header-section-number">3.3</span> Measuring utility</h2>
+<section id="measuring-utility" class="level2 page-columns page-full" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="measuring-utility"><span class="header-section-number">3.2</span> Measuring utility</h2>
 <p>Utility in ML classification algorithms in general, and both utility and fairness in the fair ML classification realm, often (but far from always) make use of quantitaties like False Positive Rate (FPR). So, let’s start by defining these rates.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -397,15 +400,15 @@ The famous rates FPR etc.
 </ul>
 </div>
 </div>
-<div class="no-row-height column-margin column-container"><span class="callout-margin-content">It is standard to guess Y = 1 if the probability of that event is at least 0.5. But other thresholds can be used, with TPR and FPR varying as we vary the threshold. The <em>ROC curve</em> is the resulting graph of TPR vs.&nbsp;FPR; see <strong>qeROC</strong> in the <strong>qeML</strong> package.</span></div><div class="page-columns page-full"><p>A simple but quite common measure of utility in binary classification problems is the overall misclassification probability  of misclassification; <strong>qeML</strong> predictive functions report this in the <strong>testAcc</strong> component of the functions’ return object. There are many, many other measures.</p><div class="no-row-height column-margin column-container"><span class="">The <em>F1-score</em> has recently been especially popular in the ML research world. It is defined as the harmonic mean of precision and recall, and is thought to be especially useful in applications in which one class or the other is very rare.</span></div></div>
+<div class="no-row-height column-margin column-container"><span class="callout-margin-content">It is standard to guess Y = 1 if the probability of that event is at least 0.5. But other thresholds can be used, with TPR and FPR varying as we vary the threshold. The <em>ROC curve</em> is the resulting graph of TPR vs.&nbsp;FPR; see <strong>qeROC</strong> in the <strong>qeML</strong> package.</span></div><div class="page-columns page-full"><p>A simple but quite common measure of utility in binary classification problems is the overall misclassification probability  of misclassification; <strong>qeML</strong> predictive functions report this in the <strong>testAcc</strong> component of the functions’ return object. There are many, many other measures.</p><div class="no-row-height column-margin column-container"><span class="">The <em>F1-score</em> has recently been especially popular in the ML research world. It is defined as the harmonic mean of precision and recall, and is thought by some to be especially useful in applications in which one class or the other is very rare.</span></div></div>
 <p>For whatever reason, ML research has tended to focus on that binary Y case, and there are no analogous acronyms for numeric Y. Accuracy of the latter is handled simply as Mean Squared Prediction Error (MSPE), the average squared difference between predicted and actual Y value, or Mean Absolute Prediction Error (MAPE).</p>
 </section>
-<section id="measuring-unfairness" class="level2 page-columns page-full" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="measuring-unfairness"><span class="header-section-number">3.4</span> Measuring unfairness</h2>
+<section id="measuring-unfairness" class="level2 page-columns page-full" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="measuring-unfairness"><span class="header-section-number">3.3</span> Measuring unfairness</h2>
 <div class="page-columns page-full"><p>Many unfairness criteria have been proposed. We preseent a few of them in this section.  It should be kept in mind that, just as there is no single ML algorithm that predicts the best in all applications, one’s choice of fairness measure also will depend on the given application.</p><div class="no-row-height column-margin column-container"><span class="">See the <a href="https://arxiv.org/pdf/1912.00761.pdf">Xiang and Raji</a> for an excellent analysis of the legal implications of various fairness measures.</span></div></div>
-<section id="s-correlation" class="level3 page-columns page-full" data-number="3.4.1">
-<h3 data-number="3.4.1" class="anchored" data-anchor-id="s-correlation"><span class="header-section-number">3.4.1</span> S-Correlation</h3>
-<p>A direct way to measure where Y and S are still related in spite of physically omitting the latter is to compute the correlation between predicted Y, to be denoted <span class="math inline">\(\hat{Y}\)</span> and S. As noted earlier, we use Kendall’s Tau correlation here.</p>
+<section id="s-correlation" class="level3 page-columns page-full" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="s-correlation"><span class="header-section-number">3.3.1</span> S-Correlation</h3>
+<p>A direct way to measure where Y and S are still related in spite of physically omitting the latter is to compute the correlation between predicted Y, to be denoted <span class="math inline">\(Y_{pred}\)</span> and S. As noted earlier, we use Kendall’s Tau correlation here.</p>
 <div class="page-columns page-full"><p> For instance, let’s consider our mortgage example, say with k-Nearest Neighbors as our ML prediction tool:</p><div class="no-row-height column-margin column-container"><span class="">Here and below, to keep things simple, we will not use a holdout set.</span></div></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
@@ -422,20 +425,10 @@ The famous rates FPR etc.
 </div>
 </div>
 <p>That’s a pretty substantial correlation, definitely a cause for concern that our ML analysis here is unfair. Of course, it’s not the algorithm itself’s fault, but we must find a way to mitigate the problem.</p>
-<div class="page-columns page-full"><p> An advantage of the S-Correlation measure is that it can also be used in non-classification problems, say predicting wage income, and take age as our sensitive variable S:</p><div class="no-row-height column-margin column-container"><span class="">Prediction of income might be of interest in, say, a marketing context. Actually, the field of marketing has been the subject of much concern in fair ML; e.g.&nbsp;see <a href="https://thefwa.com/cases/a-marketers-guide-to-machine-learning-fairness">FWA</a>.</span></div></div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(svcensus,<span class="st">'wageinc'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(z<span class="sc">$</span>regests,svcensus<span class="sc">$</span>age,<span class="at">method=</span><span class="st">'kendall'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.225566</code></pre>
-</div>
-</div>
-<p>So, again, our ML tool seems to be biased, this time in terms of age.</p>
 </section>
-<section id="demographic-parity" class="level3" data-number="3.4.2">
-<h3 data-number="3.4.2" class="anchored" data-anchor-id="demographic-parity"><span class="header-section-number">3.4.2</span> Demographic Parity</h3>
-<p>The criterion for demographic parity is that the same proportion of each sub-group within the sensitive feature is classified at equal rates for each of the possible outcomes</p>
+<section id="demographic-parity" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="demographic-parity"><span class="header-section-number">3.3.2</span> Demographic Parity</h3>
+<p>The criterion for demographic parity is that the same proportion of each subgroup within the sensitive feature is classified at equal rates for each of the possible outcomes</p>
 <p>For example, let’s consider the COMPAS dataset again. Demographic Parity would require</p>
 <p>P(predict recidivate | Black) = P(predict recidivate | white),</p>
 <p>i.e.&nbsp;that the quanitty</p>
@@ -443,35 +436,35 @@ The famous rates FPR etc.
 <p>has the same value for each race.</p>
 <p>Below is an example using the COMPAS data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which rows were for Black applicants, which not</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>BlackRows <span class="ot">&lt;-</span> <span class="fu">which</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> <span class="st">'African-American'</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>NonblackRows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cmp),BlackRows)  <span class="co"># all the others</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># regests, the output of qeKNN, is the vector of fitted probabilities</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (recall that for the Y = 0,1 case, the mean reduces to the probability</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># of a 1)</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>BlackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[BlackRows]</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>NonblackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[NonblackRows]</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># if a probability is &gt; 0.5, we will guess Y = 1, otherwise guess Y = 0;</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># conveniently, that's same as rounding to the nearest integer</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>BlackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(BlackProbs)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>NonblackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(NonblackProbs)</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># again, recall that the mean of a bunch of 0s and 1s is the proportion</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co"># of 1s, i.e. the probability of a 1</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(BlackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which rows were for Black applicants, which not</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>BlackRows <span class="ot">&lt;-</span> <span class="fu">which</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> <span class="st">'African-American'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>NonblackRows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cmp),BlackRows)  <span class="co"># all the others</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># regests, the output of qeKNN, is the vector of fitted probabilities</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (recall that for the Y = 0,1 case, the mean reduces to the probability</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># of a 1)</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>BlackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[BlackRows]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>NonblackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[NonblackRows]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># if a probability is &gt; 0.5, we will guess Y = 1, otherwise guess Y = 0;</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># conveniently, that's same as rounding to the nearest integer</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>BlackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(BlackProbs)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>NonblackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(NonblackProbs)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># again, recall that the mean of a bunch of 0s and 1s is the proportion</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># of 1s, i.e. the probability of a 1</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(BlackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5073104</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(NonblackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(NonblackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2724777</code></pre>
 </div>
 </div>
-<p>That’s quite a difference! Overall, our ML model predicts about 51% of Black defendants to recidivate,j versus than 27% for non-Blacks.</p>
+<p>That’s quite a difference! Overall, our ML model predicts about 51% of Black defendants to recidivate, versus than 27% for non-Blacks.</p>
 <p>However, such a criterion is generally considered too coarse, since it doesn’t account for possible differences in qualifications between the two groups. In other words, one must take confounders into account, as we did in Part I.</p>
 </section>
-<section id="equalized-odds" class="level3" data-number="3.4.3">
-<h3 data-number="3.4.3" class="anchored" data-anchor-id="equalized-odds"><span class="header-section-number">3.4.3</span> Equalized Odds</h3>
+<section id="equalized-odds" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="equalized-odds"><span class="header-section-number">3.3.3</span> Equalized Odds</h3>
 <p>This criterion takes a retrospective view, asking in the case of COMPAS:</p>
 <blockquote class="blockquote">
 <p>Among those who recidivate, what proportion of them had been predicted to do so? And, does that proportion vary by race?</p>
@@ -481,11 +474,11 @@ The famous rates FPR etc.
 <p>TP / (TP+FN)</p>
 <p>to be the same for each sensitive group.</p>
 </section>
-<section id="the-fairness-package" class="level3" data-number="3.4.4">
-<h3 data-number="3.4.4" class="anchored" data-anchor-id="the-fairness-package"><span class="header-section-number">3.4.4</span> The <strong>fairness</strong> package</h3>
+<section id="the-fairness-package" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="the-fairness-package"><span class="header-section-number">3.3.4</span> The <strong>fairness</strong> package</h3>
 <p>This package calculates and graphically displays a wide variety of fairness criteria. For instance, let’s use it to evaluate the Equalized Odds criterion in the above COMPAS example.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fairness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fairness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'fairness'</code></pre>
@@ -495,7 +488,7 @@ Attaching package: 'fairness'</code></pre>
 
     compas</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">equal_odds</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">probs=</span>z<span class="sc">$</span>regests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">equal_odds</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">probs=</span>z<span class="sc">$</span>regests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$Metric
                African-American Asian    Caucasian    Hispanic Native American
@@ -510,22 +503,22 @@ Group size     316.0000000
 $Metric_plot</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="PartII_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="PartII_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 $Probability_plot</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="PartII_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+<p><img src="PartII_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Taking African-Americans as the base, we see that the Equalized Odds criterion was not met, even approximately. Nor was Demographic Parity.</p>
 </section>
 </section>
-<section id="remedies" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="remedies"><span class="header-section-number">3.5</span> Remedies</h2>
-<p>Having established that ML prediction models can be biased against certain sensitive groups, what remedies are available? The <strong>dsld</strong> package includes a few of these, presented in this section. Of course, all of them recognize a basic principle:</p>
+<section id="remedies" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="remedies"><span class="header-section-number">3.4</span> Remedies</h2>
+<p>Having established that ML prediction models can be biased against certain sensitive groups, what remedies are available? The <strong>dsld</strong> package includes a few of these, presented in this section. Of course, all of them recognize the basic principle that we stated earlierr:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -540,83 +533,181 @@ The Fairness-Utility Tradefoff
 </div>
 </div>
 <p>Any algorithm for ameliorating unfairness will thus include one or more parameters that one can use to achieve a desired level of compromise between fairness and utility. The parameters essentially allow us to “dial” the weight that our proxies will play in predicting Y; lighter weight means more fairness but poorer utility, and vice versa.</p>
-<p>Our context will be:</p>
-<ul>
-<li><p>Due to legal requirements or simply a desire for fairness, we will omit S from all analyses, other than for fairness assessment of our derived prediction tool.</p></li>
-<li><p>But we are concerned about the impact of proxies, and have chosen a set of variables O to play this role.</p></li>
-<li><p>We have chosen fairness and utility measures with which we will choose a desired point in the Fairness-Utility Tradefoff.</p></li>
-</ul>
 <p>Many, many fair ML algorithms have been proposed, most of which are technically complex. The ones we present here have been chosen (a) for their technical simplicity and (b) availability as R packages. We will begin with the simplest algorithms (which have been developed by one of the authors of this book).</p>
 <p>Let’s take as a running example the COMPAS data, predicting recidivism, with age and prior convictions count as proxies. To illustrate prediction, we will predict the first case in the dataset:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> cmp[<span class="dv">1</span>,<span class="sc">-</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)]  <span class="co"># just X and O, not Y and S</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> cmp[<span class="dv">1</span>,<span class="sc">-</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)]  <span class="co"># just X, not Y and S</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="dsldqefairrf" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="dsldqefairrf"><span class="header-section-number">3.6</span> <strong>dsldQeFairRF</strong></h2>
+<section id="functions-based-on-the-explicitly-deweighted-features-edf-method" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="functions-based-on-the-explicitly-deweighted-features-edf-method"><span class="header-section-number">3.5</span> Functions based on the Explicitly Deweighted Features (EDF) Method</h2>
+<p><a href="https://arxiv.org/abs/2208.06557">EDF</a> addresses the fairness issue by</p>
+<ul>
+<li><p>omitting S from the analysis entirely</p></li>
+<li><p>explicitly reducing the weights of the O variables, according to user specification</p></li>
+</ul>
+<p>The deweighting parameters are set via an argument <strong>deweightPars</strong> in the function calls. This argument takes the form of an R list, with one component for each variable in the user’s O set. The meanings of the parameters will vary according to the ML algorithm used, as seen below.</p>
+<section id="dsldqefairrf" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="dsldqefairrf"><span class="header-section-number">3.5.1</span> <strong>dsldQeFairRF</strong></h3>
 <p>This function fits an RF model, but with deweighting of the proxies.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairRF</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairRF</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>African-American            Asian        Caucasian         Hispanic 
-     0.166144143      0.141538971      0.117276054      0.177492593 
+       0.2093469        0.1465687        0.1800608        0.1667216 
  Native American            Other 
-     0.009684467      0.143375413 </code></pre>
+       0.0103096        0.1126398 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$predClasses
 [1] "No"
 
 $probs
             No       Yes
-[1,] 0.6495699 0.3504301</code></pre>
+[1,] 0.6795239 0.3204761</code></pre>
 </div>
 </div>
-<p>Recall that in RFs, each tree will use a different random ordering of the X and O variables. At any given node in a tree, a variable is chosen at random to set up a possible split point. But here we are specifying that the age and priors count variables be used only 20% and 10% as often as other variables, in order to reduce their impact.</p>
-<p>Yet the S-Correlation valuea are still substantial. We need to give the O variables even smaller weights or possibly include additional variables in our O set.</p>
+<p>The meaning of the deweighting parameters in this function is as follows: Recall that in RFs, each tree will use a different random ordering of the X variables. At any given node in a tree, a variable is chosen at random to set up a possible split point. But here we are specifying that the age and priors count variables be used only 20% and 10% as often as other variables, in order to reduce their impact.</p>
+<p>Yet the S-Correlation valuea are still substantial in the Black and Hispanic cases. We need to give the O variables even smaller weights or possibly include additional variables in our O set.</p>
 </section>
-<section id="dsldqefairknn" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="dsldqefairknn"><span class="header-section-number">3.7</span> <strong>dsldQeFairKNN</strong></h2>
-<p>Remember, the common theme here is reducing the role played in prediction by the proxies O. How might this be done with k-NN?</p>
-<p>An easy answer is to weight the distance metric. Ordinarily, if we move 3.2 meters to the right and then 1.1 meters forward, the distance between our new point and our original one is</p>
+<section id="dsldqefairknn" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="dsldqefairknn"><span class="header-section-number">3.5.2</span> <strong>dsldQeFairKNN</strong></h3>
+<p>The role of the deweighting parameters in this k-NN implementation of EDF is as follows: We use weighted distances in finding near neighbors. Ordinarily, if we move 3.2 meters to the right and then 1.1 meters forward, the distance between our new point and our original one is</p>
 <p><span class="math inline">\(\sqrt{3.2^2+1.1^2} = 3.38\)</span></p>
-<p>That puts equal weight in the left-right direction and the forward-back direction, which makes sense for geometric distance. But in data prediction, we can use different weights. In prediction wage income in the Census data, say, we can place large weight on age and occupation, and less weight on education. The above call would change to:</p>
+<p>That puts equal weight in the left-right direction and the forward-back direction, which makes sense for geometric distance. But in data prediction, we can use different weights. In predicting wage income in the Census data, say, we can place large weight on age and occupation, and less weight on education. Our COMPAS data call would work in this manner:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="remedies-based-on-shrunken-linear-models" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="remedies-based-on-shrunken-linear-models"><span class="header-section-number">3.8</span> Remedies based on “shrunken” linear models</h2>
+<section id="dsldqefairridgelin-and-dsldqefairridgelog" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="dsldqefairridgelin-and-dsldqefairridgelog"><span class="header-section-number">3.5.3</span> <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong></h3>
 <p>One of the most striking advances in modern statistics was the discovery that classical estimators tend to be “too big,” and that one may improve accuracy by “shrinking” them. Here is the intuition:</p>
-<p>Consider the example in <a href="PartI.html#sec-compas"><span>Section&nbsp;2.7</span></a>. The vector of estimated regression coefficients was</p>
+<p>Consider the example in <a href="PartI.html#sec-compas"><span>Section&nbsp;2.6</span></a>. The vector of estimated regression coefficients was</p>
 <p>(12.46,-0.94,0.39,0.16,…)</p>
 <p>We might (crudely) shrink this vector by multiplying by a factor of, say, 0.5, yielding</p>
 <p>(6.23,-0.47,0.20,0.08,…)</p>
 <p>The actual shrinkage mechanisms used in the regression context are much more complex than simply multiplying every component of the vector by the same constant, but this is the basic principle.</p>
-<p>Why might this odd action be helpful? Shrinking introduces a bias, but reduces variance (roughly speaking, smaller variables vary less). If outliers (extreme values, not errors) are common in the data, these result in large estimator variance, possibly so much that shrinkage’s reduction in variance overwhelms our increase in bias.</p>
-<p>Some readers may have heard of <em>ridge regression</em> and the <em>LASSO</em>, both of which impose shrinkage. For our fair ML context, though we wish to perform our shrinkage focusing on <em>only some</em> of the estimated regression coefficients, specifically those corresponding to our proxies. To be sure, it should be noted that non-proxy coefficients are affected too, but the main effects will be on the proxies.</p>
+<p>Why might this odd action be helpful? Shrinking introduces a bias, but reduces variance (roughly speaking, smaller variables vary less). If outliers (extreme values, not errors) are common in the data, these result in large estimator variance, possibly so much that shrinkage’s reduction in variance more than compensates for our increase in bias.</p>
+<p>Some readers may have heard of <em>ridge regression</em> and the <em>LASSO</em>, both of which impose shrinkage. For our EDF context, though, we wish to perform our shrinkage focusing on <em>only some</em> of the estimated regression coefficients, specifically those corresponding to our proxies. To be sure, it should be noted that non-proxy coefficients are affected too, but the main effects will be on the proxies. This is what <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong> do, with linear and logit cases.</p>
 <p>Note that these estimators also have the potential ancillary benefit obtained from shrinkage in general, i.e.&nbsp;better utility.</p>
-<section id="the-dsldfgrrm-function" class="level3" data-number="3.8.1">
-<h3 data-number="3.8.1" class="anchored" data-anchor-id="the-dsldfgrrm-function"><span class="header-section-number">3.8.1</span> The <strong>dsldFgrrm</strong> function</h3>
-<p>This is a wrapper to a corresponding function in the <strong>fairml</strong> package, based on <a href="https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf">a paper</a> by the authors of the package.</p>
-<p>Let’s see what it does with the COMPAS data:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.1</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.01</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The <strong>unfairness</strong> argument is a number in (0,1]. The smaller the value, the fairer the fit. The first value, 0.1, gave an estimate coefficient for Caucasian of -0.73, while using 0.01 reduced this to -0.15. (Note that the base for the dummy variables is apparently African-American.] But both values are small relative some of the other coefficients.</p>
-
-
 </section>
+</section>
+<section id="wrappers-for-fairml-functions" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="wrappers-for-fairml-functions"><span class="header-section-number">3.6</span> Wrappers for fairML functions</h2>
+<p>We consider here <strong>dsldFrrm</strong> and <strong>dsldFgrrm</strong>, wrappers to functions in the <strong>fairml</strong> package, based on <a href="https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf">a paper</a> by the authors of the package. Their methods apply a ridge penalty to S, thus reducing its influence. Note that contrast to EDF:</p>
+<p>The <strong>fairML</strong> functions aim to address the fairness issue through an argument <strong>unfairness</strong>, a number in (0,1]. The smaller the value, the fairer the fit.</p>
+<ul>
+<li><p>EDF omits S from its analysis; the <strong>fairML</strong> functions retain S, and in fact compute regression coefficients for it.</p></li>
+<li><p>EDF has multiple inputs for deweighting, while <em>fairML</em> has a single parameter.</p></li>
+<li><p>EDF explicitly deweights the O variables, under the control of the user; <strong>fairML</strong> does so only indirectly via their relation to S, without user input.</p></li>
+</ul>
+<p>Of course, each may work better than the other for any particular dataset.</p>
+<p>Let’s see what it does with the COMPAS data, trying three different values of <strong>unfairness</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">1.0</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+          0.23966           -1.79259           -0.72742           -0.87588  
+S1Native.American            S1Other                age      juv_fel_count  
+         -0.03651           -0.88930           -0.03538            0.18174  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.07559            0.17788            0.14302            0.39726  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.39616           41.96697            6.32340           11.37465  
+       in_custody        out_custody  
+          6.33963           14.75329  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.1</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+          0.04354           -0.89549           -0.36884           -0.41984  
+S1Native.American            S1Other                age      juv_fel_count  
+          0.08257           -0.42681           -0.03449            0.17093  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.06153            0.17663            0.13869            0.38870  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.06082           41.46601            6.37675           10.88288  
+       in_custody        out_custody  
+          6.88843           13.87360  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.01</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+         -0.13557           -0.08638           -0.03388           -0.03541  
+S1Native.American            S1Other                age      juv_fel_count  
+          0.01777           -0.03607           -0.03416            0.16299  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.05068            0.17753            0.13672            0.38560  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.46086           41.72702            6.61601           10.58503  
+       in_custody        out_custody  
+          7.26906           13.47819  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+</div>
+<p>The first value, 1.0, yielded a Caucasian coefficient of -0.73, which then shrank to -0.37 with <strong>unfairness</strong> = 0.1, and then to -0,03 with <strong>unfairness</strong> = 0.01. (Note that the base for the dummy variables is apparently African-American.] There seems to be rather little effect on our possible proxies, age and priors count.</p>
+
+
 </section>
 
 </main> <!-- /main -->

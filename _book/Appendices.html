@@ -147,12 +147,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#appendix-a-standard-errorstextemdashstatistical-inference-in-a-nutshell" id="toc-appendix-a-standard-errorstextemdashstatistical-inference-in-a-nutshell" class="nav-link active" data-scroll-target="#appendix-a-standard-errorstextemdashstatistical-inference-in-a-nutshell"><span class="header-section-number">5.1</span> Appendix A: Standard Errors<span class="math inline">\(\textemdash\)</span>Statistical Inference in a Nutshell</a></li>
-  <li><a href="#sec-boot" id="toc-sec-boot" class="nav-link" data-scroll-target="#sec-boot"><span class="header-section-number">5.2</span> Appendix B: Standard Errors via the Bootstrap</a></li>
-  <li><a href="#appendix-c-python-interface" id="toc-appendix-c-python-interface" class="nav-link" data-scroll-target="#appendix-c-python-interface"><span class="header-section-number">5.3</span> Appendix C: Python Interface</a>
-  <ul class="collapse">
-  <li><a href="#requirements-for-all-python-functions" id="toc-requirements-for-all-python-functions" class="nav-link" data-scroll-target="#requirements-for-all-python-functions"><span class="header-section-number">5.3.1</span> Requirements For All Python Functions</a></li>
-  <li><a href="#running-dsld-python-functions" id="toc-running-dsld-python-functions" class="nav-link" data-scroll-target="#running-dsld-python-functions"><span class="header-section-number">5.3.2</span> Running dsld Python Functions</a></li>
-  </ul></li>
+  <li><a href="#sec-boot" id="toc-sec-boot" class="nav-link" data-scroll-target="#sec-boot"><span class="header-section-number">5.2</span> Appendix B: Estimated Standard Errors via the Bootstrap</a></li>
   </ul>
 </nav>
     </div>
@@ -180,42 +175,21 @@ ul.task-list li input[type="checkbox"] {
 <section id="appendix-a-standard-errorstextemdashstatistical-inference-in-a-nutshell" class="level2 page-columns page-full" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="appendix-a-standard-errorstextemdashstatistical-inference-in-a-nutshell"><span class="header-section-number">5.1</span> Appendix A: Standard Errors<span class="math inline">\(\textemdash\)</span>Statistical Inference in a Nutshell</h2>
 <p>Say I wish to find the mean weight <span class="math inline">\(\mu\)</span> of all students at the University of California, Davis. It would be infeasible to measure them all, so I take a random sample of 100 students. The mean weight of those 100 students, denoted <span class="math inline">\(\bar{X}\)</span>, is an estimate of <span class="math inline">\(\mu\)</span>.</p>
-<p>I know that <span class="math inline">\(\bar{X}\)</span> will have some unknowm amount of error as an estimate of <span class="math inline">\(\mu\)</span>. One measure of this is its <em>standard error</em> (SE). What is this?</p>
-<p>Remember, we took a random sample of students. Different samples will have different values of <span class="math inline">\(\bar{X}\)</span>, i.e.&nbsp;<span class="math inline">\(\bar{X}\)</span> will have <em>sampling variation</em>. Then the SE of <span class="math inline">\(\bar{X}\)</span> is defined to be the standard deviation of all possible <span class="math inline">\(\bar{X}\)</span> values, from all possible samples.</p>
-<div class="page-columns page-full"><p>The smaller the SE is, the more confident we are that the <span class="math inline">\(\bar{X}\)</span> from  our particular sample is pretty accurate. Of course, we can’t be completely sure, but we can quantify it probabilistically:</p><div class="no-row-height column-margin column-container"><span class="">Meaning of that 95% probability figure: Think of all possible samples. Each one has an <span class="math inline">\(\bar{X}\)</span> value, and an SE value. So, each possible sample, there is a different confidence interval (CI). 95% of those CIs will contain the true <span class="math inline">\(\mu\)</span>.</span></div></div>
+<p>I know that <span class="math inline">\(\bar{X}\)</span> will have some unknown amount of error as an estimate of <span class="math inline">\(\mu\)</span>. One measure of this is its <em>standard error</em> (SE). What is this?</p>
+<p>Remember, we took a random sample of students. Different samples will have different values of <span class="math inline">\(\bar{X}\)</span>, i.e.&nbsp;<span class="math inline">\(\bar{X}\)</span> will have <em>sampling variation</em>. Then the SE of <span class="math inline">\(\bar{X}\)</span> is defined to be the standard deviation of all possible <span class="math inline">\(\bar{X}\)</span> values, from all possible samples. Of course, we only have one sample, so SE is unknown, but we can estimate it.</p>
+<div class="page-columns page-full"><p>The smaller the SE is, the more confident we are that the <span class="math inline">\(\bar{X}\)</span> from  our particular sample is pretty accurate. Of course, we can’t be completely sure, but we can quantify it probabilistically:</p><div class="no-row-height column-margin column-container"><span class="">Meaning of that 95% probability figure: Think of all possible samples. Each one has an <span class="math inline">\(\bar{X}\)</span> value, and an estimated SE value. So, each possible sample, there is a different confidence interval (CI). 95% of those CIs will contain the true <span class="math inline">\(\mu\)</span>.</span></div></div>
 <blockquote class="blockquote">
 <p>An approximate 95% <em>confidence interval</em> for <span class="math inline">\(\mu\)</span>, based on <span class="math inline">\(\bar{X}\)</span>, is <span class="math inline">\(\bar{X} \pm 1.96 \times SE\)</span>.</p>
 </blockquote>
 <p>The reader may have heard of the Central Limit Theorem, which says that the sum of many random variables, itself a random variable, has an approximately normal distribution. This is the case for most classical statistical estimators, such as estimated coefficients in linear and generalized linear models. Hence we can find confidence intervals as above, taking the estimator plus and minus 1.96 times the SE of the estimator.</p>
 <p>CIs are generally taught together with <em>hypothesis testing</em> or <em>significance testing</em>, which in many cases uses standard errors.<br>
-<a href="PartI.html#sec-sig"><span>Section&nbsp;2.6</span></a> reviews the notion, and discusses problems with this kind of analysis.</p>
+<a href="PartI.html#sec-sig"><span>Section&nbsp;2.5</span></a> reviews the notion, and discusses problems with this kind of analysis.</p>
 </section>
 <section id="sec-boot" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="sec-boot"><span class="header-section-number">5.2</span> Appendix B: Standard Errors via the Bootstrap</h2>
-</section>
-<section id="appendix-c-python-interface" class="level2 page-columns page-full" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="appendix-c-python-interface"><span class="header-section-number">5.3</span> Appendix C: Python Interface</h2>
-<p>As previously mentioned, Python wrappers are included for most functions.</p>
-<section id="requirements-for-all-python-functions" class="level3 page-columns page-full" data-number="5.3.1">
-<h3 data-number="5.3.1" class="anchored" data-anchor-id="requirements-for-all-python-functions"><span class="header-section-number">5.3.1</span> Requirements For All Python Functions</h3>
-<p>To use these Python functions, users need to have Python version <strong>3.10</strong> installed on their system.</p>
-<p>If the user has a later version of Python installed (such as 3.11), and wants to keep that version of Python in their system, they will have to manage multiple Python versions on their system. One easy way to manage multiple environments (in our case, multiple versions of Python for users who need it) is to use <a href="https://docs.conda.io/projects/conda/en/stable/">Conda</a>, which is a package and environment manager included in both <a href="https://docs.conda.io/projects/conda/en/stable/glossary.html#anaconda-glossary">Anaconda</a> and <a href="https://docs.conda.io/projects/conda/en/stable/glossary.html#miniconda-glossary">Miniconda</a>. For our purposes, Miniconda is more useful as a minimalistic way to install and use Conda. See <a href="https://docs.conda.io/projects/miniconda/en/latest/">this guide</a> for information on how to install Miniconda – keep in mind that, at this time, this package requires Python 3.10 (NOT the latest version of Python), so when the guide prompts you to choose a Miniconda installer, you can choose a link for Python 3.10 from this <a href="https://docs.conda.io/projects/miniconda/en/latest/miniconda-other-installer-links.html">list</a> which is also linked in the aforementioned guide.</p>
-<p>After installing miniconda, refer to <a href="https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html">this section</a> and later sections of the Conda user guide to set up an environment with Python 3.10.</p>
-<div class="page-columns page-full"><p>Python 3.10 conveniently comes with <strong>pip</strong>, the Python package installer. It can be used to install various Python packages/modules that will be required to run the dsld Python functions. <strong>All</strong> of our Python functions  require <strong>rpy2</strong>, which allows for Python/R environment interaction.</p><div class="no-row-height column-margin column-container"><span class="">To install rpy2, run <strong>pip install rpy2</strong> within the Python 3.10 environment, or see <a href="https://rpy2.github.io/doc/latest/html/overview.html#install-from-source">this link</a></span></div></div>
-</section>
-<section id="running-dsld-python-functions" class="level3 page-columns page-full" data-number="5.3.2">
-<h3 data-number="5.3.2" class="anchored" data-anchor-id="running-dsld-python-functions"><span class="header-section-number">5.3.2</span> Running dsld Python Functions</h3>
-<p>As an example, let’s use the Python interface for ##dsldTakeALookAround## (the Python-equivalent function is called <strong>dsldPyTakeALookAround</strong>)<br>
-to view tabular information on how data features relate to Y and S. The Python function allows users to enter arguments using Python data types and converts the resultant R dataframe into a Pandas dataframe.</p>
-<div class="page-columns page-full"><p>Different Python functions will require different libraries depending on what the function does – <strong>Pandas</strong>  is required for dsldPyTakeALookAround.</p><div class="no-row-height column-margin column-container"><span class="">These libraries can also (usually) be installed with <strong>pip</strong></span></div></div>
-<!-- This part may change if installation method changes -- assuming that we 
-are using devtools::install_github and have access to /dsld folder -->
-<p>The user should open the Python Shell Prompt by typing <strong>python</strong> from the package Python directory (/dsld/inst/Python) in the terminal/cmd prompt. Then, to run the Python function, we can run the following commands in the Python shell:</p>
-<p><code>python} from dsldTakeALook_Py_R import dsldPyTakeALookAround     import rpy2.robjects as robjects    robjects.r['data']('svcensus')     data = robjects.r('svcensus')     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')    print(result)</code></p>
-<p>The result should be the same information from the R dataframe, but converted to a Pandas dataframe.</p>
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-boot"><span class="header-section-number">5.2</span> Appendix B: Estimated Standard Errors via the Bootstrap</h2>
+<p>(to be added)</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
