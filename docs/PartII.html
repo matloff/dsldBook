@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Part II: Discovering/Mitigating Bias in Machine Learning – Data Science Looks at Discrimination</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./AuthorBios.html" rel="next">
+<link href="./PartI.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5e2915e4d4df5928b2b0a61215b328b6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./PartII.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Part II: Discovering/Mitigating Bias in Machine Learning</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science Looks at Discrimination</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction and Motivating Examples</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PartI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Part I: Adjustment for Confounders</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PartII.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Part II: Discovering/Mitigating Bias in Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./AuthorBios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Author Bios</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#comparison-to-part-i" id="toc-comparison-to-part-i" class="nav-link active" data-scroll-target="#comparison-to-part-i"><span class="header-section-number">3.1</span> Comparison to Part I</a>
+  <ul class="collapse">
+  <li><a href="#the-fairness-utility-tradeoff" id="toc-the-fairness-utility-tradeoff" class="nav-link" data-scroll-target="#the-fairness-utility-tradeoff"><span class="header-section-number">3.1.1</span> The Fairness-Utility Tradeoff</a></li>
+  <li><a href="#exploring-proxies" id="toc-exploring-proxies" class="nav-link" data-scroll-target="#exploring-proxies"><span class="header-section-number">3.1.2</span> Exploring proxies</a></li>
+  </ul></li>
+  <li><a href="#measuring-utility" id="toc-measuring-utility" class="nav-link" data-scroll-target="#measuring-utility"><span class="header-section-number">3.2</span> Measuring utility</a></li>
+  <li><a href="#measuring-unfairness" id="toc-measuring-unfairness" class="nav-link" data-scroll-target="#measuring-unfairness"><span class="header-section-number">3.3</span> Measuring unfairness</a>
+  <ul class="collapse">
+  <li><a href="#s-correlation" id="toc-s-correlation" class="nav-link" data-scroll-target="#s-correlation"><span class="header-section-number">3.3.1</span> S-Correlation</a></li>
+  <li><a href="#demographic-parity" id="toc-demographic-parity" class="nav-link" data-scroll-target="#demographic-parity"><span class="header-section-number">3.3.2</span> Demographic Parity</a></li>
+  <li><a href="#equalized-odds" id="toc-equalized-odds" class="nav-link" data-scroll-target="#equalized-odds"><span class="header-section-number">3.3.3</span> Equalized Odds</a></li>
+  <li><a href="#the-fairness-package" id="toc-the-fairness-package" class="nav-link" data-scroll-target="#the-fairness-package"><span class="header-section-number">3.3.4</span> The <strong>fairness</strong> package</a></li>
+  </ul></li>
+  <li><a href="#remedies" id="toc-remedies" class="nav-link" data-scroll-target="#remedies"><span class="header-section-number">3.4</span> Remedies</a></li>
+  <li><a href="#functions-based-on-the-explicitly-deweighted-features-edf-method" id="toc-functions-based-on-the-explicitly-deweighted-features-edf-method" class="nav-link" data-scroll-target="#functions-based-on-the-explicitly-deweighted-features-edf-method"><span class="header-section-number">3.5</span> Functions based on the Explicitly Deweighted Features (EDF) Method</a>
+  <ul class="collapse">
+  <li><a href="#dsldqefairrf" id="toc-dsldqefairrf" class="nav-link" data-scroll-target="#dsldqefairrf"><span class="header-section-number">3.5.1</span> <strong>dsldQeFairRF</strong></a></li>
+  <li><a href="#dsldqefairknn" id="toc-dsldqefairknn" class="nav-link" data-scroll-target="#dsldqefairknn"><span class="header-section-number">3.5.2</span> <strong>dsldQeFairKNN</strong></a></li>
+  <li><a href="#dsldqefairridgelin-and-dsldqefairridgelog" id="toc-dsldqefairridgelin-and-dsldqefairridgelog" class="nav-link" data-scroll-target="#dsldqefairridgelin-and-dsldqefairridgelog"><span class="header-section-number">3.5.3</span> <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong></a></li>
+  </ul></li>
+  <li><a href="#wrappers-for-fairml-functions" id="toc-wrappers-for-fairml-functions" class="nav-link" data-scroll-target="#wrappers-for-fairml-functions"><span class="header-section-number">3.6</span> Wrappers for fairML functions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Part II: Discovering/Mitigating Bias in Machine Learning</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div style="page-break-after: always;"></div>
+<p>In applications of machine learning as a predictive modeling tool, our model may be biases against some sensitive group. As such, it becomes imperative to find methods of uncovering and reducing any such biases.</p>
+<section id="comparison-to-part-i" class="level2 page-columns page-full" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="comparison-to-part-i"><span class="header-section-number">3.1</span> Comparison to Part I</h2>
+<div class="page-columns page-full"><p>First, recall our notation: </p><div class="no-row-height column-margin column-container"><span class="">As before with C, think of X as, at first, consisting of all variables other than Y and S, but then selecting some of X as O, with X then being all variables except Y, S and O.</span></div></div>
+<ul>
+<li><p>Y: outcome variable, to be predicted</p></li>
+<li><p>X: variables to be used to predict Y</p></li>
+<li><p>S: sensitive variable</p></li>
+<li><p>O: proxy variables</p></li>
+</ul>
+<p>We wish to predict Y from X, either omitting S or reducing its impact, but with concern that we may be indirectly using S via O. But there is a large amount of variation in which fair ML methods actually handle S and O.</p>
+<ul>
+<li><p>Some methods do not deal with O explicitly, merely aiming to “reduce the influence of S,” which implicitly means controlling the impact of O as well.</p></li>
+<li><p>Some methods aim to eliminate the effect of S entirely, which may implicitly mean eliminating O as well.</p></li>
+<li><p>Other methods may deal with O explicitly.</p></li>
+</ul>
+<p>Contrast this from our material in Part I:</p>
+<ul>
+<li><p>In Part I, we fit models for predicting Y, but with the goal of using such models to assess the effect of S on Y; we were not interested in actually predicting Y. We included S in our models, but wished to find variables C that were correlated with both Y and S, so as to avoid distorting our look at the impact of S on Y. Any X variable unrelated to Y was not of interest.</p></li>
+<li><p>Here in Part II, prediction of Y is our central goal, rather than effect assessment. We will either omit S or reduce its impact, possibly in concert with action regarding O.</p></li>
+</ul>
+<section id="the-fairness-utility-tradeoff" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="the-fairness-utility-tradeoff"><span class="header-section-number">3.1.1</span> The Fairness-Utility Tradeoff</h3>
+<p>The role of the O variables is key. On the one hand, we are worried that they would indirectly allow S to influence predictions – Fairness – but on the other hand, omitting them would reduce our predictive power – Utility. We hope to find a good middle ground.</p>
+</section>
+<section id="exploring-proxies" class="level3 page-columns page-full" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="exploring-proxies"><span class="header-section-number">3.1.2</span> Exploring proxies</h3>
+<p>As a preliminary step, the analyst may wish to identify possible proxies. The function <strong>dsldOHunting</strong> calculates the correlations between S and possible proxies O.</p>
+<p>Here’s an example, using the COMPAS data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: fairml</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: gtools</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: regtools</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: FNN</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+
+
+
+
+*********************
+
+
+
+Latest version of regtools at GitHub.com/matloff
+
+
+Type ?regtools to see function list by category</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: qeML</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: rmarkdown</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tufte</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+
+
+
+
+*********************
+
+
+
+  Navigating qeML:
+
+      Type vignette("Quick_Start") for a quick overview!
+
+      Type vignette("Function_List") for a categorized function list
+
+      Type vignette("ML_Overview") for an introduction to machine learning</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'qeML'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked _by_ '.GlobalEnv':
+
+    evalr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(compas1) </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># omit decile; we are developing our own </span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># risk recidivism tool</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>cmp <span class="ot">&lt;-</span> compas1[,<span class="sc">-</span><span class="dv">3</span>]  </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldOHunting</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               age juv_fel_count juv_misd_count juv_other_count
+race.African-American -0.156957517    0.10966300    0.114479498      0.07478931
+race.Asian             0.016385005   -0.01239908   -0.005952701     -0.01014768
+race.Caucasian         0.147628857   -0.08028929   -0.090027168     -0.04101560
+race.Hispanic          0.022247056   -0.03052358   -0.030760605     -0.02561435
+race.Native American   0.002329938    0.03159615   -0.011713229      0.01229258
+race.Other             0.002437568   -0.03832635   -0.020729116     -0.04670631
+                      priors_count   sex.Female     sex.Male    c_jail_in
+race.African-American   0.17509146 -0.041459873  0.041459873  0.002270144
+race.Asian             -0.03073693 -0.021694502  0.021694502 -0.004670234
+race.Caucasian         -0.10017594  0.068682539 -0.068682539  0.002112483
+race.Hispanic          -0.06814588 -0.026131928  0.026131928 -0.006687662
+race.Native American    0.02388670 -0.006505234  0.006505234 -0.004382357
+race.Other             -0.08725931 -0.012952574  0.012952574  0.001166723
+                        c_jail_out c_offense_date screening_date   in_custody
+race.African-American  0.012784849  -0.0084427004   -0.004593993  0.060971397
+race.Asian            -0.004725654  -0.0006422783   -0.004131066 -0.021151109
+race.Caucasian        -0.005997440   0.0117472861    0.009717379 -0.027889553
+race.Hispanic         -0.009454646  -0.0080839293   -0.004909945 -0.033209571
+race.Native American  -0.004711864  -0.0083578408   -0.003890418 -0.005750257
+race.Other            -0.001456317   0.0058788162   -0.002179469 -0.027193953
+                       out_custody
+race.African-American  0.071601855
+race.Asian            -0.023006228
+race.Caucasian        -0.036894524
+race.Hispanic         -0.036660474
+race.Native American  -0.003430048
+race.Other            -0.027359200</code></pre>
+</div>
+</div>
+<p>The output here shows a trend under which older age suggests that the person is not Black, while a higher prior count indicates the opposite. Neither correlation is large (and they are subject to sampling variation anyway), but together these two variables may cause our predictions to be somewhat biased against African-Americans.</p>
+<p>possibly using, say, the age and priors count variables as proxies.</p>
+<div class="page-columns page-full"><p>The function does not use the classic <em>Pearson product moment</em> correlation here, opting instead for <em>Kendall’s tau</em> correlation. Both are widely-used, and both take on values in [-1,], but while Pearson is geared toward continuous numeric variables, Kendall is also usable for  binary or ordinal integer-valued variables.</p><div class="no-row-height column-margin column-container"><span class="">Tau is defined in terms of <em>concordances</em> and <em>discordances</em>. Say we look at height and weight, and compare two people. If one of the people is both taller and heavier than the other, that is a concordance. If on the other hand, one is shorter but heavier than the other, that is a discordance. We consider all possible pairs of people in our dataset, then set tau to the difference in concordance and discordance counts, divided by the number of pairs.</span></div></div>
+</section>
+</section>
+<section id="measuring-utility" class="level2 page-columns page-full" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="measuring-utility"><span class="header-section-number">3.2</span> Measuring utility</h2>
+<p>Utility in ML classification algorithms in general, and both utility and fairness in the fair ML classification realm, often (but far from always) make use of quantitaties like False Positive Rate (FPR). So, let’s start by defining these rates.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The famous rates FPR etc.
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These are conditional probabilities, but it’s important not to confuse the event with the condition.</p>
+<p>Consider binary Y classification problems, where we label Y is either <em>positive</em> (e.g.&nbsp;patient has the disease) or <em>negative</em> (e.g.&nbsp;patient does not have the disease).</p>
+<p>After we fit our ML tool to predict Y, we use it for prediction. Consider a long period of time in which we do such predictions. During that time, define the following counts:</p>
+<ul>
+<li><p>FP: Count of the number of times we predict Y to be positive and actually it’s negative.</p></li>
+<li><p>FN: Count of the number of times we predict Y to be negative and actually it’s positive.</p></li>
+<li><p>TP: Count of the number of times we predict Y to be positive and actually it’s positive.</p></li>
+<li><p>TN: Count of the number of times we predict Y to be negative and actually it’s negative.</p></li>
+</ul>
+<p>Then some key rates are: </p>
+<ul>
+<li><p>FPR: FP / (FP + TN) = P(guess Y positive | Y actually is negative)</p></li>
+<li><p>TPR: TP / (TP + FN) = P(guess Y positive | Y actually is positive)</p></li>
+<li><p>FNR: FN / (TP + FN) = P(guess Y negative | Y actually is positive)</p></li>
+<li><p>TNR: TN / (FP + TN) = P(guess Y negative | Y actuually is negative)</p></li>
+</ul>
+<p>So for instance, FPR is the proportion of time we guess positive, <em>among those times</em> in which Y is actually negative. Two other common terms:</p>
+<ul>
+<li><p><em>recall</em>: same as TPR</p></li>
+<li><p><em>sensitivity</em>: same as TPR</p></li>
+<li><p><em>precision</em>: P(Y is actually positive | we guess Y is positive)= (TP + FN) / (TP + FP)</p></li>
+</ul>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><span class="callout-margin-content">It is standard to guess Y = 1 if the probability of that event is at least 0.5. But other thresholds can be used, with TPR and FPR varying as we vary the threshold. The <em>ROC curve</em> is the resulting graph of TPR vs.&nbsp;FPR; see <strong>qeROC</strong> in the <strong>qeML</strong> package.</span></div><div class="page-columns page-full"><p>A simple but quite common measure of utility in binary classification problems is the overall misclassification probability  of misclassification; <strong>qeML</strong> predictive functions report this in the <strong>testAcc</strong> component of the functions’ return object. There are many, many other measures.</p><div class="no-row-height column-margin column-container"><span class="">The <em>F1-score</em> has recently been especially popular in the ML research world. It is defined as the harmonic mean of precision and recall, and is thought by some to be especially useful in applications in which one class or the other is very rare.</span></div></div>
+<p>For whatever reason, ML research has tended to focus on that binary Y case, and there are no analogous acronyms for numeric Y. Accuracy of the latter is handled simply as Mean Squared Prediction Error (MSPE), the average squared difference between predicted and actual Y value, or Mean Absolute Prediction Error (MAPE).</p>
+</section>
+<section id="measuring-unfairness" class="level2 page-columns page-full" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="measuring-unfairness"><span class="header-section-number">3.3</span> Measuring unfairness</h2>
+<div class="page-columns page-full"><p>Many unfairness criteria have been proposed. We preseent a few of them in this section.  It should be kept in mind that, just as there is no single ML algorithm that predicts the best in all applications, one’s choice of fairness measure also will depend on the given application.</p><div class="no-row-height column-margin column-container"><span class="">See the <a href="https://arxiv.org/pdf/1912.00761.pdf">Xiang and Raji</a> for an excellent analysis of the legal implications of various fairness measures.</span></div></div>
+<section id="s-correlation" class="level3 page-columns page-full" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="s-correlation"><span class="header-section-number">3.3.1</span> S-Correlation</h3>
+<p>A direct way to measure where Y and S are still related in spite of physically omitting the latter is to compute the correlation between predicted Y, to be denoted <span class="math inline">\(Y_{pred}\)</span> and S. As noted earlier, we use Kendall’s Tau correlation here.</p>
+<div class="page-columns page-full"><p> For instance, let’s consider our mortgage example, say with k-Nearest Neighbors as our ML prediction tool:</p><div class="no-row-height column-margin column-container"><span class="">Here and below, to keep things simple, we will not use a holdout set.</span></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qeML)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>) </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the fitted model's probability of recidivism,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e. regression estimates</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the variable 'race' is an R factor, need a numeric</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>black <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(cmp<span class="sc">$</span>race<span class="sc">==</span><span class="st">'African-American'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(black,probs,<span class="at">method=</span><span class="st">'kendall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2343988</code></pre>
+</div>
+</div>
+<p>That’s a pretty substantial correlation, definitely a cause for concern that our ML analysis here is unfair. Of course, it’s not the algorithm itself’s fault, but we must find a way to mitigate the problem.</p>
+</section>
+<section id="demographic-parity" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="demographic-parity"><span class="header-section-number">3.3.2</span> Demographic Parity</h3>
+<p>The criterion for demographic parity is that the same proportion of each subgroup within the sensitive feature is classified at equal rates for each of the possible outcomes</p>
+<p>For example, let’s consider the COMPAS dataset again. Demographic Parity would require</p>
+<p>P(predict recidivate | Black) = P(predict recidivate | white),</p>
+<p>i.e.&nbsp;that the quanitty</p>
+<p>(TP+FP) / (TP+FP+TN+FN)</p>
+<p>has the same value for each race.</p>
+<p>Below is an example using the COMPAS data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which rows were for Black applicants, which not</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>BlackRows <span class="ot">&lt;-</span> <span class="fu">which</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> <span class="st">'African-American'</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>NonblackRows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cmp),BlackRows)  <span class="co"># all the others</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># regests, the output of qeKNN, is the vector of fitted probabilities</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (recall that for the Y = 0,1 case, the mean reduces to the probability</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># of a 1)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>BlackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[BlackRows]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>NonblackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[NonblackRows]</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># if a probability is &gt; 0.5, we will guess Y = 1, otherwise guess Y = 0;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># conveniently, that's same as rounding to the nearest integer</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>BlackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(BlackProbs)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>NonblackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(NonblackProbs)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># again, recall that the mean of a bunch of 0s and 1s is the proportion</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co"># of 1s, i.e. the probability of a 1</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(BlackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5073104</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(NonblackYhats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2724777</code></pre>
+</div>
+</div>
+<p>That’s quite a difference! Overall, our ML model predicts about 51% of Black defendants to recidivate, versus than 27% for non-Blacks.</p>
+<p>However, such a criterion is generally considered too coarse, since it doesn’t account for possible differences in qualifications between the two groups. In other words, one must take confounders into account, as we did in Part I.</p>
+</section>
+<section id="equalized-odds" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="equalized-odds"><span class="header-section-number">3.3.3</span> Equalized Odds</h3>
+<p>This criterion takes a retrospective view, asking in the case of COMPAS:</p>
+<blockquote class="blockquote">
+<p>Among those who recidivate, what proportion of them had been predicted to do so? And, does that proportion vary by race?</p>
+</blockquote>
+<p>If the answer to that second question is No, we say our prediction tool satisfies the Equalized Odds criterion.</p>
+<p>So, Equalized Odds requires the quantity</p>
+<p>TP / (TP+FN)</p>
+<p>to be the same for each sensitive group.</p>
+</section>
+<section id="the-fairness-package" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="the-fairness-package"><span class="header-section-number">3.3.4</span> The <strong>fairness</strong> package</h3>
+<p>This package calculates and graphically displays a wide variety of fairness criteria. For instance, let’s use it to evaluate the Equalized Odds criterion in the above COMPAS example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fairness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'fairness'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:fairml':
+
+    compas</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">equal_odds</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">probs=</span>z<span class="sc">$</span>regests)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Metric
+               African-American Asian    Caucasian    Hispanic Native American
+Sensitivity           0.7536694     0    0.5943627   0.4810811       0.5714286
+Equalized odds        1.0000000     0    0.7886253   0.6383184       0.7581952
+Group size         2941.0000000    28 2055.0000000 501.0000000      14.0000000
+                     Other
+Sensitivity      0.5344828
+Equalized odds   0.7091740
+Group size     316.0000000
+
+$Metric_plot</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PartII_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+$Probability_plot</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PartII_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Taking African-Americans as the base, we see that the Equalized Odds criterion was not met, even approximately. Nor was Demographic Parity.</p>
+</section>
+</section>
+<section id="remedies" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="remedies"><span class="header-section-number">3.4</span> Remedies</h2>
+<p>Having established that ML prediction models can be biased against certain sensitive groups, what remedies are available? The <strong>dsld</strong> package includes a few of these, presented in this section. Of course, all of them recognize the basic principle that we stated earlierr:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The Fairness-Utility Tradefoff
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Of course, nothing comes for free: the inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset). Thus, a means of balancing this tradeoff between fairness and utility becomes essential in any future implementations of machine learning.</p>
+</div>
+</div>
+<p>Any algorithm for ameliorating unfairness will thus include one or more parameters that one can use to achieve a desired level of compromise between fairness and utility. The parameters essentially allow us to “dial” the weight that our proxies will play in predicting Y; lighter weight means more fairness but poorer utility, and vice versa.</p>
+<p>Many, many fair ML algorithms have been proposed, most of which are technically complex. The ones we present here have been chosen (a) for their technical simplicity and (b) availability as R packages. We will begin with the simplest algorithms (which have been developed by one of the authors of this book).</p>
+<p>Let’s take as a running example the COMPAS data, predicting recidivism, with age and prior convictions count as proxies. To illustrate prediction, we will predict the first case in the dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> cmp[<span class="dv">1</span>,<span class="sc">-</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)]  <span class="co"># just X, not Y and S</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="functions-based-on-the-explicitly-deweighted-features-edf-method" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="functions-based-on-the-explicitly-deweighted-features-edf-method"><span class="header-section-number">3.5</span> Functions based on the Explicitly Deweighted Features (EDF) Method</h2>
+<p><a href="https://arxiv.org/abs/2208.06557">EDF</a> addresses the fairness issue by</p>
+<ul>
+<li><p>omitting S from the analysis entirely</p></li>
+<li><p>explicitly reducing the weights of the O variables, according to user specification</p></li>
+</ul>
+<p>The deweighting parameters are set via an argument <strong>deweightPars</strong> in the function calls. This argument takes the form of an R list, with one component for each variable in the user’s O set. The meanings of the parameters will vary according to the ML algorithm used, as seen below.</p>
+<section id="dsldqefairrf" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="dsldqefairrf"><span class="header-section-number">3.5.1</span> <strong>dsldQeFairRF</strong></h3>
+<p>This function fits an RF model, but with deweighting of the proxies.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairRF</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>African-American            Asian        Caucasian         Hispanic 
+     0.169331501      0.168307482      0.110644749      0.224179737 
+ Native American            Other 
+     0.001940076      0.161439802 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$predClasses
+[1] "No"
+
+$probs
+            No       Yes
+[1,] 0.6285466 0.3714534</code></pre>
+</div>
+</div>
+<p>The meaning of the deweighting parameters in this function is as follows: Recall that in RFs, each tree will use a different random ordering of the X variables. At any given node in a tree, a variable is chosen at random to set up a possible split point. But here we are specifying that the age and priors count variables be used only 20% and 10% as often as other variables, in order to reduce their impact.</p>
+<p>Yet the S-Correlation valuea are still substantial in the Black and Hispanic cases. We need to give the O variables even smaller weights or possibly include additional variables in our O set.</p>
+</section>
+<section id="dsldqefairknn" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="dsldqefairknn"><span class="header-section-number">3.5.2</span> <strong>dsldQeFairKNN</strong></h3>
+<p>The role of the deweighting parameters in this k-NN implementation of EDF is as follows: We use weighted distances in finding near neighbors. Ordinarily, if we move 3.2 meters to the right and then 1.1 meters forward, the distance between our new point and our original one is</p>
+<p><span class="math inline">\(\sqrt{3.2^2+1.1^2} = 3.38\)</span></p>
+<p>That puts equal weight in the left-right direction and the forward-back direction, which makes sense for geometric distance. But in data prediction, we can use different weights. In predicting wage income in the Census data, say, we can place large weight on age and occupation, and less weight on education. Our COMPAS data call would work in this manner:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>z<span class="sc">$</span>corrs</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dsldqefairridgelin-and-dsldqefairridgelog" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="dsldqefairridgelin-and-dsldqefairridgelog"><span class="header-section-number">3.5.3</span> <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong></h3>
+<p>One of the most striking advances in modern statistics was the discovery that classical estimators tend to be “too big,” and that one may improve accuracy by “shrinking” them. Here is the intuition:</p>
+<p>Consider the example in <a href="PartI.html#sec-compas" class="quarto-xref"><span>Section 2.6</span></a>. The vector of estimated regression coefficients was</p>
+<p>(12.46,-0.94,0.39,0.16,…)</p>
+<p>We might (crudely) shrink this vector by multiplying by a factor of, say, 0.5, yielding</p>
+<p>(6.23,-0.47,0.20,0.08,…)</p>
+<p>The actual shrinkage mechanisms used in the regression context are much more complex than simply multiplying every component of the vector by the same constant, but this is the basic principle.</p>
+<p>Why might this odd action be helpful? Shrinking introduces a bias, but reduces variance (roughly speaking, smaller variables vary less). If outliers (extreme values, not errors) are common in the data, these result in large estimator variance, possibly so much that shrinkage’s reduction in variance more than compensates for our increase in bias.</p>
+<p>Some readers may have heard of <em>ridge regression</em> and the <em>LASSO</em>, both of which impose shrinkage. For our EDF context, though, we wish to perform our shrinkage focusing on <em>only some</em> of the estimated regression coefficients, specifically those corresponding to our proxies. To be sure, it should be noted that non-proxy coefficients are affected too, but the main effects will be on the proxies. This is what <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong> do, with linear and logit cases.</p>
+<p>Note that these estimators also have the potential ancillary benefit obtained from shrinkage in general, i.e.&nbsp;better utility.</p>
+</section>
+</section>
+<section id="wrappers-for-fairml-functions" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="wrappers-for-fairml-functions"><span class="header-section-number">3.6</span> Wrappers for fairML functions</h2>
+<p>We consider here <strong>dsldFrrm</strong> and <strong>dsldFgrrm</strong>, wrappers to functions in the <strong>fairml</strong> package, based on <a href="https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf">a paper</a> by the authors of the package. Their methods apply a ridge penalty to S, thus reducing its influence. Note that contrast to EDF:</p>
+<p>The <strong>fairML</strong> functions aim to address the fairness issue through an argument <strong>unfairness</strong>, a number in (0,1]. The smaller the value, the fairer the fit.</p>
+<ul>
+<li><p>EDF omits S from its analysis; the <strong>fairML</strong> functions retain S, and in fact compute regression coefficients for it.</p></li>
+<li><p>EDF has multiple inputs for deweighting, while <em>fairML</em> has a single parameter.</p></li>
+<li><p>EDF explicitly deweights the O variables, under the control of the user; <strong>fairML</strong> does so only indirectly via their relation to S, without user input.</p></li>
+</ul>
+<p>Of course, each may work better than the other for any particular dataset.</p>
+<p>Let’s see what it does with the COMPAS data, trying three different values of <strong>unfairness</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">1.0</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+          0.23966           -1.79259           -0.72742           -0.87588  
+S1Native.American            S1Other                age      juv_fel_count  
+         -0.03651           -0.88930           -0.03538            0.18174  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.07559            0.17788            0.14302            0.39726  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.39616           41.96697            6.32340           11.37465  
+       in_custody        out_custody  
+          6.33963           14.75329  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.1</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+          0.04354           -0.89549           -0.36884           -0.41984  
+S1Native.American            S1Other                age      juv_fel_count  
+          0.08257           -0.42681           -0.03449            0.17093  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.06153            0.17663            0.13869            0.38870  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.06082           41.46601            6.37675           10.88288  
+       in_custody        out_custody  
+          6.88843           13.87360  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.01</span>,<span class="at">family=</span><span class="st">'binomial'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$base
+
+Call:
+fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
+    unfairness = unfairness, definition = ..1, family = ..2, 
+    lambda = ..3, save.auxiliary = ..4)
+
+Coefficients:
+      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
+         -0.13557           -0.08638           -0.03388           -0.03541  
+S1Native.American            S1Other                age      juv_fel_count  
+          0.01777           -0.03607           -0.03416            0.16299  
+   juv_misd_count    juv_other_count       priors_count            sexMale  
+          0.05068            0.17753            0.13672            0.38560  
+        c_jail_in         c_jail_out     c_offense_date     screening_date  
+        -32.46086           41.72702            6.61601           10.58503  
+       in_custody        out_custody  
+          7.26906           13.47819  
+
+$yName
+[1] "two_year_recid"
+
+$sName
+[1] "race"
+
+attr(,"class")
+[1] "dsldFairML"</code></pre>
+</div>
+</div>
+<p>The first value, 1.0, yielded a Caucasian coefficient of -0.73, which then shrank to -0.37 with <strong>unfairness</strong> = 0.1, and then to -0,03 with <strong>unfairness</strong> = 0.01. (Note that the base for the dummy variables is apparently African-American.] There seems to be rather little effect on our possible proxies, age and priors count.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./PartI.html" class="pagination-link" aria-label="Part I:  Adjustment for Confounders">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Part I: Adjustment for Confounders</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./AuthorBios.html" class="pagination-link" aria-label="Author Bios">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Author Bios</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
