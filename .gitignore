@@ -13,3 +13,7 @@
 .DS_Store
 __pycache__/
 *~
+
+# Local agent instructions
+/AGENTS.md
+/agents.md
