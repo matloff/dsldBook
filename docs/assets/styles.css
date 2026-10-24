@@ -13,6 +13,15 @@ main.content pre {
   overflow-x: auto;
 }
 
+/* Keep lengthy model summaries readable without losing any output. */
+.cell-output pre {
+  max-height: 32rem;
+  overflow: auto;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
@@ -21,6 +30,10 @@ main.content pre {
 
 main.content a {
   overflow-wrap: anywhere;
+}
+
+main.content a.quarto-xref {
+  white-space: normal;
 }
 
 /* Give each biography its own portrait column, preserving the whole photo. */
@@ -55,6 +68,30 @@ main.content .author-photo img {
 }
 
 @media (max-width: 575.98px) {
+  .page-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .page-navigation .nav-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .page-navigation .nav-page-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .nav-page-next .pagination-link {
+    justify-content: flex-end;
+  }
+
+  main.content img.causal-diagram {
+    width: min(100%, 18rem) !important;
+  }
+
   .author-profile {
     flex-direction: column;
     gap: 0.75rem;
@@ -71,6 +108,35 @@ main.content .author-photo img {
 }
 
 @media (max-width: 991.98px) {
+  /* Keep chapter names and anchored headings clear of the mobile toolbar. */
+  .quarto-secondary-nav .quarto-page-breadcrumbs {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  .quarto-secondary-nav .breadcrumb {
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .quarto-secondary-nav .breadcrumb-item {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .quarto-secondary-nav .breadcrumb-item a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  main.content section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+
   main.content table {
     display: block;
     max-width: 100%;
@@ -83,6 +149,11 @@ main.content .author-photo img {
 }
 
 @media print {
+  .cell-output pre {
+    max-height: none;
+    overflow: visible;
+  }
+
   main.content pre {
     white-space: pre-wrap;
     overflow-wrap: anywhere;

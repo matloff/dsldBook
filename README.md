@@ -89,8 +89,8 @@ With `make serve` running in another terminal:
 make check-browser
 ```
 
-This checks all chapters at desktop and phone widths, including images,
-math rendering, JavaScript errors, and page overflow. External requests are
+This checks all chapters at desktop, tablet, and phone widths (320–1440px),
+including images, math rendering, JavaScript errors, and page overflow. External requests are
 blocked during the check. Reports and screenshots are saved in `.build/qa/`.
 Set `BOOK_URL` for another preview address or `CHROMIUM_EXECUTABLE` to use
 an existing Chromium executable.

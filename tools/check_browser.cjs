@@ -25,7 +25,7 @@ assert.deepEqual([...pages].sort(), [...expected].sort(),
   });
   const results = [];
   try {
-    for (const width of [1440, 390]) {
+    for (const width of [1440, 1024, 768, 390, 320]) {
       const context = await browser.newContext({ viewport: { width, height: 960 } });
       // The book must work with all non-local requests blocked.
       await context.route('**/*', route => {

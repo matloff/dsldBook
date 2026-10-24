@@ -1163,7 +1163,7 @@ people (say who came of age before anti-smoking campaigns) might be more
 likely to smoke, and for other reasons may be more likely to develop
 cancer even if they are nonsmokers.  A graphical description would be
 
-![](assets/figures/appendixB/ascdag.PNG){width=40%}
+![](assets/figures/appendixB/ascdag.PNG){width=40% .causal-diagram}
 
 DAGS are usually just writeups of one's "gut feelings" as to what causes
 what. They cannot be derived from our data.  More on this below, but
@@ -1172,12 +1172,12 @@ data.  Here is an example of that, using a function in the **bnlearn**
 package, for which a **dsld** wrapper is available:
 
 ``` r
-        data(svcensus)
-        # iamb does not accept integer data
-        svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
-        svcensus$wageinc <- as.numeric(svcensus$wageinc)
-        iambOut <- dsldIamb(svcensus)
-        plot(iambOut)
+data(svcensus)
+# iamb does not accept integer data
+svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
+svcensus$wageinc <- as.numeric(svcensus$wageinc)
+iambOut <- dsldIamb(svcensus)
+plot(iambOut)
 ```
 
 ![](assets/figures/svcensusDAG.png){width=100%}
