@@ -1,0 +1,15 @@
+/.quarto/
+**/*.quarto_ipynb
+/.build/
+/.tools/
+/_book/
+/_freeze/
+/*_files/
+/*_cache/
+/*.knit.md
+/*.rmarkdown
+/.Rhistory
+/.RData
+.DS_Store
+__pycache__/
+*~

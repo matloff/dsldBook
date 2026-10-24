@@ -2,10 +2,16 @@
 
 {{< pagebreak >}}
 
+```{r}
+#| include: false
+library(dsld)
+set.seed(9999)
+```
+
 # Part II:  Discovering/Mitigating Bias  in Machine Learning   
 
 In applications of machine learning as a predictive modeling tool, our
-model may be biases against some sensitive group.  As such, it becomes
+model may be biased against some sensitive group.  As such, it becomes
 imperative to find methods of uncovering and reducing any such biases. 
 
 ## Comparison to Part I
@@ -86,7 +92,7 @@ using, say, the age and priors count variables as proxies.
 
 The function does not use the classic *Pearson product moment*
 correlation here, opting instead for *Kendall's tau* correlation.  Both
-are widely-used, and both take on values in [-1,], but while Pearson is
+are widely-used, and both take on values in [-1, 1], but while Pearson is
 geared toward continuous numeric variables, Kendall is also usable for
 [Tau is defined in terms of
 *concordances* and *discordances*.  Say we look at height and weight,
@@ -102,7 +108,7 @@ binary or ordinal integer-valued variables.
 
 Utility in ML classification algorithms in general,
 and both utility and fairness in the fair ML classification realm,
-often (but far from always) make use of quantitaties like False Positive
+often (but far from always) make use of quantities like False Positive
 Rate (FPR).  So, let's start by defining these rates.
 
 ::: {.callout-note}
@@ -111,7 +117,7 @@ Rate (FPR).  So, let's start by defining these rates.
 These are conditional probabilities, but it's important not to confuse
 the event with the condition.
 
-Consider binary Y classification problems, where we label Y is either
+Consider binary Y classification problems, where we label Y as either
 *positive* (e.g. patient has the disease) or *negative* (e.g. patient does
 not have the disease).
 
@@ -143,7 +149,7 @@ TPR vs. FPR; see **qeROC** in the **qeML** package.]{.column-margin}
 
 * FNR: FN / (TP + FN) = P(guess Y negative | Y actually is positive)
 
-* TNR: TN / (FP + TN) = P(guess Y negative | Y actuually is negative)
+* TNR: TN / (FP + TN) = P(guess Y negative | Y actually is negative)
 
 So for instance, FPR is the proportion of time we guess positive, *among
 those times* in which Y is actually negative.  Two other common terms:
@@ -153,7 +159,7 @@ those times* in which Y is actually negative.  Two other common terms:
 * *sensitivity*:  same as TPR
 
 * *precision*: P(Y is actually positive | we guess Y is positive)=
-(TP + FN) / (TP + FP)
+TP / (TP + FP)
 
 :::
 
@@ -162,7 +168,7 @@ problems is the overall misclassification probability [The *F1-score*
 has recently been especially popular in the ML research world.  It is
 defined as the harmonic mean of precision and recall, and is thought by
 some to be especially useful in applications in which one class or the
-other is very rare.]{.column-margin} of misclassification; **qeML**
+other is very rare.]{.column-margin}; **qeML**
 predictive functions report this in the **testAcc** component of the
 functions' return object.  There are many, many other measures.
 
@@ -175,7 +181,7 @@ Mean Absolute Prediction Error (MAPE).
 
 ## Measuring unfairness
 
-Many unfairness criteria have been proposed.  We preseent a few of them
+Many unfairness criteria have been proposed.  We present a few of them
 in this section.  [See the [Xiang and
 Raji](https://arxiv.org/pdf/1912.00761.pdf) for an excellent analysis of
 the legal implications of various fairness measures.]{.column-margin} It
@@ -191,7 +197,7 @@ predicted Y, to be denoted $Y_{pred}$ and S.  As noted earlier, we use
 Kendall's Tau correlation here.
 
 [Here and below, to keep things simple, we will not use a holdout
-set.]{.column-margin} For instance, let's consider our mortgage example,
+set.]{.column-margin} For instance, let's consider our COMPAS example,
 say with k-Nearest Neighbors as our ML prediction tool:
 
 ```{r}
@@ -221,7 +227,7 @@ would require
 
 P(predict recidivate | Black) = P(predict recidivate | white),
 
-i.e. that the quanitty
+i.e. that the quantity
 
 (TP+FP) / (TP+FP+TN+FN)
 
@@ -250,7 +256,7 @@ mean(NonblackYhats)
 ```
 
 That's quite a difference!  Overall, our ML model predicts about 51% of
-Black defendants to recidivate, versus than 27% for non-Blacks.
+Black defendants to recidivate, versus 27% for non-Blacks.
 
 However, such a criterion is generally considered too coarse, since it doesn't
 account for possible differences in qualifications between the two groups.
@@ -264,11 +270,11 @@ This criterion takes a retrospective view, asking in the case of COMPAS:
 > to do so?  And, does that proportion vary by race?
 
 If the answer to that second question is No, we say our prediction tool
-satisfies the Equalized Odds criterion.
+satisfies the Equal Opportunity criterion, which is one part of Equalized Odds.
 
-So, Equalized Odds requires the quantity
+So, Equalized Odds requires both quantities
 
-TP / (TP+FN)
+TP / (TP+FN) and FP / (FP+TN)
 
 to be the same for each sensitive group.
 
@@ -276,7 +282,9 @@ to be the same for each sensitive group.
 
 This package calculates and graphically displays a wide variety of
 fairness criteria.  For instance, let's use it to evaluate the Equalized
-Odds criterion in the above COMPAS example.
+Odds criterion in the above COMPAS example. Despite its name,
+**equal_odds()** compares only true positive rates, the Equal Opportunity
+component of Equalized Odds.
 
 ```{r}
 library(fairness)
@@ -290,10 +298,10 @@ criterion was not met, even approximately.  Nor was Demographic Parity.
 Having established that ML prediction models can be biased against
 certain sensitive groups, what remedies are available?  The **dsld**
 package includes a few of these, presented in this section.  Of course,
-all of them recognize the basic principle that we stated earlierr:
+all of them recognize the basic principle that we stated earlier:
 
 ::: {.callout-note}
-### The Fairness-Utility Tradefoff
+### The Fairness-Utility Tradeoff {#the-fairness-utility-tradefoff}
 
 Of course, nothing comes for free: the inherent tradeoff of increasing
 fairness is reduced utility (reduced predictive power over the dataset).
@@ -343,8 +351,10 @@ This function fits an RF model, but with deweighting of the proxies.
 ```{r}
 z <- dsldQeFairRF(cmp,'two_year_recid','race',
    list(age=0.2,priors_count=0.1),yesYVal='Yes')
-z$corrs
-predict(z,newx)
+rfProbs <- z$trainPreds$preds$probs[, '1']
+sapply(levels(cmp$race), function(r)
+   cor(cmp$race == r, rfProbs, method='kendall'))
+predict(z,newx)$preds
 ```
 
 The meaning of the deweighting parameters in this function is as
@@ -354,7 +364,7 @@ chosen at random to set up a possible split point.  But here we are
 specifying that the age and priors count variables be used only 20% and
 10% as often as other variables, in order to reduce their impact.
 
-Yet the S-Correlation valuea are still substantial in the Black and
+Yet the S-Correlation values are still substantial in the Black and
 Hispanic cases.  We need to give the O variables even smaller weights or
 possibly include additional variables in our O set.
 
@@ -365,7 +375,7 @@ EDF is as follows: We use weighted distances in finding near neighbors.
 Ordinarily, if we move 3.2 meters to the right and then 1.1 meters
 forward, the distance between our new point and our original one is
 
-$\sqrt{3.2^2+1.1^2} = 3.38$
+$\sqrt{3.2^2+1.1^2} \approx 3.38$
 
 That puts equal weight in the left-right direction and the forward-back
 direction, which makes sense for geometric distance.  But in data
@@ -377,7 +387,9 @@ manner:
 ```{r,eval=FALSE}
 z <- dsldQeFairKNN(cmp,'two_year_recid','race',
    list(age=0.2,priors_count=0.1),yesYVal='Yes')
-z$corrs
+knnProbs <- z$trainPreds$preds$probs
+sapply(levels(cmp$race), function(r)
+   cor(cmp$race == r, knnProbs, method='kendall'))
 predict(z,newx)
 ```
 
@@ -449,14 +461,18 @@ values of **unfairness**:
 
 ```{r}
 set.seed(9999)
-dsldFgrrm(cmp,'two_year_recid','race',unfairness=1.0,family='binomial')
-dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
-dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
+# Display the fitted model, without printing every training prediction.
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=1.0,
+   family='binomial',yesYVal='Yes')$base
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,
+   family='binomial',yesYVal='Yes')$base
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,
+   family='binomial',yesYVal='Yes')$base
 ```
 
 The first value, 1.0, yielded a Caucasian coefficient of -0.73, which
-then shrank to -0.37 with **unfairness** = 0.1, and then to -0,03 with
+then shrank to -0.37 with **unfairness** = 0.1, and then to -0.03 with
 **unfairness** = 0.01.  (Note that the base for the dummy variables is
-apparently African-American.] There seems to be rather little effect on
+apparently African-American.) There seems to be rather little effect on
 our possible proxies, age and priors count.
 

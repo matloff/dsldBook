@@ -14,7 +14,7 @@ To set the stage, consider the following:
 
 ## UC Berkeley discrimination claims {#sec-ucb}
 
-![ ](SatherGate.jpg){width=35%}
+![ ](assets/figures/sathergate.jpg){width=35%}
 
 UC Berkeley was accused of discriminating against female applicants
 for graduate school, and indeed the overall acceptance rate for women
@@ -27,11 +27,11 @@ program students were applying to, it was found that in every
 department, the female acceptance rate *within that department* was
 either higher than the male rate or of similar level.  The problem:
 women were applying to more selective programs, causing their overall
-rate to below that of men.
+rate to be below that of men.
 
 ## US Census data {#sec-census}
 
-![ ](USCensus.png){width=40%}
+![ ](assets/figures/USCensus.png){width=40%}
 
 The **svcensus** dataset is a subset of US census data from back in 2000,
 focusing on six engineering occupations.  [Included in the **dsld**
@@ -44,16 +44,16 @@ pay gap, of about 16%.
 
 ## Commonality
 
-In both examples, we have an outcome variable Y of interest$\textemdash$acceptance
+In both examples, we have an outcome variable Y of interest—acceptance
 [As noted earlier, this book avoids technical definitions, keeping to
 the intuitive, including our notion here of a confounder. Actually, a
 fully precise definition is rather
-[problematic](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4276366/).]{.column-margin}
-rate and wage income$\textemdash$and a sensitive variable S, which was gender in
+[problematic](https://pmc.ncbi.nlm.nih.gov/articles/PMC4276366/).]{.column-margin}
+rate and wage income—and a sensitive variable S, which was gender in
 both examples.  But in both cases, we were concerned that merely comparing
-mean Y for each gender was an oversimplication, due to a possible
-*confounder* C$\textemdash$department in the first example, occupation in the
-second$\textemdash$ that is related to both variables.  Failure to take confounders (there can be more than one, and 
+mean Y for each gender was an oversimplification, due to a possible
+*confounder* C—department in the first example, occupation in the
+second— that is related to both variables.  Failure to take confounders (there can be more than one, and
 usually are so) into account can lead to spurious "relations" between S
 and Y.  
 
@@ -76,13 +76,13 @@ COMPAS is a commercial machine learning software tool for aiding judges
 in sentencing defendants convicted of a crime.  The tool's main function
 is to predict recidivism by a defendant. But a 2016 [*Pro Publica*
 investigation](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)
-found that the tool to be racially biased; African-American defendants
-tended to be given harsher ratings$\textemdash$i.e. higher estimated
-probabilities of recidivism$\textemdash$than similarly situated white
+found the tool to be racially biased; African-American defendants
+tended to be given harsher ratings—i.e. higher estimated
+probabilities of recidivism—than similarly situated white
 defendants.
 
 Northpointe, the firm that developed COMPAS, [rejected the *Pro Publica*
-analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
+analysis](https://www.equivant-supervision.com/resources/white-papers-research-studies/ "COMPAS Risk Scales: Demonstrating Accuracy Equity and Predictive Parity"),
 and we are not supporting either side here.  [Note that both *Pro
 Publica*'s analysis and that of Northpointe used methodology like that
 presented in this book.]{.column-margin} But if the COMPAS tool were in

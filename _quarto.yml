@@ -1,39 +1,45 @@
 project:
   type: book
+  output-dir: docs
+  resources:
+    - assets/vendor/**
+
+execute:
+  freeze: false
+  cache: true
+  message: false
+
+knitr:
+  opts_chunk:
+    autodep: true
 
 book:
+  title: "Data Science Looks at Discrimination"
+  subtitle: "A toolkit for investigating bias in race, gender, age and so on"
+  author:
+    - Norman Matloff, Project Lead
+    - Taha Abdullah
+    - Arjun Ashok
+    - Shubhada Martha
+    - Aditya Mittal
+    - Billy Ouattara
+    - Jonathan Tran
+    - Brandon Zarate
+  date: "9/16/2023"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - PartI.qmd
+    - PartII.qmd
+    - AuthorBios.qmd
+    - Appendices.qmd
 
-   title: "Data Science Looks at Discrimination"
-   subtitle: "A toolkit for investigating bias in race, gender, age and so on"
-   author: 
-     - Norman Matloff, Project Lead
-     - Taha Abdullah
-     - Arjun Ashok
-     - Shubhada Martha
-     - Aditya Mittal 
-     - Billy Ouattara 
-     - Jonathan Tran
-     - Brandon Zarate
-   date: "9/16/2023"
-   
-   chapters:
-     - index.qmd
-     - intro.qmd
-     - PartI.qmd
-     - PartII.qmd
-     - AuthorBios.qmd
-   
 format:
-  pdf:
-     toc: true
-     number-sections: true
-     fig_caption: no
-     fig_numbers: no
   html:
-     toc: true
-     number-sections: true
-     fig_caption: no
-     fig_numbers: no
-    
-
-
+    toc: true
+    number-sections: true
+    css: assets/styles.css
+    code-copy: true
+    html-math-method:
+      method: katex
+      url: assets/vendor/katex/

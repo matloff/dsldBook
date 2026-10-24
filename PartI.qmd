@@ -1,7 +1,9 @@
 
 ```{r,message=FALSE}
+#| include: false
 library(dsld)
 data(svcensus)
+set.seed(9999)
 ```
 
 # Part I:  Adjustment for Confounders   
@@ -14,8 +16,8 @@ the X, C and S variables in a linear form.
 ### Important term: the *regression function*
 The relation of mean Y to the X, C (or O) and S variables, that is the
 conditional mean of Y given the other variables, is formally called
-the *regression function* of Y on ithose variables. Our first model
-below, which expreses mean income as a function of age and gender,
+the *regression function* of Y on those variables. Our first model
+below, which expresses mean income as a function of age and gender,
 will assume this relation as linear, but the term *regression function*
 is general.
 
@@ -48,11 +50,11 @@ variables X.
 
 Our linear model would thus be
 
-> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+> mean W = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
 
 where W is
 wage, A is age and M is an indicator variable, with M = 1 for men and M
-= 0 for women.  The parameters $\beta$~i~ are estimated by fitting the
+= 0 for women.  The parameters $\beta_i$ are estimated by fitting the
 model to the data:
 [The column svcensus$gender is an R factor. Our function **dsldLinear**
 calls R's **lm**, which replaces that column by a dummy variable
@@ -67,18 +69,18 @@ coef(z)  # print the estimated coefficients b_i
 ```
 
 The familiar R **lm** function is called behind the scenes, but the call
-includes an addiitonal argument S, in this case gender. This is a theme
+includes an additional argument S, in this case gender. This is a theme
 common to many **dsld** functions: A call to these functions ultimately
 translates to calls to functions in base R or other packages -- but with
 extra discrimination-specific information in the input and output.
 
-Let's use b~i~ to denote our estimated $\beta$~i~.  So for instance b~1~
+Let's use b~i~ to denote our estimated $\beta_i$.  So for instance b~1~
 = 489.5728 is our estimate of the unknown population parameter $\beta_1$.  
 [The b~i~ are computed using *least squares*, which find the
 b~i~ that minimize the sum of the square of the differences between the
 observed Y and fitted Y.]{.column-margin} 
 
-### Interpretation of $\beta$~2~
+### Interpretation of $\beta_2$ {#interpretation-of-beta2}
 
 Lots in the output to discuss, which we will gradually cover below.  For
 now, note that the estimate b~2~ turns out to be about $13,000, which is
@@ -89,26 +91,26 @@ for standard errors, confidence intervals and so on.]{.column-margin}
 
 Under the model, the mean wage for, say, 36-year-old men is
 
-> $\beta$~0~ + 36 $\beta$~1~ + 1 $\beta$~2~ 
+> $\beta_0$ + 36 $\beta_1$ + 1 $\beta_2$
 
 while for women of that age it is
 
-> $\beta$~0~ + 36 $\beta$~1~ 
+> $\beta_0$ + 36 $\beta_1$
 
-The difference is $\beta$~2~.  But if we look at, for instance, people of age
+The difference is $\beta_2$.  But if we look at, for instance, people of age
 43, the mean wages for men and women are
 
-> $\beta$~0~ + 43 $\beta$~1~ + 1 $\beta$~2~ 
+> $\beta_0$ + 43 $\beta_1$ + 1 $\beta_2$
 
 and
 
-> $\beta$~0~ + 43 $\beta$~1~ 
+> $\beta_0$ + 43 $\beta_1$
 
-and the difference *is still* $\beta$~2~.  
+and the difference *is still* $\beta_2$.
 
 ::: {.callout-note}
 ### "The" effect of gender
-Thus we can speak of $\beta$~2~ as *the* gender wage gap, at any age.
+Thus we can speak of $\beta_2$ as *the* gender wage gap, at any age.
 According to the model, younger men earn an estimated $13,000 more than
 younger women, with the *same-sized* gap between older men and older
 women.
@@ -158,7 +160,7 @@ or (11548.94,14647.48).
 
 As discussed above, in our model
 
-> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+> mean W = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
 
 we identified b~2~ as *the* difference in mean wage between men and
 women, regardless of age, so that for instance:
@@ -174,18 +176,18 @@ gender gap is small at younger ages but much larger for older people.
 
 Technically, the with-interactions model adds a product term:
 
-> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M + $\beta$~3~ AM 
+> mean W = $\beta_0$ + $\beta_1$ A + $\beta_2$ M + $\beta_3$ AM
 
 So for example, the gender pay gap for people of age 36 is
 
-($\beta$~0~ + $\beta$~1~ 36 + $\beta$~2~ 1 + $\beta$~3~ 36) -
-($\beta$~0~ + $\beta$~1~ 36 ) =
+($\beta_0$ + $\beta_1$ 36 + $\beta_2$ 1 + $\beta_3$ 36) -
+($\beta_0$ + $\beta_1$ 36 ) =
 
-$\beta$~2~ 1 + $\beta$~3~ 36
+$\beta_2$ 1 + $\beta_3$ 36
 
 And at age 43, the gap is
 
-$\beta$~2~ 1 + $\beta$~3~ 43
+$\beta_2$ 1 + $\beta_3$ 43
 
 So, this model does indeed allow for interaction between age and gender.
 
@@ -196,7 +198,7 @@ men and one for women.
 ::: {.callout-note}
 The **dsldLinear** function includes an argument **interactions**. The
 default value is FALSE, but if TRUE, it fits separate linear models for
-each level of S.  An additional argument 'newData' is now
+each level of S.  An additional argument 'sComparisonPts' is now
 needed, through which the user specifies a data frame consisting of
 one or more (X,C) values at which to compare the effect of S.
 :::
@@ -204,11 +206,11 @@ one or more (X,C) values at which to compare the effect of S.
 ```{r}
 newData <- data.frame(age=c(36,43))
 z <- dsldLinear(svcensus1,'wageinc','gender',interactions=T,
-   newData)
+   sComparisonPts = newData)
 summary(z)
 ```
 
-In setting that **newData** argument, we need one row for every variable
+In setting that **sComparisonPts** argument, we need one column for every variable
 other than Y and S.  In this case, there is just one such variable, age.
 So, in the above call, we are fitting two linear models, one for men and
 another for women, then comparing regression function values at the two
@@ -262,7 +264,7 @@ variable, once for each level of S. "Smoothing" here groups data points
 of similar age, and plots their average Y value.  So, the call here
 says, "Plot smoothed wage income against age, for each gender."  
 
-The model has mean Y being a linear of function of age, so we  should
+The model has mean Y being a linear function of age, so we  should
 expect to see approximate straight lines here.  Yet the relation
 certainly looks nonlinear, possibly reflecting age discrimination
 against both very young and very old workers.  We are already
@@ -274,13 +276,13 @@ variable S.
 
 But we must do something about the substantial nonlinearity [Adding a
 squared term does not make our model nonlinear, as it is still linear in
-the $\beta$~i~; if we, say, double each of those, the entire expression is
+the $\beta_i$; if we, say, double each of those, the entire expression is
 doubled, the definition of linearity. The model is nonlinear in age but
-linear in the $\beta$~i~.]{.column-margin} we've discovered,
-and one possible remedy is to add an age^2^ term be added to the
+linear in the $\beta_i$.]{.column-margin} we've discovered,
+and one possible remedy is to add an age^2^ term to the
 equation:
 
-mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ A^2^ + $\beta$~3~ M
+mean W = $\beta_0$ + $\beta_1$ A + $\beta_2$ A^2^ + $\beta_3$ M
 
 Let's fit the updated model:
 
@@ -359,7 +361,7 @@ Ah, this is a more nuanced probe than the ones above in which we simply
 [This is an example of *Simpson's Paradox*, in which an overall average
 effect might be larger than the terms that make up the average.  In
 fact, the algebraic signs may change, as we saw with the UC Berkeley
-admissionss data in @sec-ucb.]{.column-margin} used age as a confounder.
+admissions data in @sec-ucb.]{.column-margin} used age as a confounder.
 The male-female differences at both the older and younger age levels,
 about $9800 and $7800, are both substantial, but smaller than the
 $13,100 overall figure we obtained earlier.  
@@ -409,7 +411,7 @@ $$
 $$
 
 So the probability has a linear component to it, $\beta_0 + \beta_1
-income$, hence the term "generalized" linear model..
+income$, hence the term "generalized" linear model.
 
 That formula follows the form of the *logistic function*,
 $f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
@@ -419,7 +421,7 @@ curve(1/(1+exp(-x)),-4,4)
 ```
 
 So at least the model retains a linear component, with much the same
-interpretability.  For instance, if $\beta_2 > 0$, then the usual
+interpretability.  For instance, if $\beta_1 > 0$, then the usual
 monotonicity relation holds, i.e. the higher the income, the greater
 the probability that the person is male. 
 
@@ -465,9 +467,9 @@ often a good model for binary-Y settings in general.
 In our earlier linear model, predicting wage income from age and
 gender, 
 
-> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+> mean W = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
 
-recall that here $\beta$~2~ has the nice interpretation of there being a
+recall that here $\beta_2$ has the nice interpretation of there being a
 uniform gender gap, independent of age.   Similar statements hold for
 $\beta_1$; a 1-year increase in age, for instance, on average
 is associated with a $\beta_1$ increase in mean income, identically for
@@ -496,10 +498,10 @@ meaning in this example that the logarithm of the ratio (probability
 male) / (probability female) is linear in age and income.  
 
 > log [probability male / probability female] =
-> $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ W
+> $\beta_0$ + $\beta_1$ A + $\beta_2$ W
 
 So here we do have a formulation in which the impact of wage is the same
-[Note that a log-odds measure can take on any value betwen $-\infty$ and
+[Note that a log-odds measure can take on any value between $-\infty$ and
 $\infty$.]{.column-margin} for any age level. But this log scale is hard
 to interpret.
 
@@ -511,7 +513,7 @@ respectively. In the TRUE case, the interactions become even more complex.
 
 This dataset and its documentation are included in **dsld** from the
 **SortedEffects** package.  [We have done small modifications, to create
-R factors for some columns.]{.column-margin} package.  The issue here is
+R factors for some columns.]{.column-margin}  The issue here is
 whether racism played a role in mortgage denials in the Boston area.  As
 this is a binary outcome, we might consider a logit model.   
 
@@ -620,7 +622,7 @@ summary(w)
 That's a lot of output.  Let's take a closer look.
 
 
-At least judging from the rows labled 'black - white', Black and white
+At least judging from the rows labeled 'black - white', Black and white
 students having the same traits appear to have passed the bar exam at
 about the same rates.   
 
@@ -642,15 +644,15 @@ Looks pretty good, generally logit-shaped.
 In 2016, the American Statistical Association released its first-ever
 position paper, to warn of the problems of significance testing and
 "p-values."  Though the issues had been well known for
-years$\textemdash$some journals had even banned the use of p-values in
-their published research papers$\textemdash$it was
+years—some journals had even banned the use of p-values in
+their published research papers—it was
 "significant" that the ASA finally took a stand.  Let's use the law
 school example in @sec-law-school to illustrate.
 
 There is concern that the LSAT and other similar tests may be
 [Review: To test the hypothesis $H_0: \beta_i = 0$, one computes
-twice the area to the right of $|b_i|$ in the standard normal
-distribution.  That number is the *significance* level, with values
+approximately twice the area to the right of $|b_i / \mathrm{SE}(b_i)|$ in the standard normal
+distribution.  That number is the *p-value*, with values
 under 0.05 being termed *significant*; 0.01 is the criterion for *highly
 significant*, and so on.]{.column-margin}
 heavily influenced by family income, thus unfair, especially to 
@@ -662,7 +664,7 @@ In particular, look at the coefficient for family income, 0.3009.  The
 p-value is essentially 0, which in an academic research journal would
 classically be heralded with much fanfare, termed "very highly
 significant," with a 3-star insignia.  Indeed, the latter is seen in the
-output above.  (This comes from R, not **dlsd**.) But actually, the
+output above.  (This comes from R, not **dsld**.) But actually, the
 impact of family income is not very large.  Here's why:
 
 Family income in this dataset is measured by quintiles.  So [It is often
@@ -674,7 +676,7 @@ by the location of the center of the interval, while (b) is seen from
 the CI's width]{.column-margin} this estimated coefficient says that,
 for example, if we compare people who grew up in the bottom 20% of
 income with those who were raised in the next 20%, the mean LSAT score
-rises by only about 1/3 of 1 point$\textemdash$a minuscule difference on
+rises by only about 1/3 of 1 point—a minuscule difference on
 a test where scores are typically in the 20s, 30s and 40s.  The 95%
 confidence interval (CI), (0.2304,0.3714), again indicates that the
 effect size here is very small.
@@ -703,13 +705,13 @@ predict(w1,typx)  # estimated regression function value
 ```
 
 Indeed, the Black and white interaction terms are "significant," even
-"very highly significant."  But that does mean we should use the more
+"very highly significant."  But does that mean we should use the more
 complex model?
 
 Recall that many machine learning algorithms, including standard linear
 regression, use the estimated regression function value as its predicted
 value.  So we see here that adding in an interaction term changed the
-estimated value of the regession function by only about 0.02 out of a
+estimated value of the regression function by only about 0.02 out of a
 40.23 baseline.  So, we may well prefer the simpler, no-interaction
 model.
 
@@ -723,7 +725,7 @@ testing situation, is that *the test is not answering the question of
 interest to us.*  
 
 We wish to know whether family income plays a substantial role in the
-LSAT, not whether they is any relation at all, no matter how
+LSAT, not whether there is any relation at all, no matter how
 meaningless.  Similarly, we wish to know whether the interaction between
 race and GPA is substantial enough to include it in our model, not
 whether there is any interaction at all, no matter how tiny.
@@ -739,7 +741,7 @@ Thus in almost all cases, significance tests don't address the issue of
 interest, which is whether some population quantity is substantial
 enough to be considered important.  Analysts should not be misled by
 words like "significant." [As noted, modern statistical
-practice](https://tinyurl.com/2s7x6h2v) places reduced value, or in the
+practice](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf) places reduced value, or in the
 view of many, no value at all, on significance testing.
 
 :::
@@ -750,9 +752,9 @@ matter, resulting in the paper not going further than some would have
 preferred.  Nor is modernness necessarily a virtue.  
 
 But readers of this book are urged to always keep in mind the two
-examples above$\textemdash$family income and an interaction term each
+examples above—family income and an interaction term each
 having minuscule impact even though the tests declared them
-"significant"$\textemdash$in conducting future analyses, or assessing
+"significant"—in conducting future analyses, or assessing
 the analysis of others.
 
 Instead, form a confidence interval for the quantity of interest.  Do
@@ -821,14 +823,14 @@ names(german.credit)
 Excluding Y = credit risk and S = gender, that gives us 19 variables to
 choose among for our confounders.  Which ones should we use?
 
-Technically, almost any variable is a confounder.  The impact may quite
+Technically, almost any variable is a confounder.  The impact may be quite
 minuscule, but through a long chain of relations among many variables,
 there will usually be at least some connection, though again possibly very
 faint.
 
 Well, then, why not use them all?  That is what we've done in our
 earlier examples.  But there are several issues to consider not using
-the full set of variable,s i.e. every variable other than Y and S:
+the full set of variables, i.e. every variable other than Y and S:
 
 * It may cause overfitting, resulting in large standard errors.
 
@@ -848,7 +850,7 @@ $2^{19}$ possibilities here, about half a million.
 
 Our specific purpose here is to find a reasonable set of  confounders.
 [From the material in Section @sec-sig, it is clear that one way *not*
-to choose C variables would be to do sigificance testing, $H_0: \beta_i
+to choose C variables would be to do significance testing, $H_0: \beta_i
 = 0$.]{.column-margin}
 In essence, that means find variables C such that C is substantially
 correlated with both Y and S.  One way to approach that is to do
@@ -868,7 +870,7 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-Abpit 21% pf the women had a Mast3r's degree, with a figure of 22% for
+About 21% of the women had a Master's degree, with a figure of 22% for
 men, and so on.  The similar frequency values between men and women
 suggests not using education as a confounder.
 
@@ -887,7 +889,7 @@ inference in this comparison, calculating a p-value from a *chi-square
 test*.  But again as we saw in @sec-sig. testing for model fit suffers from
 the same problems as testing for nonzero effects.]{.column-margin} versus
 females in that same occupation--a difference of approximately 11%.  The
-difference in frequencies here is much greater than with the educationW
+difference in frequencies here is much greater than with the education
 example, which suggests using occupation as a confounder.  Since
 different occupations correlate with different wages, it is possible
 that this gender difference in occupations proportions could be
@@ -906,7 +908,7 @@ dsldScatterPlot3D(law.school.admissions,
    c('lsat','fam_inc','ugpa'), 'race1', pointSize = 4)
 ```
 
-![](graphTab/lawscatterplot3d2.png){width="90%"}
+![](assets/figures/graphTab/lawscatterplot3d2.png){width="90%"}
 
 [This is a **plotly** interactive graph.  To fully understand this
 function, the reader should execute the function outside of Quarto, i.e.
@@ -945,7 +947,7 @@ data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 ```
 
-![](graphTab/lawdensitylsat.png){width="120%"}
+![](assets/figures/graphTab/lawdensitylsat.png){width="100%"}
 
 Each curve represents the distribution of LSAT scores for one race.  The
 graph suggests the possibility of racial bias in the LSAT.  But again,
@@ -987,14 +989,14 @@ dataset, and then with the V column changed through a random shuffling
 of the values in that column. This may seem counterproductive at first,
 but the point is that if the variable in question really is important,
 our predictive accuracy should be compromised in that second run.  The
-importance measure is thentaken to be the proportional increase in error
+importance measure is then taken to be the proportional increase in error
 rate.  The larger the increase, the more important we deem the variable
 to have.
 
 ### The dsldCHunting() function
 
 This function serves as an aid to selecting confounders, using the
-permutation-based computation in the **randomForests** package.
+permutation-based computation in the **randomForest** package.
 
 Its operation is best described by example, which we will present next.
 Before reading it, though, recall that we are interested in finding
@@ -1012,13 +1014,13 @@ dsldCHunting(mortgageSE,'deny','black')
 The importance measures are printed out (the ranking is what matters),
 followed by the "top-i" sets in common.
 
-For instance, the singlevariables (excluding S) that predict Y well are
+For instance, the single variables (excluding S) that predict Y well are
 first **p_irat**, then **denpmi** and so on.  In predicting S, excluding Y,
 the best are **p_irat**, then **loan_val** et cetera.
 
 Since we are focusing on variables that are correlated with both Y and
 S, we take the intersection.  For example, the intersection of the top
-three Y predictors and top three S predicts is  **p_irat** and
+three Y predictors and top three S predictors is  **p_irat** and
 **loan_val**. We may wish to use these as our confounders.
 
 As usual, there are no magic formulas to use here.  The analyst is given
@@ -1030,7 +1032,7 @@ and so on.
 
 In the paper "Are Emily and Greg More Employable Than Lakisha and Jamal?
 A Field Experiment on Labor Market Discrimination" (*Am. Econ. Rev.*,
-Sept. 2004), researchera "tested" employers by sending CVs with
+Sept. 2004), researchers "tested" employers by sending CVs with
 "white-sounding" and "Black-sounding" names, checking for bias.  Did
 employers call "whites" more often than "Blacks" for an interview?  The
 resulting data is **lak** in **dsld**.
@@ -1060,10 +1062,10 @@ dsldCHunting(lak,'call','race',25)
 
 We are seeking variables that are correlated both with Y and S, yet
 there appear to be many that correlate with just one of these.  That's
-to be expected for datasets having a large number pf variables.  But
+to be expected for datasets having a large number of variables.  But
 still, in the end we see a few that meet our goals.
 
-## Observationational studies
+## Observational studies {#observationational-studies}
 
 An *observational study* is, in essence, one that is not planned. For
 instance, say we are comparing an old and a new drug for hypertension.
@@ -1072,7 +1074,7 @@ patients but not on older ones.  Say the nature of the data collection
 process results in disproportionately sampling older patients, but our
 data itself does not include patient ages.  This could unfairly make the
 new drug appear ineffective.  So age would be a confounder, but alas, an
-unobsered one.
+unobserved one.
 
 In a *randomized clinical trial* (RCT), we would randomly assign
 treatments to patients, so there would likely be no strong imbalance in
@@ -1106,7 +1108,7 @@ form our new data. (Not every one of the original data points will
 necessarily now be represented, though some may appear more than once.)
 We then compare mean Y values among the two groups in this new data.
 
-Here is an example, involving a jobs training program::
+Here is an example, involving a jobs training program:
 
 ``` r
 data(lalonde,package='Matching')
@@ -1161,13 +1163,13 @@ people (say who came of age before anti-smoking campaigns) might be more
 likely to smoke, and for other reasons may be more likely to develop
 cancer even if they are nonsmokers.  A graphical description would be
 
-![](appendixB/ascdag.png){width=40%}
+![](assets/figures/appendixB/ascdag.PNG){width=40%}
 
 DAGS are usually just writeups of one's "gut feelings" as to what causes
 what. They cannot be derived from our data.  More on this below, but
-under very stringent assumptions, we can attempt to from a DAG from the
+under very stringent assumptions, we can attempt to form a DAG from the
 data.  Here is an example of that, using a function in the **bnlearn**
-package, for which a **dsld* wrapper is available: 
+package, for which a **dsld** wrapper is available:
 
 ``` r
         data(svcensus)
@@ -1178,7 +1180,7 @@ package, for which a **dsld* wrapper is available:
         plot(iambOut)
 ```
 
-![](svcensusDAG.png){width=100%}
+![](assets/figures/svcensusDAG.png){width=100%}
 
 There are a couple of undirected arcs, e.g. between gender and [Though
 again we omit a detailed treatment of CA DAGs here, we note that that
@@ -1250,7 +1252,7 @@ harmful in CI contexts as in general observational data methods.
 
   M. Scutari, author of **bnlearn**, shows an example in his Cambridge lectures:
 
-  ![](TwoEquivDAGs.png){width=100%}
+  ![](assets/figures/TwoEquivDAGs.png){width=100%}
 
   The nonuniqueness is of course very concerning.  In recent years, there
   has been much handwringing in science about the Replication Crisis, in
@@ -1327,7 +1329,7 @@ produce a graph that is perfectly smooth but completely meaningless.
 
 The situation with kNN is very similar. If k is too small, we average
 over a small sample; if it is too large, then we might be including data
-points that are far from, in the above situation, 72.5, thus not
+points that are far from, in the above situation, 70.2, thus not
 representative.
 
 Typically k is chosen by trying several different values of k, then
@@ -1389,7 +1391,7 @@ assumptions on the form of the regression function.
 In the above example, in which we are predicting wage income, a random
 forests (RF) analysis would generate a large number of *decision trees*.
 As explained below, each tree would give us a predicted income, and our
-final prediction would simply the average of all those predicted values.
+final prediction would simply be the average of all those predicted values.
 
 So, what is a decision tree?  It's just a flow chart.  Consider this
 famous example involving vertebral disease.  Y is categorical, with
@@ -1402,7 +1404,7 @@ branch right, and immediately decide to predict that this patient's
 disease status is SL.  If on the other hand, V6 is less than 16, we look
 at V4.  If it's under 28, we immediately predict status DH, and so on.
 
-![A decision tree](RpartVert.png){width=100%}
+![A decision tree](assets/figures/RpartVert.png){width=100%}
 
 The tree is also giving us the conditional probabilities. For instance,
 the node at the far bottom left says that if a new case has V6 < 16 and

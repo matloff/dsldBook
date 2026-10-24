@@ -1,9 +1,9 @@
 
 {{< pagebreak >}}
 
-# Appendices {.appendix}
+# Appendices {.appendix .unnumbered}
 
-## Appendix A: Standard Errors$\textemdash$Statistical Inference in a Nutshell
+## Appendix A: Standard Errors—Statistical Inference in a Nutshell {#sec-standard-errors .unnumbered}
 
 Say I wish to find the mean weight $\mu$ of all students at the University of
 California, Davis.  It would be infeasible to measure them all, so I
@@ -22,7 +22,7 @@ estimate it.
 
 The smaller the SE is, the more confident we are that the $\bar{X}$ from
 [Meaning of that 95% probability figure: Think of all possible samples.
-Each one has an $\bar{X}$ value, and an estimated SE value. So, each
+Each one has an $\bar{X}$ value, and an estimated SE value. So, for each
 possible sample, there is a different confidence interval (CI).  95% of
 those CIs will contain the true $\mu$.]{.column-margin} our particular
 sample is pretty accurate.  Of course, we can't be completely sure, but
@@ -44,7 +44,7 @@ CIs are generally taught together with *hypothesis testing* or
 @sec-sig reviews the notion, and discusses problems with this kind of
 analysis.
 
-## Appendix B: Estimated Standard Errors via the Bootstrap {#sec-boot}
+## Appendix B: Estimated Standard Errors via the Bootstrap {#sec-boot .unnumbered}
 
 (to be added)
 

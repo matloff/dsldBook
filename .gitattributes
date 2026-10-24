@@ -1,0 +1,3 @@
+# Generated output and vendored code retain their producers' formatting.
+docs/** linguist-generated=true -whitespace
+assets/vendor/** linguist-vendored=true -whitespace

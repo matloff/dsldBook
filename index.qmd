@@ -1,7 +1,7 @@
 
 # Overview {.unnumbered}
 
-[.This work is licensed under a Creative Commons Attribution--No
+[This work is licensed under a Creative Commons Attribution--No
 Derivative Works 3.0 United States]{.column-margin}
 
 Discrimination is a key social issue in the US and in a number of other
@@ -31,7 +31,7 @@ In addition to having rudimentary skill in R, the user should have a
 very basic knowledge of statistical inference -- mean, variance,
 confidence intervals and tests, and histograms.  A short, intuitive,
 "bare bones" refresher, focused on confidence intervals, is given in
-Appendix A.
+[Appendix A](Appendices.qmd#sec-standard-errors).
 
 Mathematical background, e.g. linear algebra, calculus and probability
 theory, are **not** required, and concepts are explained via intuitive

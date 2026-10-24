@@ -1,0 +1,90 @@
+/* Small reading-layout fixes; retain Quarto's existing theme and navigation. */
+main.content {
+  line-height: 1.6;
+}
+
+main.content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Keep wide R output and equations inside the reading column. */
+main.content pre {
+  overflow-x: auto;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+
+main.content a {
+  overflow-wrap: anywhere;
+}
+
+/* Give each biography its own portrait column, preserving the whole photo. */
+.author-profile {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.author-profile > p {
+  flex: 1;
+  min-width: 0;
+}
+
+.author-photo {
+  flex: 0 0 10rem;
+}
+
+.author-photo p {
+  margin-bottom: 0;
+}
+
+main.content .author-photo img {
+  display: block;
+  width: 10rem;
+  height: auto;
+  max-height: 12.5rem;
+  object-fit: contain;
+  object-position: top center;
+}
+
+@media (max-width: 575.98px) {
+  .author-profile {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .author-photo {
+    flex-basis: auto;
+  }
+
+  main.content .author-photo img {
+    width: 8rem;
+    max-height: 10rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  main.content table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .column-margin img {
+    max-width: 12rem;
+  }
+}
+
+@media print {
+  main.content pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
