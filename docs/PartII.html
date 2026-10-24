@@ -407,15 +407,16 @@ race.Other            -0.027359200</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qeML)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>) </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the fitted model's probability of recidivism,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e. regression estimates</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the variable 'race' is an R factor, need a numeric</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>black <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(cmp<span class="sc">$</span>race<span class="sc">==</span><span class="st">'African-American'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(black,probs,<span class="at">method=</span><span class="st">'kendall'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp[, <span class="fu">names</span>(cmp) <span class="sc">!=</span> <span class="st">'race'</span>],<span class="st">'two_year_recid'</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the fitted model's probability of recidivism,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e. regression estimates</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># the variable 'race' is an R factor, need a numeric</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>black <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(cmp<span class="sc">$</span>race<span class="sc">==</span><span class="st">'African-American'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(black,probs,<span class="at">method=</span><span class="st">'kendall'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2343988</code></pre>
+<pre><code>[1] 0.1765781</code></pre>
 </div>
 </div>
 <p>That’s a pretty substantial correlation, definitely a cause for concern that our ML analysis here is unfair. Of course, it’s not the algorithm itself’s fault, but we must find a way to mitigate the problem.</p>
@@ -430,31 +431,31 @@ race.Other            -0.027359200</code></pre>
 <p>has the same value for each race.</p>
 <p>Below is an example using the COMPAS data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which rows were for Black applicants, which not</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>BlackRows <span class="ot">&lt;-</span> <span class="fu">which</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> <span class="st">'African-American'</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>NonblackRows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cmp),BlackRows)  <span class="co"># all the others</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># regests, the output of qeKNN, is the vector of fitted probabilities</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (recall that for the Y = 0,1 case, the mean reduces to the probability</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># of a 1)</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>BlackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[BlackRows]</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>NonblackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[NonblackRows]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># if a probability is &gt; 0.5, we will guess Y = 1, otherwise guess Y = 0;</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># conveniently, that's same as rounding to the nearest integer</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>BlackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(BlackProbs)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>NonblackYhats <span class="ot">&lt;-</span> <span class="fu">round</span>(NonblackProbs)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeKNN</span>(cmp[, <span class="fu">names</span>(cmp) <span class="sc">!=</span> <span class="st">'race'</span>],<span class="st">'two_year_recid'</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">holdout=</span><span class="cn">NULL</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which rows were for Black applicants, which not</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>BlackRows <span class="ot">&lt;-</span> <span class="fu">which</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> <span class="st">'African-American'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>NonblackRows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cmp),BlackRows)  <span class="co"># all the others</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># regests, the output of qeKNN, is the vector of fitted probabilities</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (recall that for the Y = 0,1 case, the mean reduces to the probability</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># of a 1)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>BlackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[BlackRows]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>NonblackProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>regests[NonblackRows]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># if a probability is &gt; 0.5, we will guess Y = 1, otherwise guess Y = 0</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>BlackYhats <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(BlackProbs <span class="sc">&gt;</span> <span class="fl">0.5</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>NonblackYhats <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(NonblackProbs <span class="sc">&gt;</span> <span class="fl">0.5</span>)</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># again, recall that the mean of a bunch of 0s and 1s is the proportion</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># of 1s, i.e. the probability of a 1</span></span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(BlackYhats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5073104</code></pre>
+<pre><code>[1] 0.5059504</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(NonblackYhats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2724777</code></pre>
+<pre><code>[1] 0.3174331</code></pre>
 </div>
 </div>
-<p>That’s quite a difference! Overall, our ML model predicts about 51% of Black defendants to recidivate, versus 27% for non-Blacks.</p>
+<p>That’s quite a difference! Overall, our ML model predicts about 51% of Black defendants to recidivate, versus 32% for non-Blacks.</p>
 <p>However, such a criterion is generally considered too coarse, since it doesn’t account for possible differences in qualifications between the two groups. In other words, one must take confounders into account, as we did in Part I.</p>
 </section>
 <section id="equalized-odds" class="level3" data-number="3.3.3">
@@ -470,47 +471,31 @@ race.Other            -0.027359200</code></pre>
 </section>
 <section id="the-fairness-package" class="level3" data-number="3.3.4">
 <h3 data-number="3.3.4" class="anchored" data-anchor-id="the-fairness-package"><span class="header-section-number">3.3.4</span> The <strong>fairness</strong> package</h3>
-<p>This package calculates and graphically displays a wide variety of fairness criteria. For instance, let’s use it to evaluate the Equalized Odds criterion in the above COMPAS example. Despite its name, <strong>equal_odds()</strong> compares only true positive rates, the Equal Opportunity component of Equalized Odds.</p>
+<p>This package calculates and graphically displays a wide variety of fairness criteria. For instance, it can evaluate the Equalized Odds criterion in the above COMPAS example. Despite its name, <strong>equal_odds()</strong> compares only true positive rates, the Equal Opportunity component of Equalized Odds. The package is now archived on CRAN, so we calculate the same rates directly:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fairness)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'fairness'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:fairml':
-
-    compas</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">equal_odds</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">probs=</span>z<span class="sc">$</span>regests)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> z<span class="sc">$</span>regests <span class="sc">&gt;</span> <span class="fl">0.5</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>positive <span class="ot">&lt;-</span> cmp<span class="sc">$</span>two_year_recid <span class="sc">==</span> <span class="st">'Yes'</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tpr <span class="ot">&lt;-</span> <span class="fu">tapply</span>(predicted[positive], cmp<span class="sc">$</span>race[positive], mean)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>tprRatio <span class="ot">&lt;-</span> tpr <span class="sc">/</span> tpr[<span class="st">'African-American'</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="at">Sensitivity=</span>tpr, <span class="st">`</span><span class="at">TPR ratio</span><span class="st">`</span><span class="ot">=</span>tprRatio,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>   <span class="st">`</span><span class="at">Group size</span><span class="st">`</span><span class="ot">=</span><span class="fu">table</span>(cmp<span class="sc">$</span>race))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$Metric
-               African-American Asian    Caucasian    Hispanic Native American
-Sensitivity           0.7536694     0    0.5943627   0.4810811       0.5714286
-Equalized odds        1.0000000     0    0.7886253   0.6383184       0.7581952
-Group size         2941.0000000    28 2055.0000000 501.0000000      14.0000000
-                     Other
-Sensitivity      0.5344828
-Equalized odds   0.7091740
-Group size     316.0000000
-
-$Metric_plot</code></pre>
+<pre><code>            African-American      Asian    Caucasian    Hispanic
+Sensitivity        0.7536694  0.8333333    0.6433824   0.6378378
+TPR ratio          1.0000000  1.1057014    0.8536665   0.8463098
+Group size      2941.0000000 28.0000000 2055.0000000 501.0000000
+            Native American       Other
+Sensitivity       0.5714286   0.6551724
+TPR ratio         0.7581952   0.8693101
+Group size       14.0000000 316.0000000</code></pre>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">9</span>,<span class="dv">2</span>,<span class="dv">1</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(tprRatio, <span class="at">horiz=</span><span class="cn">TRUE</span>, <span class="at">las=</span><span class="dv">1</span>, <span class="at">cex.names=</span><span class="fl">0.7</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">xlab=</span><span class="st">'TPR ratio relative to African-Americans'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="PartII_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-$Probability_plot</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="PartII_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -538,8 +523,9 @@ $Probability_plot</code></pre>
 <p>Many, many fair ML algorithms have been proposed, most of which are technically complex. The ones we present here have been chosen (a) for their technical simplicity and (b) availability as R packages. We will begin with the simplest algorithms (which have been developed by one of the authors of this book).</p>
 <p>Let’s take as a running example the COMPAS data, predicting recidivism, with age and prior convictions count as proxies. To illustrate prediction, we will predict the first case in the dataset:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> cmp[<span class="dv">1</span>,<span class="sc">-</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)]  <span class="co"># just X, not Y and S</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> cmp[<span class="dv">1</span>, <span class="fu">names</span>(cmp) <span class="sc">!=</span> <span class="st">'two_year_recid'</span>]  <span class="co"># X and S; omit Y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>S is included only for optional correlation diagnostics; EDF predictions use X alone. A single case is not enough to estimate a correlation.</p>
 </section>
 <section id="functions-based-on-the-explicitly-deweighted-features-edf-method" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="functions-based-on-the-explicitly-deweighted-features-edf-method"><span class="header-section-number">3.5</span> Functions based on the Explicitly Deweighted Features (EDF) Method</h2>
@@ -553,27 +539,26 @@ $Probability_plot</code></pre>
 <h3 data-number="3.5.1" class="anchored" data-anchor-id="dsldqefairrf"><span class="header-section-number">3.5.1</span> <strong>dsldQeFairRF</strong></h3>
 <p>This function fits an RF model, but with deweighting of the proxies.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairRF</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairRF</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rfProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>trainPreds<span class="sc">$</span>preds<span class="sc">$</span>probs[, <span class="st">'1'</span>]</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">levels</span>(cmp<span class="sc">$</span>race), <span class="cf">function</span>(r)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">cor</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> r, rfProbs, <span class="at">method=</span><span class="st">'kendall'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rfProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>trainPreds<span class="sc">$</span>preds<span class="sc">$</span>probs[, <span class="st">'1'</span>]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">levels</span>(cmp<span class="sc">$</span>race), <span class="cf">function</span>(r)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">cor</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> r, rfProbs, <span class="at">method=</span><span class="st">'kendall'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>African-American            Asian        Caucasian         Hispanic 
      0.127712333     -0.027685081     -0.078637154     -0.049746267 
  Native American            Other 
     -0.003057229     -0.045801064 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)<span class="sc">$</span>preds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in s_correlations(newx, sNames, probs): Skipping missing column: race</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)<span class="sc">$</span>preds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$predClasses
-[1] "0"
+[1] No
+Levels: No Yes
 
 $probs
              0         1
@@ -581,7 +566,7 @@ $probs
 </div>
 </div>
 <p>The meaning of the deweighting parameters in this function is as follows: Recall that in RFs, each tree will use a different random ordering of the X variables. At any given node in a tree, a variable is chosen at random to set up a possible split point. But here we are specifying that the age and priors count variables be used only 20% and 10% as often as other variables, in order to reduce their impact.</p>
-<p>Yet the S-Correlation values are still substantial in the Black and Hispanic cases. We need to give the O variables even smaller weights or possibly include additional variables in our O set.</p>
+<p>Yet the S-Correlation values are still nonzero, especially in the Black and Caucasian cases. We need to give the O variables even smaller weights or possibly include additional variables in our O set.</p>
 </section>
 <section id="dsldqefairknn" class="level3" data-number="3.5.2">
 <h3 data-number="3.5.2" class="anchored" data-anchor-id="dsldqefairknn"><span class="header-section-number">3.5.2</span> <strong>dsldQeFairKNN</strong></h3>
@@ -589,21 +574,35 @@ $probs
 <p><span class="math inline">\sqrt{3.2^2+1.1^2} \approx 3.38</span></p>
 <p>That puts equal weight in the left-right direction and the forward-back direction, which makes sense for geometric distance. But in data prediction, we can use different weights. In predicting wage income in the Census data, say, we can place large weight on age and occupation, and less weight on education. Our COMPAS data call would work in this manner:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>knnProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>trainPreds<span class="sc">$</span>preds<span class="sc">$</span>probs</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">levels</span>(cmp<span class="sc">$</span>race), <span class="cf">function</span>(r)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">cor</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> r, knnProbs, <span class="at">method=</span><span class="st">'kendall'</span>))</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldQeFairKNN</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">age=</span><span class="fl">0.2</span>,<span class="at">priors_count=</span><span class="fl">0.1</span>),<span class="at">yesYVal=</span><span class="st">'Yes'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>knnProbs <span class="ot">&lt;-</span> z<span class="sc">$</span>trainPreds<span class="sc">$</span>preds<span class="sc">$</span>probs</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">levels</span>(cmp<span class="sc">$</span>race), <span class="cf">function</span>(r)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">cor</span>(cmp<span class="sc">$</span>race <span class="sc">==</span> r, knnProbs, <span class="at">method=</span><span class="st">'kendall'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>African-American            Asian        Caucasian         Hispanic 
+     0.140941888     -0.027014389     -0.092626030     -0.045893605 
+ Native American            Other 
+     0.001746851     -0.051539781 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,newx)<span class="sc">$</span>preds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$predClasses
+[1] Yes
+Levels: No Yes
+
+$probs
+[1] 0.56</code></pre>
+</div>
 </div>
 </section>
 <section id="dsldqefairridgelin-and-dsldqefairridgelog" class="level3" data-number="3.5.3">
 <h3 data-number="3.5.3" class="anchored" data-anchor-id="dsldqefairridgelin-and-dsldqefairridgelog"><span class="header-section-number">3.5.3</span> <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong></h3>
 <p>One of the most striking advances in modern statistics was the discovery that classical estimators tend to be “too big,” and that one may improve accuracy by “shrinking” them. Here is the intuition:</p>
 <p>Consider the example in <a href="PartI.html#sec-compas" class="quarto-xref"><span>Section 2.6</span></a>. The vector of estimated regression coefficients was</p>
-<p>(12.46,-0.94,0.39,0.16,…)</p>
+<p>(12.46,-0.094,0.39,0.16,…)</p>
 <p>We might (crudely) shrink this vector by multiplying by a factor of, say, 0.5, yielding</p>
-<p>(6.23,-0.47,0.20,0.08,…)</p>
+<p>(6.23,-0.047,0.20,0.08,…)</p>
 <p>The actual shrinkage mechanisms used in the regression context are much more complex than simply multiplying every component of the vector by the same constant, but this is the basic principle.</p>
 <p>Why might this odd action be helpful? Shrinking introduces a bias, but reduces variance (roughly speaking, smaller variables vary less). If outliers (extreme values, not errors) are common in the data, these result in large estimator variance, possibly so much that shrinkage’s reduction in variance more than compensates for our increase in bias.</p>
 <p>Some readers may have heard of <em>ridge regression</em> and the <em>LASSO</em>, both of which impose shrinkage. For our EDF context, though, we wish to perform our shrinkage focusing on <em>only some</em> of the estimated regression coefficients, specifically those corresponding to our proxies. To be sure, it should be noted that non-proxy coefficients are affected too, but the main effects will be on the proxies. This is what <strong>dsldQeFairRidgeLin</strong> and <strong>dsldQeFairRidgeLog</strong> do, with linear and logit cases.</p>
@@ -622,70 +621,76 @@ $probs
 <p>Of course, each may work better than the other for any particular dataset.</p>
 <p>Let’s see what it does with the COMPAS data, trying three different values of <strong>unfairness</strong>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the fitted model, without printing every training prediction.</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">1.0</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the fitted model, without printing every training prediction.</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">1.0</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
-    unfairness = unfairness, definition = ..1, family = ..2, 
+    unfairness = as.numeric(unfairness), definition = ..1, family = ..2, 
     lambda = ..3, save.auxiliary = ..4)
 
 Coefficients:
-      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
-          0.23966           -1.79259           -0.72742           -0.87588  
-S1Native.American            S1Other                age      juv_fel_count  
-         -0.03651           -0.88930           -0.03538            0.18174  
-   juv_misd_count    juv_other_count       priors_count            sexMale  
-          0.07559            0.17788            0.14302            0.39726  
-        c_jail_in         c_jail_out     c_offense_date     screening_date  
-        -32.39616           41.96697            6.32340           11.37465  
-       in_custody        out_custody  
-          6.33963           14.75329  </code></pre>
+        (Intercept)            raceAsian        raceCaucasian  
+            0.23966             -1.79259             -0.72742  
+       raceHispanic  raceNative.American            raceOther  
+           -0.87588             -0.03651             -0.88930  
+                age        juv_fel_count       juv_misd_count  
+           -0.03538              0.18174              0.07559  
+    juv_other_count         priors_count              sexMale  
+            0.17788              0.14302              0.39726  
+          c_jail_in           c_jail_out       c_offense_date  
+          -32.39616             41.96697              6.32340  
+     screening_date           in_custody          out_custody  
+           11.37465              6.33963             14.75329  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.1</span>,</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.1</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
-    unfairness = unfairness, definition = ..1, family = ..2, 
+    unfairness = as.numeric(unfairness), definition = ..1, family = ..2, 
     lambda = ..3, save.auxiliary = ..4)
 
 Coefficients:
-      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
-          0.04354           -0.89549           -0.36884           -0.41984  
-S1Native.American            S1Other                age      juv_fel_count  
-          0.08257           -0.42681           -0.03449            0.17093  
-   juv_misd_count    juv_other_count       priors_count            sexMale  
-          0.06153            0.17663            0.13869            0.38870  
-        c_jail_in         c_jail_out     c_offense_date     screening_date  
-        -32.06082           41.46601            6.37675           10.88288  
-       in_custody        out_custody  
-          6.88843           13.87360  </code></pre>
+        (Intercept)            raceAsian        raceCaucasian  
+            0.04354             -0.89549             -0.36884  
+       raceHispanic  raceNative.American            raceOther  
+           -0.41984              0.08257             -0.42681  
+                age        juv_fel_count       juv_misd_count  
+           -0.03449              0.17093              0.06153  
+    juv_other_count         priors_count              sexMale  
+            0.17663              0.13869              0.38870  
+          c_jail_in           c_jail_out       c_offense_date  
+          -32.06082             41.46601              6.37675  
+     screening_date           in_custody          out_custody  
+           10.88288              6.88843             13.87360  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.01</span>,</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFgrrm</span>(cmp,<span class="st">'two_year_recid'</span>,<span class="st">'race'</span>,<span class="at">unfairness=</span><span class="fl">0.01</span>,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">family=</span><span class="st">'binomial'</span>,<span class="at">yesYVal=</span><span class="st">'Yes'</span>)<span class="sc">$</span>base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 fairmlFUNC(response = response, predictors = predictors, sensitive = sensitive, 
-    unfairness = unfairness, definition = ..1, family = ..2, 
+    unfairness = as.numeric(unfairness), definition = ..1, family = ..2, 
     lambda = ..3, save.auxiliary = ..4)
 
 Coefficients:
-      (Intercept)            S1Asian        S1Caucasian         S1Hispanic  
-         -0.13557           -0.08638           -0.03388           -0.03541  
-S1Native.American            S1Other                age      juv_fel_count  
-          0.01777           -0.03607           -0.03416            0.16299  
-   juv_misd_count    juv_other_count       priors_count            sexMale  
-          0.05068            0.17753            0.13672            0.38560  
-        c_jail_in         c_jail_out     c_offense_date     screening_date  
-        -32.46086           41.72702            6.61601           10.58503  
-       in_custody        out_custody  
-          7.26906           13.47819  </code></pre>
+        (Intercept)            raceAsian        raceCaucasian  
+           -0.13557             -0.08638             -0.03388  
+       raceHispanic  raceNative.American            raceOther  
+           -0.03541              0.01777             -0.03607  
+                age        juv_fel_count       juv_misd_count  
+           -0.03416              0.16299              0.05068  
+    juv_other_count         priors_count              sexMale  
+            0.17753              0.13672              0.38560  
+          c_jail_in           c_jail_out       c_offense_date  
+          -32.46086             41.72702              6.61601  
+     screening_date           in_custody          out_custody  
+           10.58503              7.26906             13.47819  </code></pre>
 </div>
 </div>
 <p>The first value, 1.0, yielded a Caucasian coefficient of -0.73, which then shrank to -0.37 with <strong>unfairness</strong> = 0.1, and then to -0.03 with <strong>unfairness</strong> = 0.01. (Note that the base for the dummy variables is apparently African-American.) There seems to be rather little effect on our possible proxies, age and priors count.</p>

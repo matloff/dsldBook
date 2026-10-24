@@ -50,6 +50,8 @@ through various graphical and tabular functions.
   enhanced access to general R functions such as **lm()** and **glm()**
   and various functions from the **qeML** machine learning package.
 
+The examples below use **dsld 2.0.0**.
+
 ```{r}
 #| include: false
 library(dsld)

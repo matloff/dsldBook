@@ -345,7 +345,7 @@ head(svc)
 ```
 
 We have only three education codes here, with 14, 16 and 'zzzOther'
-representing a PhD, Bachelor's and Master's respectively. 
+representing a Master's degree, PhD and other education levels respectively.
 
 We no longer need the original age and gender columns, so we'll delete
 them and then try some analysis:
@@ -526,7 +526,7 @@ summary(z)
 So, being Black resulted in an average increase in log-odds of about
 0.6409.  A 95% confidence interval is 0.6409 $\pm$ 1.96 x 0.1836 =
 (0.2810,1.0008).  By comparison, being self-employed, for instance, has
-a similar estimated coefficient of about 0.6355. Again, interpretation
+a similar estimated coefficient of about 0.6345. Again, interpretation
 on a log scale is difficult -- imagine trying to convince a nontechnical
 person that logarithms of probabilities are meaningful -- but at least
 it is interesting that being Black is a similar handicap to being
@@ -553,7 +553,7 @@ the admissions process itself.
 
 The main variables of interest here are:
 
-* **decile1**, **decile2**:  Student's standing after Year 1 and Year 3
+* **decile1**, **decile3**:  Student's standing after Year 1 and Year 3
 of law school.
 
 * **fam_inc**: Apparently the income level of the family in which the
@@ -616,13 +616,18 @@ What about passage of the bar exam?  Does race play a role?
 ```{r}
 comparisonPts <- lsa[c(2,22,222,2222),-c(8,11)]
 w <- dsldLogit(lsa,'bar','race1',comparisonPts,yesYVal= 'TRUE')
-summary(w)   
+summary(w)
+sapply(c('black','white'), function(r) {
+   newData <- comparisonPts
+   newData$race1 <- r
+   predict(w,newData)$prediction
+})
 ```
 
 That's a lot of output.  Let's take a closer look.
 
 
-At least judging from the rows labeled 'black - white', Black and white
+At least judging from these predicted probabilities, Black and white
 students having the same traits appear to have passed the bar exam at
 about the same rates.   
 
@@ -884,11 +889,11 @@ dsldFrequencyByS(svcensus, "occ", "gender")
 ```
 
 Notice for instance the difference between the proportion of males in
-occupation 106 [Again, one might consider conducting formal statistical
+occupation 141 [Again, one might consider conducting formal statistical
 inference in this comparison, calculating a p-value from a *chi-square
 test*.  But again as we saw in @sec-sig. testing for model fit suffers from
 the same problems as testing for nonzero effects.]{.column-margin} versus
-females in that same occupation--a difference of approximately 11%.  The
+females in that same occupation--a difference of approximately 11 percentage points.  The
 difference in frequencies here is much greater than with the education
 example, which suggests using occupation as a confounder.  Since
 different occupations correlate with different wages, it is possible
@@ -1110,13 +1115,15 @@ We then compare mean Y values among the two groups in this new data.
 
 Here is an example, involving a jobs training program:
 
-``` r
+```{r}
+set.seed(9999)  # matching breaks ties at random
 data(lalonde,package='Matching')
 ll <- lalonde
 ll$treat <- as.factor(ll$treat)
 ll$re74 <- NULL
 ll$re75 <- NULL
-summary(dsldMatchedATE(ll,'re78','treat','1')) 
+matched <- dsldMatchedATE(ll,'re78','treat','1')
+summary(matched)
 ```
 
 The data structure is 
@@ -1134,7 +1141,9 @@ The data structure is
 
 Participants in the program had **treat** coded 1, the others 0. Income
 several years later (1978) is shown in **re78**. In the matched pairs,
-the average difference in income was estimated to be 1374.7.
+the average difference in income was estimated to be
+`r sprintf("%.1f", matched$est)`. The seed fixes the random tie-breaking in
+matching.
 
 A key point is the manner in which the matching is done. In most cases,
 it can be done only approximately. In the medication example, for
@@ -1336,7 +1345,7 @@ Typically k is chosen by trying several different values of k, then
 using the one that best predicts in a holdout set, described below.
 Once we've settled on k, we might use the full dataset, no holdout. 
 
-Most **dsld** functions have an argument **holdout**. Say we set it to
+The **qeML** functions used by **dsldML** have an argument **holdout**. Say we set it to
 1000 and our dataset has 5000 rows. Then the function will randomly
 partition our data into a *training set* of 4000 rows and the holdout
 set of 1000 rows. The given algorithm, say kNN, will fit the training
@@ -1372,15 +1381,15 @@ with-interactions case for linear models, the software reports the
 estimated wage gap here at a few comparison cases.
 
 The comparison cases are by default a random sample of 5 rows of the
-training set.  In order to obtain consistent results each time this book
+supplied dataset.  In order to obtain consistent results each time this book
 is processed by Quarto, we've called R's **set.seed** function.
 
 It's important to keep in mind that the output here is not simply for 5
 persons; each row represents a subpopulation.  Thus for instance in that
 first row of output, we estimate among *all* Silicon Valley techies of
-age 37.4, with a Bachelor's degree or less, in occupation 101, and
-having worked 52 weeks, women's average wage was 48,914 and for men it
-was 61,156.
+age 37.4, in the 'zzzOther' education category, in occupation 101, and
+having worked 52 weeks, women's average wage was `r format(z$comparisons$female[1], big.mark=",")` and for men it
+was `r format(z$comparisons$male[1], big.mark=",")`.
 
 As before, we see a substantial gender wage gap, but now we can feel
 more confident about it, since this analysis is unencumbered by

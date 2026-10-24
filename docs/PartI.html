@@ -403,8 +403,8 @@ window.Quarto = {
 3  gendermale 13098.2091     790.44515      0
 
 $`Sensitive Factor Level Comparisons`
-         Factors Compared Estimates Standard Errors P-Value
-Estimate    male - female  13098.21        790.4451       0</code></pre>
+  Factors Compared Estimates Standard Errors      P-Value
+1    male - female  13098.21        790.4451 1.135454e-61</code></pre>
 </div>
 </div>
 <p>The first half of this output is from <strong>lm()</strong>, which is called by <strong>dsldLinear()</strong>. The second half is the “value added” material from <strong>dsld</strong>.</p>
@@ -561,7 +561,7 @@ Levels: 40+ under40</code></pre>
 6     40+ zzzOther 100       0       0   male       40+.male</code></pre>
 </div>
 </div>
-<p>We have only three education codes here, with 14, 16 and ‘zzzOther’ representing a PhD, Bachelor’s and Master’s respectively.</p>
+<p>We have only three education codes here, with 14, 16 and ‘zzzOther’ representing a Master’s degree, PhD and other education levels respectively.</p>
 <p>We no longer need the original age and gender columns, so we’ll delete them and then try some analysis:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>svc<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
@@ -586,12 +586,12 @@ Levels: 40+ under40</code></pre>
 
 $`Sensitive Factor Level Comparisons`
                Factors Compared Estimates Standard Errors      P-Value
-1         40+.female - 40+.male -9834.035       1064.8667 0.000000e+00
-2   40+.female - under40.female  8176.053       1229.5848 2.942069e-11
+1         40+.female - 40+.male -9834.035       1064.8667 2.583056e-20
+2   40+.female - under40.female  8176.053       1229.5848 2.942067e-11
 3     40+.female - under40.male   408.267       1030.0069 6.918298e-01
-4     40+.male - under40.female 18010.088        990.2130 0.000000e+00
-5       40+.male - under40.male 10242.302        705.2504 0.000000e+00
-6 under40.female - under40.male -7767.786        951.1388 2.220446e-16</code></pre>
+4     40+.male - under40.female 18010.088        990.2130 6.413064e-74
+5       40+.male - under40.male 10242.302        705.2504 8.672277e-48
+6 under40.female - under40.male -7767.786        951.1388 3.166069e-16</code></pre>
 </div>
 </div>
 <div class="page-columns page-full"><p>Ah, this is a more nuanced probe than the ones above in which we simply  used age as a confounder. The male-female differences at both the older and younger age levels, about $9800 and $7800, are both substantial, but smaller than the $13,100 overall figure we obtained earlier.</p><div class="no-row-height column-margin column-container"><span class="">This is an example of <em>Simpson’s Paradox</em>, in which an overall average effect might be larger than the terms that make up the average. In fact, the algebraic signs may change, as we saw with the UC Berkeley admissions data in <a href="intro.html#sec-ucb" class="quarto-xref"><span>Section 1.1</span></a>.</span></div></div>
@@ -712,11 +712,11 @@ income</span>, hence the term “generalized” linear model.</p>
 22   ltv_high1  1.50099888     0.42183272 3.732914e-04
 
 $`Sensitive Factor Level Comparisons`
-         Factors Compared Estimates Standard Errors      P-Value
-Estimate            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
+  Factors Compared Estimates Standard Errors      P-Value
+1            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
 </div>
 </div>
-<p>So, being Black resulted in an average increase in log-odds of about 0.6409. A 95% confidence interval is 0.6409 <span class="math inline">\pm</span> 1.96 x 0.1836 = (0.2810,1.0008). By comparison, being self-employed, for instance, has a similar estimated coefficient of about 0.6355. Again, interpretation on a log scale is difficult – imagine trying to convince a nontechnical person that logarithms of probabilities are meaningful – but at least it is interesting that being Black is a similar handicap to being self-employed; the latter trait means lack of a steady income, thus a possible risk to not repay the loan.</p>
+<p>So, being Black resulted in an average increase in log-odds of about 0.6409. A 95% confidence interval is 0.6409 <span class="math inline">\pm</span> 1.96 x 0.1836 = (0.2810,1.0008). By comparison, being self-employed, for instance, has a similar estimated coefficient of about 0.6345. Again, interpretation on a log scale is difficult – imagine trying to convince a nontechnical person that logarithms of probabilities are meaningful – but at least it is interesting that being Black is a similar handicap to being self-employed; the latter trait means lack of a steady income, thus a possible risk to not repay the loan.</p>
 </section>
 </section>
 <section id="sec-law-school" class="level2 page-columns page-full" data-number="2.4">
@@ -725,7 +725,7 @@ Estimate            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
 <p>Thus it should be kept in mind that this is just an illustration of methodology, and firm conclusions about the legal education process should not be drawn. The data concern students who were admitted to law school, so in spite of the title, it’s not about the admissions process itself.</p>
 <p>The main variables of interest here are:</p>
 <ul>
-<li><p><strong>decile1</strong>, <strong>decile2</strong>: Student’s standing after Year 1 and Year 3 of law school.</p></li>
+<li><p><strong>decile1</strong>, <strong>decile3</strong>: Student’s standing after Year 1 and Year 3 of law school.</p></li>
 <li><p><strong>fam_inc</strong>: Apparently the income level of the family in which the law students was raised in.</p></li>
 <li><p><strong>lsat</strong>: Score on the LSAT, a major law school admissions test.</p></li>
 <li><p><strong>ugpa</strong>: Undergraduate GPA.</p></li>
@@ -783,17 +783,17 @@ Estimate            1 - 0 0.6408871       0.1835675 0.0004806957</code></pre>
 18     barTRUE  1.74973262   0.102818692 0.000000e+00
 
 $`Sensitive Factor Level Comparisons`
-   Factors Compared Estimates Standard Errors      P-Value
-1     asian - black  4.748263       0.1980883 0.000000e+00
-2      asian - hisp  2.001460       0.2035044 0.000000e+00
-3     asian - other  0.868031       0.2625286 9.449471e-04
-4     asian - white -1.247088       0.1546271 6.661338e-16
-5      black - hisp -2.746803       0.1863750 0.000000e+00
-6     black - other -3.880232       0.2515488 0.000000e+00
-7     black - white -5.995351       0.1409991 0.000000e+00
-8      hisp - other -1.133429       0.2562971 9.764506e-06
-9      hisp - white -3.248547       0.1457509 0.000000e+00
-10    other - white -2.115119       0.2194472 0.000000e+00</code></pre>
+   Factors Compared Estimates Standard Errors       P-Value
+1     asian - black  4.748263       0.1980883 5.658131e-127
+2      asian - hisp  2.001460       0.2035044  7.959167e-23
+3     asian - other  0.868031       0.2625286  9.449471e-04
+4     asian - white -1.247088       0.1546271  7.315779e-16
+5      black - hisp -2.746803       0.1863750  3.672659e-49
+6     black - other -3.880232       0.2515488  1.105293e-53
+7     black - white -5.995351       0.1409991  0.000000e+00
+8      hisp - other -1.133429       0.2562971  9.764506e-06
+9      hisp - white -3.248547       0.1457509 4.792757e-110
+10    other - white -2.115119       0.2194472  5.504309e-22</code></pre>
 </div>
 </div>
 <div class="page-columns page-full"><p> There are very concerning racial differences here. Two very similar people—who attended the same quality law school, with the same undergraduate grades, the same law school grades, even having the same bar passage status—will have LSAT scores differing on average by almost 6 points if one person is Black and the other is white.</p><div class="no-row-height column-margin column-container"><span class="">Note the retrospective view–using later events to “predict” the past. This is valid, but may seem odd at first.</span></div></div>
@@ -805,7 +805,7 @@ $`Sensitive Factor Level Comparisons`
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>comparisonPts <span class="ot">&lt;-</span> lsa[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">22</span>,<span class="dv">222</span>,<span class="dv">2222</span>),<span class="sc">-</span><span class="fu">c</span>(<span class="dv">8</span>,<span class="dv">11</span>)]</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLogit</span>(lsa,<span class="st">'bar'</span>,<span class="st">'race1'</span>,comparisonPts,<span class="at">yesYVal=</span> <span class="st">'TRUE'</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`Summary Coefficients`
      Covariate    Estimate Standard.Error        PValue
@@ -834,22 +834,34 @@ $`Sensitive Factor Level Comparisons`
 2      asian - hisp -0.070789554      0.13670067 0.6045674668
 3     asian - other -0.062689778      0.18508665 0.7348319612
 4     asian - white -0.374343793      0.11129175 0.0007692575
-5      black - hisp  0.138857107      0.11256856 0.2173906884
-6     black - other  0.146956884      0.16926160 0.3852820509
-7     black - white -0.164697131      0.09362748 0.0785806070
-8      hisp - other  0.008099776      0.17545132 0.9631788810
-9      hisp - white -0.303554239      0.09885125 0.0021374826
-10    other - white -0.311654015      0.15832839 0.0490349927</code></pre>
+5      black - hisp  0.138857107      0.11256856 0.2173767489
+6     black - other  0.146956884      0.16926160 0.3852720334
+7     black - white -0.164697131      0.09362748 0.0785659049
+8      hisp - other  0.008099776      0.17545132 0.9631784378
+9      hisp - white -0.303554239      0.09885125 0.0021347294
+10    other - white -0.311654015      0.15832839 0.0490217329</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">'black'</span>,<span class="st">'white'</span>), <span class="cf">function</span>(r) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>   newData <span class="ot">&lt;-</span> comparisonPts</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>   newData<span class="sc">$</span>race1 <span class="ot">&lt;-</span> r</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">predict</span>(w,newData)<span class="sc">$</span>prediction</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         black     white
+[1,] 0.7458474 0.7757873
+[2,] 0.7405560 0.7709278
+[3,] 0.9912332 0.9925545
+[4,] 0.9653157 0.9704267</code></pre>
 </div>
 </div>
 <p>That’s a lot of output. Let’s take a closer look.</p>
-<p>At least judging from the rows labeled ‘black - white’, Black and white students having the same traits appear to have passed the bar exam at about the same rates.</p>
+<p>At least judging from these predicted probabilities, Black and white students having the same traits appear to have passed the bar exam at about the same rates.</p>
 <p>We might also do a little check of the appropriateness of the logistic model for this data. One rough approach might be to use <strong>dsldConditDisparity()</strong>, as we did in the linear case:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Y needs to be numeric, in this case 0,1</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>lsab <span class="ot">&lt;-</span> lsa</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>lsab<span class="sc">$</span>bar <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(lsab<span class="sc">$</span>bar<span class="sc">==</span><span class="st">'TRUE'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldConditDisparity</span>(lsab,<span class="st">'bar'</span>,<span class="st">'race1'</span>,<span class="st">'lsat'</span>,<span class="st">'lsab$age &gt; 0'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Y needs to be numeric, in this case 0,1</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>lsab <span class="ot">&lt;-</span> lsa</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>lsab<span class="sc">$</span>bar <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(lsab<span class="sc">$</span>bar<span class="sc">==</span><span class="st">'TRUE'</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldConditDisparity</span>(lsab,<span class="st">'bar'</span>,<span class="st">'race1'</span>,<span class="st">'lsat'</span>,<span class="st">'lsab$age &gt; 0'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -871,9 +883,9 @@ $`Sensitive Factor Level Comparisons`
 <p>Some who read this may object, “Sure, there sometimes may be a difference between statistical significance and practical significance. But I just want to check whether my model fits the data.” Actually, it’s the same problem.</p>
 <p>For instance, suppose we are considering adding an interaction term between race and undergraduate GPA to our above model. Let’s fit two models, one without interactions and one with, and do a prediction from each. For simplicity, let’s use R’s linear model function, <strong>lm()</strong>, directly:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .,lsa)  <span class="co"># predict lsat from all other variables</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .<span class="sc">+</span>race1<span class="sc">:</span>ugpa,lsa)  <span class="co"># add interaction </span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .,lsa)  <span class="co"># predict lsat from all other variables</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(lsat <span class="sc">~</span> .<span class="sc">+</span>race1<span class="sc">:</span>ugpa,lsa)  <span class="co"># add interaction </span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -914,13 +926,13 @@ Residual standard error: 4.193 on 20778 degrees of freedom
 Multiple R-squared:  0.3948,    Adjusted R-squared:  0.3942 
 F-statistic: 645.4 on 21 and 20778 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>typx <span class="ot">&lt;-</span> lsa[<span class="dv">1</span>,<span class="sc">-</span><span class="dv">5</span>]  <span class="co"># set up an example case</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w,typx)  <span class="co"># estimated regression function value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>typx <span class="ot">&lt;-</span> lsa[<span class="dv">1</span>,<span class="sc">-</span><span class="dv">5</span>]  <span class="co"># set up an example case</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w,typx)  <span class="co"># estimated regression function value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      2 
 40.2294 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w1,typx)  <span class="co"># estimated regression function value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(w1,typx)  <span class="co"># estimated regression function value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      2 
 40.2056 </code></pre>
@@ -954,9 +966,9 @@ F-statistic: 645.4 on 21 and 20778 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Recall that COMPAS is a tool developed to help judges decide on sentences in criminal trials, which it does by predicting whether the defendant is likely to recidivate. As noted earlier, one study found the tool to be biased against African-Americans; the creator of the tool, Northpointe, disagreed.</p>
 <p>Let’s investigate this, by predicting Y = the COMPAS score, with S = race and C = the remaining variables. Does S have much effect on Y?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(compas1)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(compas1,<span class="st">'decile_score'</span>,<span class="st">'race'</span>)</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(compas1)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(compas1,<span class="st">'decile_score'</span>,<span class="st">'race'</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`Summary Coefficients`
              Covariate     Estimate StandardError       PValue
@@ -983,17 +995,17 @@ F-statistic: 645.4 on 21 and 20778 DF,  p-value: &lt; 2.2e-16</code></pre>
 $`Sensitive Factor Level Comparisons`
                      Factors Compared  Estimates Standard Errors      P-Value
 1            African-American - Asian  0.6859523       0.3935001 8.129735e-02
-2        African-American - Caucasian  0.4679510       0.0623394 6.061818e-14
-3         African-American - Hispanic  0.9383164       0.1012863 0.000000e+00
+2        African-American - Caucasian  0.4679510       0.0623394 6.072710e-14
+3         African-American - Hispanic  0.9383164       0.1012863 1.969130e-20
 4  African-American - Native American -0.3864065       0.5543479 4.857734e-01
-5            African-American - Other  1.3075337       0.1237164 0.000000e+00
+5            African-American - Other  1.3075337       0.1237164 4.157758e-26
 6                   Asian - Caucasian -0.2180014       0.3935940 5.796653e-01
 7                    Asian - Hispanic  0.2523640       0.4015448 5.296877e-01
 8             Asian - Native American -1.0723589       0.6779716 1.137143e-01
 9                       Asian - Other  0.6215813       0.4077123 1.273692e-01
 10               Caucasian - Hispanic  0.4703654       0.1033446 5.328378e-06
 11        Caucasian - Native American -0.8543575       0.5555712 1.240975e-01
-12                  Caucasian - Other  0.8395827       0.1253271 2.096612e-11
+12                  Caucasian - Other  0.8395827       0.1253271 2.096615e-11
 13         Hispanic - Native American -1.3247229       0.5612839 1.826678e-02
 14                   Hispanic - Other  0.3692173       0.1485386 1.293095e-02
 15            Native American - Other  1.6939402       0.5659026 2.759400e-03</code></pre>
@@ -1012,8 +1024,8 @@ and as usual, one must keep in mind the possibility of unseen confounders, it is
 <h3 data-number="2.7.1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">2.7.1</span> The problem</h3>
 <p>The German credit dataset, included in the <strong>fairml</strong> package and thus with <strong>dsld</strong>, consists of a total of 21 variables:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(german.credit)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(german.credit)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(german.credit)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(german.credit)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Account_status"           "Duration"                
  [3] "Credit_history"           "Purpose"                 
@@ -1044,39 +1056,39 @@ and as usual, one must keep in mind the possibility of unseen confounders, it is
 <h3 data-number="2.7.2" class="anchored" data-anchor-id="exploratory-example-engineering-wages"><span class="header-section-number">2.7.2</span> Exploratory example: engineering wages</h3>
 <p>One useful tool here is the function <strong>dsldFrequencyByS()</strong>, which aims to analyze categorical (not numeric) columns by printing out a list of frequencies. Since education level in the <strong>svcensus</strong> data is categorical, we can call the function as follows:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"educ"</span>, <span class="st">"gender"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"educ"</span>, <span class="st">"gender"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       Frequency of zzzOther Frequency of 14 Frequency of 16
-female             0.2068052      0.02098615       0.7722086
-male               0.2177579      0.04110130       0.7411408</code></pre>
+<pre><code>       Frequency of 14 Frequency of 16 Frequency of zzzOther
+female       0.2068052      0.02098615             0.7722086
+male         0.2177579      0.04110130             0.7411408</code></pre>
 </div>
 </div>
 <p>About 21% of the women had a Master’s degree, with a figure of 22% for men, and so on. The similar frequency values between men and women suggests not using education as a confounder.</p>
 <p>On the other hand, we <em>do</em> see more interesting results if we look at occupation instead of education:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"occ"</span>, <span class="st">"gender"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldFrequencyByS</span>(svcensus, <span class="st">"occ"</span>, <span class="st">"gender"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       Frequency of 102 Frequency of 101 Frequency of 100 Frequency of 141
+<pre><code>       Frequency of 100 Frequency of 101 Frequency of 102 Frequency of 106
 female        0.3117359        0.2349226        0.3274246       0.04258354
 male          0.2016862        0.2203267        0.3433671       0.01923330
-       Frequency of 140 Frequency of 106
+       Frequency of 140 Frequency of 141
 female       0.02587612       0.05745721
 male         0.04446055       0.17092610</code></pre>
 </div>
 </div>
-<div class="page-columns page-full"><p>Notice for instance the difference between the proportion of males in occupation 106  versus females in that same occupation–a difference of approximately 11%. The difference in frequencies here is much greater than with the education example, which suggests using occupation as a confounder. Since different occupations correlate with different wages, it is possible that this gender difference in occupations proportions could be affecting the perceived relationship between gender and wage. We should definitely consider using occupation as a confounder.</p><div class="no-row-height column-margin column-container"><span class="">Again, one might consider conducting formal statistical inference in this comparison, calculating a p-value from a <em>chi-square test</em>. But again as we saw in <a href="#sec-sig" class="quarto-xref"><span>Section 2.5</span></a>. testing for model fit suffers from the same problems as testing for nonzero effects.</span></div></div>
+<div class="page-columns page-full"><p>Notice for instance the difference between the proportion of males in occupation 141  versus females in that same occupation–a difference of approximately 11 percentage points. The difference in frequencies here is much greater than with the education example, which suggests using occupation as a confounder. Since different occupations correlate with different wages, it is possible that this gender difference in occupations proportions could be affecting the perceived relationship between gender and wage. We should definitely consider using occupation as a confounder.</p><div class="no-row-height column-margin column-container"><span class="">Again, one might consider conducting formal statistical inference in this comparison, calculating a p-value from a <em>chi-square test</em>. But again as we saw in <a href="#sec-sig" class="quarto-xref"><span>Section 2.5</span></a>. testing for model fit suffers from the same problems as testing for nonzero effects.</span></div></div>
 </section>
 <section id="exploratory-example-law-school-admissions-data" class="level3 page-columns page-full" data-number="2.7.3">
 <h3 data-number="2.7.3" class="anchored" data-anchor-id="exploratory-example-law-school-admissions-data"><span class="header-section-number">2.7.3</span> Exploratory example: Law school admissions data</h3>
 <p>Suppose we are investigating the relationships among the variables LSAT score, GPA and race. One way to visualize these relationships would be through <strong>dsldScatterPlot3D</strong>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldScatterPlot3D</span>(law.school.admissions, </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">c</span>(<span class="st">'lsat'</span>,<span class="st">'fam_inc'</span>,<span class="st">'ugpa'</span>), <span class="st">'race1'</span>, <span class="at">pointSize =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldScatterPlot3D</span>(law.school.admissions, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">c</span>(<span class="st">'lsat'</span>,<span class="st">'fam_inc'</span>,<span class="st">'ugpa'</span>), <span class="st">'race1'</span>, <span class="at">pointSize =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><img src="assets/figures/graphTab/lawscatterplot3d2.png" class="img-fluid" style="width:90.0%"></p>
 <div class="page-columns page-full"><p> Of course, visualizing a 3-dimensional scatter plot is more challenging than viewing the ordinary 2-dimensional kind. But it does enable richer search for relationships. Here are a few trends suggested by the plot:</p><div class="no-row-height column-margin column-container"><span class="">This is a <strong>plotly</strong> interactive graph. To fully understand this function, the reader should execute the function outside of Quarto, i.e. run the above code directly from R. Try features such as move, rotate, annotation display and so on.</span></div></div>
@@ -1089,8 +1101,8 @@ male         0.04446055       0.17092610</code></pre>
 <p>Note however, that these graphs do not do much to answer the question of whether, in this case, that relationship is substantial. The formal analysis we did earlier indicates that it is not.</p>
 <p>Returning to the question of whether race has a substantial impact on exam results, we can look at the density plot of LSAT scores for different races.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldDensityByS</span>(law.school.admissions, <span class="at">cName =</span> <span class="st">"lsat"</span>, <span class="at">sName =</span> <span class="st">"race1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(law.school.admissions)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldDensityByS</span>(law.school.admissions, <span class="at">cName =</span> <span class="st">"lsat"</span>, <span class="at">sName =</span> <span class="st">"race1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><img src="assets/figures/graphTab/lawdensitylsat.png" class="img-fluid" style="width:100.0%"></p>
 <p>Each curve represents the distribution of LSAT scores for one race. The graph suggests the possibility of racial bias in the LSAT. But again, this bias may be confounded.</p>
@@ -1125,8 +1137,8 @@ male         0.04446055       0.17092610</code></pre>
 <h3 data-number="2.7.6" class="anchored" data-anchor-id="example-boston-mortgage-data"><span class="header-section-number">2.7.6</span> Example: Boston mortgage data</h3>
 <p>Here is an example, using the mortgage data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mortgageSE)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(mortgageSE,<span class="st">'deny'</span>,<span class="st">'black'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required namespace: randomForest</code></pre>
 </div>
@@ -1190,12 +1202,12 @@ $inCommon[[10]]
 <h3 data-number="2.7.7" class="anchored" data-anchor-id="example-employer-bias-test"><span class="header-section-number">2.7.7</span> Example: Employer bias test</h3>
 <p>In the paper “Are Emily and Greg More Employable Than Lakisha and Jamal? A Field Experiment on Labor Market Discrimination” (<em>Am. Econ. Rev.</em>, Sept.&nbsp;2004), researchers “tested” employers by sending CVs with “white-sounding” and “Black-sounding” names, checking for bias. Did employers call “whites” more often than “Blacks” for an interview? The resulting data is <strong>lak</strong> in <strong>dsld</strong>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lak)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lak)  <span class="co"># number of rows and columns</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lak)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lak)  <span class="co"># number of rows and columns</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 447  63</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lak)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lak)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "education"          "ofjobs"             "yearsexp"          
  [4] "honors"             "volunteer"          "military"          
@@ -1223,7 +1235,7 @@ $inCommon[[10]]
 <p>We’ll take Y to be <strong>call</strong>, which records whether the “applicant” received a call back in response to submitting the CV. S will be race, which now leaves us with 63 - 2 = 61 potential confounders!</p>
 <p>Actually, it’s even worse. Many rows of the dataset contain missing values (coded NA in R). The version here uses only intact rows, of which there are 447. (The original data had 4870 rows.) A rough rule of thumb commonly cited in statistics is that in regression estimation, the number of features should be less than the square root of the number of data points; by this or almost any other measure, 61 predictors is well beyond the capacity of 447 data points. And, as noted, that number of variables is unwieldy. Let’s see what we can do to reduce that.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(lak,<span class="st">'call'</span>,<span class="st">'race'</span>,<span class="dv">25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dsldCHunting</span>(lak,<span class="st">'call'</span>,<span class="st">'race'</span>,<span class="dv">25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$impForY
    fraccolp_empzip        linc_empzip   fracblack_empzip fracdropout_empzip 
@@ -1400,22 +1412,38 @@ $inCommon[[25]]
 <h3 data-number="2.9.1" class="anchored" data-anchor-id="covariate-matching"><span class="header-section-number">2.9.1</span> Covariate matching</h3>
 <p>The basic idea here is quite simple. Consider our above example comparing two medications, A and B, with Y being the response variable. Instead of comparing the two sample means of Y, we form pairs of data points, with an A group and B group member in each pair. These pairs form our new data. (Not every one of the original data points will necessarily now be represented, though some may appear more than once.) We then compare mean Y values among the two groups in this new data.</p>
 <p>Here is an example, involving a jobs training program:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde,<span class="at">package=</span><span class="st">'Matching'</span>)</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">&lt;-</span> lalonde</span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>treat <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ll<span class="sc">$</span>treat)</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re74 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re75 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">dsldMatchedATE</span>(ll,<span class="st">'re78'</span>,<span class="st">'treat'</span>,<span class="st">'1'</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)  <span class="co"># matching breaks ties at random</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde,<span class="at">package=</span><span class="st">'Matching'</span>)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>ll <span class="ot">&lt;-</span> lalonde</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>treat <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ll<span class="sc">$</span>treat)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re74 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>ll<span class="sc">$</span>re75 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>matched <span class="ot">&lt;-</span> <span class="fu">dsldMatchedATE</span>(ll,<span class="st">'re78'</span>,<span class="st">'treat'</span>,<span class="st">'1'</span>)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(matched)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Estimate...  1467.8 
+SE.........  453.46 
+T-stat.....  3.2368 
+p.val......  0.0012088 
+
+Original number of observations..............  445 
+Original number of treated obs...............  185 
+Matched number of observations...............  445 
+Matched number of observations  (unweighted).  445 </code></pre>
+</div>
+</div>
 <p>The data structure is</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>  age educ black hisp married nodegr     re78 u74 u75 treat</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>  <span class="dv">37</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">1</span>      <span class="dv">1</span>  <span class="fl">9930.05</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">0</span>    <span class="dv">1</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">3595.89</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span>  <span class="dv">30</span>   <span class="dv">12</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">0</span> <span class="fl">24909.50</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span>  <span class="dv">27</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">7506.15</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span>  <span class="dv">33</span>    <span class="dv">8</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>   <span class="fl">289.79</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="dv">6</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">4056.49</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Participants in the program had <strong>treat</strong> coded 1, the others 0. Income several years later (1978) is shown in <strong>re78</strong>. In the matched pairs, the average difference in income was estimated to be 1374.7.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>  age educ black hisp married nodegr     re78 u74 u75 treat</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>  <span class="dv">37</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">1</span>      <span class="dv">1</span>  <span class="fl">9930.05</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">0</span>    <span class="dv">1</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">3595.89</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span>  <span class="dv">30</span>   <span class="dv">12</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">0</span> <span class="fl">24909.50</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span>  <span class="dv">27</span>   <span class="dv">11</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">7506.15</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span>  <span class="dv">33</span>    <span class="dv">8</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>   <span class="fl">289.79</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="dv">6</span>  <span class="dv">22</span>    <span class="dv">9</span>     <span class="dv">1</span>    <span class="dv">0</span>       <span class="dv">0</span>      <span class="dv">1</span>  <span class="fl">4056.49</span>   <span class="dv">1</span>   <span class="dv">1</span>     <span class="dv">1</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Participants in the program had <strong>treat</strong> coded 1, the others 0. Income several years later (1978) is shown in <strong>re78</strong>. In the matched pairs, the average difference in income was estimated to be 1467.8. The seed fixes the random tie-breaking in matching.</p>
 <p>A key point is the manner in which the matching is done. In most cases, it can be done only approximately. In the medication example, for instance, we probably could not find two patients of the same age <em>and</em> the same gender <em>and</em> the same race and so on. But the more variables we have, the harder it is to find even approximate matches. One solution is to use <em>propensity scores</em>, not covered here.</p>
 <p>An even larger problem is interpretation. Let X denote the vector of our predictors, e.g.&nbsp;age, gender and so on. The regression methods covered earlier in this book estimate the conditional mean Y for a given X, whereas matching methods estimate the unconditional mean of Y. The interpretation of the latter may be problematic, since our matching process itself may have changed the distribution of X. (By the way, changing the distribution of X does not change the conditional mean of Y given X, as long as the change doesn’t affect Y.)</p>
 <p>We then compute mean Y in both groups.</p>
@@ -1426,20 +1454,20 @@ $inCommon[[25]]
 <p>For instance, a graphical description of a situation in which older people (say who came of age before anti-smoking campaigns) might be more likely to smoke, and for other reasons may be more likely to develop cancer even if they are nonsmokers. A graphical description would be</p>
 <p><img src="assets/figures/appendixB/ascdag.PNG" class="causal-diagram img-fluid" style="width:40.0%"></p>
 <p>DAGS are usually just writeups of one’s “gut feelings” as to what causes what. They cannot be derived from our data. More on this below, but under very stringent assumptions, we can attempt to form a DAG from the data. Here is an example of that, using a function in the <strong>bnlearn</strong> package, for which a <strong>dsld</strong> wrapper is available:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co"># iamb does not accept integer data</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>svcensus<span class="sc">$</span>wkswrkd <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wkswrkd)</span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>svcensus<span class="sc">$</span>wageinc <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wageinc)</span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>iambOut <span class="ot">&lt;-</span> <span class="fu">dsldIamb</span>(svcensus)</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iambOut)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co"># iamb does not accept integer data</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>svcensus<span class="sc">$</span>wkswrkd <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wkswrkd)</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>svcensus<span class="sc">$</span>wageinc <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(svcensus<span class="sc">$</span>wageinc)</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>iambOut <span class="ot">&lt;-</span> <span class="fu">dsldIamb</span>(svcensus)</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iambOut)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="assets/figures/svcensusDAG.png" class="img-fluid" style="width:100.0%"></p>
 <div class="page-columns page-full"><p>There are a couple of undirected arcs, e.g.&nbsp;between gender and  occupation – found to be relations, but with indeterminate direction, using available data.</p><div class="no-row-height column-margin column-container"><span class="">Though again we omit a detailed treatment of CA DAGs here, we note that that field defines a confounder of two variables as a variable that is an “ancestor” to both, education being a confounder for income and occupation.</span></div></div>
 <p>More interesting, though, is the lack of a causal arc from gender to wage income. In other words, no wage gap! This is in stark contrast to what <strong>dsldLinear</strong> suggests:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,<span class="at">interactions=</span><span class="cn">FALSE</span>)</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsld)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldLinear</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,<span class="at">interactions=</span><span class="cn">FALSE</span>)</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$gender
  (Intercept)          age       educ16 educzzzOther       occ101       occ102 
@@ -1504,14 +1532,17 @@ $inCommon[[25]]
 <p>If in forming a histogram, we use too many bins, each bin may have a very small sample, thus producing a ragged graph. If we have too few bins, there may be rather disparate values in the same bin, producing a graph that is <em>too</em> smooth. In the extreme, using just one bin will produce a graph that is perfectly smooth but completely meaningless.</p>
 <p>The situation with kNN is very similar. If k is too small, we average over a small sample; if it is too large, then we might be including data points that are far from, in the above situation, 70.2, thus not representative.</p>
 <p>Typically k is chosen by trying several different values of k, then using the one that best predicts in a holdout set, described below. Once we’ve settled on k, we might use the full dataset, no holdout.</p>
-<p>Most <strong>dsld</strong> functions have an argument <strong>holdout</strong>. Say we set it to 1000 and our dataset has 5000 rows. Then the function will randomly partition our data into a <em>training set</em> of 4000 rows and the holdout set of 1000 rows. The given algorithm, say kNN, will fit the training data, and then use the result to predict the holdout data. The latter is considered “fresh” data, so we obtain an unbiased estimate of our predictive power.</p>
+<p>The <strong>qeML</strong> functions used by <strong>dsldML</strong> have an argument <strong>holdout</strong>. Say we set it to 1000 and our dataset has 5000 rows. Then the function will randomly partition our data into a <em>training set</em> of 4000 rows and the holdout set of 1000 rows. The given algorithm, say kNN, will fit the training data, and then use the result to predict the holdout data. The latter is considered “fresh” data, so we obtain an unbiased estimate of our predictive power.</p>
 <div class="page-columns page-full"><p>We can then run the algorithm with various values of k, and settle on the one that predicts the holdout data best. </p><div class="no-row-height column-margin column-container"><span class="">The function <strong>fineTuning</strong> in the <strong>regtools</strong> package can be used to automate the process of trying many values of the hyperparameters, averaging over many holdout sets.</span></div></div>
 <p>Let’s take kNN for a spin:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,<span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>))  <span class="co"># default holdout size</span></span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(z)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeKNN'</span>,<span class="at">opts=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">50</span>))  <span class="co"># default holdout size</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No sComparisonPts supplied; using rows: 10502, 19689, 13609, 12419, 14402</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(z)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$testAccs
   female     male 
@@ -1528,8 +1559,8 @@ $comparisons
 </div>
 <p>The first three arguments are as usual. The fourth states that the ML algorithm we wish to use is kNN; the <strong>qeML</strong> package also includes random forests, boosting and neural networks. The <strong>opts</strong> argument states which non-default values we wish to use for arguments to the ML function; the default k actually is 25.</p>
 <p>Nonparametric methods are inherently of the “with interactions” type. Thus there is no single value of the gender wage gap; instead, the gap will have different values at different X’s. Thus, as with the with-interactions case for linear models, the software reports the estimated wage gap here at a few comparison cases.</p>
-<p>The comparison cases are by default a random sample of 5 rows of the training set. In order to obtain consistent results each time this book is processed by Quarto, we’ve called R’s <strong>set.seed</strong> function.</p>
-<p>It’s important to keep in mind that the output here is not simply for 5 persons; each row represents a subpopulation. Thus for instance in that first row of output, we estimate among <em>all</em> Silicon Valley techies of age 37.4, with a Bachelor’s degree or less, in occupation 101, and having worked 52 weeks, women’s average wage was 48,914 and for men it was 61,156.</p>
+<p>The comparison cases are by default a random sample of 5 rows of the supplied dataset. In order to obtain consistent results each time this book is processed by Quarto, we’ve called R’s <strong>set.seed</strong> function.</p>
+<p>It’s important to keep in mind that the output here is not simply for 5 persons; each row represents a subpopulation. Thus for instance in that first row of output, we estimate among <em>all</em> Silicon Valley techies of age 37.4, in the ‘zzzOther’ education category, in occupation 101, and having worked 52 weeks, women’s average wage was 50,614 and for men it was 65,596.</p>
 <p>As before, we see a substantial gender wage gap, but now we can feel more confident about it, since this analysis is unencumbered by assumptions on the form of the regression function.</p>
 </section>
 <section id="the-random-forests-algorithm" class="level3" data-number="2.10.2">
@@ -1548,10 +1579,10 @@ $comparisons
 <p>The order in which variables are considered in building a tree is random for each tree. So, while V6 is considered first in the tree displayed here, in some other tree it may be, say, V2. The split points, e.g.&nbsp;16 in the root node in the picture, are also random. They are obtained through formulas that depend on the data in complex (though not terribly deep) ways.</p>
 <p>This means there is quite a bit of randomness in a tree, so RF hedges its bets by generating many trees from our dataset, and then predicts new cases by averaging the predictions for that case from the individual trees. Let’s make that concrete via an example. Let’s run RF directly from the <strong>qeML</strong> function (to enable predictions), and then predict a hypothetical new case of a 32-year-old woman etc.:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeRF</span>(svcensus,<span class="st">'wageinc'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>)</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,<span class="fu">data.frame</span>(<span class="at">age=</span><span class="dv">32</span>,<span class="at">educ=</span><span class="st">'zzzOther'</span>,<span class="at">occ=</span><span class="st">'102'</span>,</span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">wkswrkd=</span><span class="dv">52</span>,<span class="at">gender=</span><span class="st">'female'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qeRF</span>(svcensus,<span class="st">'wageinc'</span>,<span class="at">holdout=</span><span class="cn">NULL</span>)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(z,<span class="fu">data.frame</span>(<span class="at">age=</span><span class="dv">32</span>,<span class="at">educ=</span><span class="st">'zzzOther'</span>,<span class="at">occ=</span><span class="st">'102'</span>,</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">wkswrkd=</span><span class="dv">52</span>,<span class="at">gender=</span><span class="st">'female'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      11 
 68568.46 </code></pre>
@@ -1560,22 +1591,25 @@ $comparisons
 <p>RF generated 500 trees (the default in <strong>qeRF</strong>), generating 500 predictions for this hypothetical person, and averaged them.</p>
 <p>As usual, the <strong>dsld</strong> wrapper adds S comparison information:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeRF'</span>)  <span class="co"># default values for hyperparameters</span></span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>w</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9999</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">dsldML</span>(svcensus,<span class="st">'wageinc'</span>,<span class="st">'gender'</span>,</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">qeMLftnName=</span><span class="st">'qeRF'</span>)  <span class="co"># default values for hyperparameters</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No sComparisonPts supplied; using rows: 10502, 19689, 13609, 12419, 14402</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>w</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$testAccs
   female     male 
-20748.78 27955.95 
+20789.54 28338.22 
 
 $comparisons
            age     educ occ wkswrkd   female     male
-10502 37.43326 zzzOther 101      52 51937.17 72126.99
-19689 47.75017 zzzOther 100      52 47494.44 67178.71
-13609 42.46283 zzzOther 102      52 71107.03 83606.01
-12419 46.67517       14 100      52 56353.56 69237.44
-14402 52.66371 zzzOther 106      52 58431.52 63392.62</code></pre>
+10502 37.43326 zzzOther 101      52 52170.54 72335.88
+19689 47.75017 zzzOther 100      52 47323.35 86818.07
+13609 42.46283 zzzOther 102      52 71301.91 88116.20
+12419 46.67517       14 100      52 57242.59 62986.42
+14402 52.66371 zzzOther 106      52 58291.47 67260.14</code></pre>
 </div>
 </div>
 <p>The code generated 500 trees, the default value, from our training set.</p>

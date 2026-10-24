@@ -203,7 +203,8 @@ say with k-Nearest Neighbors as our ML prediction tool:
 ```{r}
 library(dsld)
 library(qeML)
-z <- qeKNN(cmp,'two_year_recid',holdout=NULL,yesYVal='Yes') 
+z <- qeKNN(cmp[, names(cmp) != 'race'],'two_year_recid',
+   holdout=NULL,yesYVal='Yes')
 # look at the fitted model's probability of recidivism,
 # i.e. regression estimates
 probs <- z$regests
@@ -236,7 +237,8 @@ has the same value for each race.
 Below is an example using the COMPAS data:
 
 ```{r}
-z <- qeKNN(cmp,'two_year_recid',holdout=NULL,yesYVal='Yes')
+z <- qeKNN(cmp[, names(cmp) != 'race'],'two_year_recid',
+   holdout=NULL,yesYVal='Yes')
 # determine which rows were for Black applicants, which not
 BlackRows <- which(cmp$race == 'African-American')
 NonblackRows <- setdiff(1:nrow(cmp),BlackRows)  # all the others
@@ -245,18 +247,19 @@ NonblackRows <- setdiff(1:nrow(cmp),BlackRows)  # all the others
 # of a 1)
 BlackProbs <- z$regests[BlackRows]
 NonblackProbs <- z$regests[NonblackRows]
-# if a probability is > 0.5, we will guess Y = 1, otherwise guess Y = 0;
-# conveniently, that's same as rounding to the nearest integer
-BlackYhats <- round(BlackProbs)
-NonblackYhats <- round(NonblackProbs)
+# if a probability is > 0.5, we will guess Y = 1, otherwise guess Y = 0
+BlackYhats <- as.integer(BlackProbs > 0.5)
+NonblackYhats <- as.integer(NonblackProbs > 0.5)
 # again, recall that the mean of a bunch of 0s and 1s is the proportion
 # of 1s, i.e. the probability of a 1
 mean(BlackYhats)
 mean(NonblackYhats)
 ```
 
-That's quite a difference!  Overall, our ML model predicts about 51% of
-Black defendants to recidivate, versus 27% for non-Blacks.
+That's quite a difference!  Overall, our ML model predicts about
+`r round(100 * mean(BlackYhats))`% of
+Black defendants to recidivate, versus
+`r round(100 * mean(NonblackYhats))`% for non-Blacks.
 
 However, such a criterion is generally considered too coarse, since it doesn't
 account for possible differences in qualifications between the two groups.
@@ -281,14 +284,22 @@ to be the same for each sensitive group.
 ### The **fairness** package
 
 This package calculates and graphically displays a wide variety of
-fairness criteria.  For instance, let's use it to evaluate the Equalized
+fairness criteria.  For instance, it can evaluate the Equalized
 Odds criterion in the above COMPAS example. Despite its name,
 **equal_odds()** compares only true positive rates, the Equal Opportunity
-component of Equalized Odds.
+component of Equalized Odds. The package is now archived on CRAN, so we
+calculate the same rates directly:
 
 ```{r}
-library(fairness)
-equal_odds(cmp,'two_year_recid','race',probs=z$regests)
+predicted <- z$regests > 0.5
+positive <- cmp$two_year_recid == 'Yes'
+tpr <- tapply(predicted[positive], cmp$race[positive], mean)
+tprRatio <- tpr / tpr['African-American']
+rbind(Sensitivity=tpr, `TPR ratio`=tprRatio,
+   `Group size`=table(cmp$race))
+par(mar=c(5,9,2,1))
+barplot(tprRatio, horiz=TRUE, las=1, cex.names=0.7,
+   xlab='TPR ratio relative to African-Americans')
 ```
 Taking African-Americans as the base, we see that the Equalized Odds
 criterion was not met, even approximately.  Nor was Demographic Parity.
@@ -327,8 +338,11 @@ with age and prior convictions count as proxies.  To illustrate
 prediction, we will predict the first case in the dataset:
 
 ```{r}
-newx <- cmp[1,-(7:8)]  # just X, not Y and S
+newx <- cmp[1, names(cmp) != 'two_year_recid']  # X and S; omit Y
 ```
+
+S is included only for optional correlation diagnostics; EDF predictions
+use X alone. A single case is not enough to estimate a correlation.
 
 ## Functions based on the Explicitly Deweighted Features (EDF) Method
 
@@ -349,6 +363,7 @@ parameters will vary according to the ML algorithm used, as seen below.
 This function fits an RF model, but with deweighting of the proxies.
 
 ```{r}
+set.seed(9999)
 z <- dsldQeFairRF(cmp,'two_year_recid','race',
    list(age=0.2,priors_count=0.1),yesYVal='Yes')
 rfProbs <- z$trainPreds$preds$probs[, '1']
@@ -364,8 +379,8 @@ chosen at random to set up a possible split point.  But here we are
 specifying that the age and priors count variables be used only 20% and
 10% as often as other variables, in order to reduce their impact.
 
-Yet the S-Correlation values are still substantial in the Black and
-Hispanic cases.  We need to give the O variables even smaller weights or
+Yet the S-Correlation values are still nonzero, especially in the Black
+and Caucasian cases.  We need to give the O variables even smaller weights or
 possibly include additional variables in our O set.
 
 ### **dsldQeFairKNN**
@@ -384,13 +399,13 @@ the Census data, say, we can place large weight on age and occupation,
 and less weight on education.  Our COMPAS data call would work in this
 manner:
 
-```{r,eval=FALSE}
+```{r}
 z <- dsldQeFairKNN(cmp,'two_year_recid','race',
    list(age=0.2,priors_count=0.1),yesYVal='Yes')
 knnProbs <- z$trainPreds$preds$probs
 sapply(levels(cmp$race), function(r)
    cor(cmp$race == r, knnProbs, method='kendall'))
-predict(z,newx)
+predict(z,newx)$preds
 ```
 
 ### **dsldQeFairRidgeLin** and **dsldQeFairRidgeLog** 
@@ -402,12 +417,12 @@ improve accuracy by "shrinking" them.  Here is the intuition:
 Consider the example in @sec-compas.  The vector of estimated regression
 coefficients was 
 
-(12.46,-0.94,0.39,0.16,...)
+(12.46,-0.094,0.39,0.16,...)
 
 We might (crudely) shrink this vector by multiplying by a factor of,
 say, 0.5, yielding
 
-(6.23,-0.47,0.20,0.08,...)
+(6.23,-0.047,0.20,0.08,...)
 
 The actual shrinkage mechanisms used in the regression context are much
 more complex than simply multiplying every component of the vector by
